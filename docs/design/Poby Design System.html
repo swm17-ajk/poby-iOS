@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<title>Poby · Design System</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root { color-scheme: light; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 56px 48px 80px;
+    background: #e9e7e0;
+    font-family: 'Pretendard', -apple-system, system-ui, sans-serif;
+    color: #0f0f10; line-height: 1.45;
+  }
+  .wrap { max-width: 1200px; margin: 0 auto; }
+  h1 { font-size: 38px; font-weight: 800; letter-spacing: -1.2px; margin: 0 0 4px; }
+  .sub { color: #6b6b70; font-size: 16px; margin-bottom: 40px; }
+  .themes { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+  .theme {
+    border-radius: 22px; padding: 28px 26px 32px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 30px 60px -30px rgba(0,0,0,.18);
+  }
+  .theme.warm    { background: #f7f5ef; }
+  .theme.modern  { background: #f2f2f7; }
+  .theme h2 { margin: 0; font-size: 24px; font-weight: 700; letter-spacing: -.5px; }
+  .theme h2 .tag {
+    margin-left: 10px; font-size: 11px; font-weight: 600;
+    padding: 3px 8px; border-radius: 999px;
+    background: rgba(0,0,0,.06); color: #3a3a3c; letter-spacing: .2px;
+    vertical-align: 3px;
+  }
+  .theme .tagline { color: #6b6b70; font-size: 13px; margin-top: 4px; }
+  .block { margin-top: 26px; }
+  .block h3 {
+    font-size: 11px; font-weight: 700; letter-spacing: 1.2px;
+    color: #8e8e93; text-transform: uppercase; margin: 0 0 12px;
+  }
+  /* swatches */
+  .sw-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .sw {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 12px; padding: 8px 10px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.04);
+  }
+  .sw .chip {
+    width: 36px; height: 36px; border-radius: 9px; flex: 0 0 auto;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,.08);
+  }
+  .sw .meta { min-width: 0; }
+  .sw .name { font-size: 12px; font-weight: 600; color: #1c1c1e; }
+  .sw .hex  { font-family: 'SF Mono', ui-monospace, monospace; font-size: 11px; color: #8e8e93; }
+
+  /* type sample */
+  .type {
+    background: #fff; border-radius: 14px; padding: 14px 16px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.04);
+  }
+  .type .label {
+    font-size: 11px; color: #8e8e93; font-family: 'SF Mono', ui-monospace, monospace;
+    margin-bottom: 2px;
+  }
+  .t-title  { font-size: 22px; font-weight: 700; letter-spacing: -.4px; }
+  .t-body   { font-size: 15px; font-weight: 500; }
+  .t-caption{ font-size: 12px; color: #8e8e93; font-weight: 500; }
+
+  /* component sample area */
+  .comp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .comp {
+    background: #fff; border-radius: 14px; padding: 14px;
+    display: flex; flex-direction: column; gap: 10px;
+    box-shadow: 0 0 0 1px rgba(0,0,0,.04);
+  }
+  .comp .lbl { font-size: 10.5px; letter-spacing: 1px; font-weight: 700; color: #8e8e93; text-transform: uppercase; }
+
+  /* primary button */
+  .btn-primary {
+    border: none; padding: 11px 0; border-radius: 12px;
+    font-weight: 700; font-size: 14px; color: #0d2b25;
+    background: #4dd6b6; box-shadow: 0 6px 14px rgba(77,214,182,.35);
+    cursor: pointer; font-family: inherit;
+  }
+  .btn-secondary {
+    border: none; padding: 11px 0; border-radius: 12px;
+    font-weight: 600; font-size: 14px; color: #0f0f10;
+    cursor: pointer; font-family: inherit;
+  }
+  .warm .btn-secondary   { background: #f0eee5; }
+  .modern .btn-secondary { background: #ffffff; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+
+  /* iOS pill row */
+  .pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+    background: #4dd6b6; color: #0d2b25;
+  }
+  .pill .dot { width:14px;height:14px;border-radius:50%;background:#0d2b25;color:#4dd6b6;display:flex;align-items:center;justify-content:center;font-size:9px;}
+
+  /* sheet preview mini */
+  .mini-sheet {
+    border-radius: 14px; padding: 12px;
+  }
+  .warm .mini-sheet   { background: #f7f5ef; }
+  .modern .mini-sheet { background: #f2f2f7; }
+  .mini-sheet .grab {
+    width: 30px; height: 4px; border-radius: 2px; margin: 0 auto 10px;
+  }
+  .warm   .mini-sheet .grab { background: #d6d3c8; }
+  .modern .mini-sheet .grab { background: #d1d1d6; }
+  .mini-sheet .row {
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 10px; padding: 8px; margin-bottom: 6px;
+  }
+  .mini-sheet .ico {
+    width: 30px; height: 30px; border-radius: 9px;
+    display: flex; align-items: center; justify-content: center; font-size: 14px;
+  }
+  .warm   .mini-sheet .ico { background: #f0eee5; }
+  .modern .mini-sheet .ico { background: #ffffff; box-shadow: inset 0 0 0 1px rgba(0,0,0,.08); }
+  .mini-sheet .row .t { font-size: 13px; font-weight: 600; }
+
+  /* shared row */
+  .shared {
+    margin-top: 36px; padding: 26px 28px; background: #fff; border-radius: 22px;
+    box-shadow: 0 1px 0 rgba(0,0,0,.04), 0 30px 60px -30px rgba(0,0,0,.18);
+  }
+  .shared h2 { margin: 0 0 16px; font-size: 22px; font-weight: 700; letter-spacing: -.4px; }
+  .shared .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .shared .cell { background: #f7f7f9; border-radius: 12px; padding: 14px; }
+  .shared .cell .label { font-size: 11px; color: #8e8e93; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .shared .cell .val   { font-family: 'SF Mono', ui-monospace, monospace; font-size: 12px; color: #1c1c1e; }
+  .shared .cell .big   { font-size: 22px; font-weight: 700; letter-spacing: -.4px; }
+
+  .when {
+    margin-top: 16px; font-size: 13px; color: #3a3a3c; line-height: 1.55;
+    background: #fafaf6; border-radius: 12px; padding: 12px 14px;
+  }
+  .modern .when { background: #ffffff; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Poby · Design System</h1>
+  <div class="sub">두 가지 메인 컬러 방향. 카메라 영역 + 민트 액센트 + iOS 미니멀 골격은 공유, 페이퍼 톤만 달라집니다.</div>
+
+  <div class="themes">
+
+    <!-- ───────── WARM ───────── -->
+    <section class="theme warm">
+      <h2>Warm Beige <span class="tag">기본</span></h2>
+      <div class="tagline">따뜻한 종이 톤. 감성적·아날로그. 셋로그·필름 카메라 앱 같은 느낌.</div>
+
+      <div class="block">
+        <h3>Paper / Background</h3>
+        <div class="sw-row">
+          <div class="sw"><div class="chip" style="background:#f7f5ef"></div><div class="meta"><div class="name">Paper</div><div class="hex">#F7F5EF</div></div></div>
+          <div class="sw"><div class="chip" style="background:#f0eee5"></div><div class="meta"><div class="name">Paper 2 / icon bg</div><div class="hex">#F0EEE5</div></div></div>
+          <div class="sw"><div class="chip" style="background:#e6e3d8"></div><div class="meta"><div class="name">Hairline</div><div class="hex">#E6E3D8</div></div></div>
+          <div class="sw"><div class="chip" style="background:#d6d3c8"></div><div class="meta"><div class="name">Grabber</div><div class="hex">#D6D3C8</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>State Colors</h3>
+        <div class="sw-row">
+          <div class="sw"><div class="chip" style="background:#0a8a72"></div><div class="meta"><div class="name">Done · 활성</div><div class="hex">#0A8A72</div></div></div>
+          <div class="sw"><div class="chip" style="background:#c5c0b3"></div><div class="meta"><div class="name">Done · 비활성</div><div class="hex">#C5C0B3</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Type · Pretendard</h3>
+        <div class="type">
+          <div class="label">title · 22 / 700</div>
+          <div class="t-title">새 가이드라인</div>
+          <div class="label" style="margin-top:8px">body · 15 / 500</div>
+          <div class="t-body">얼굴과 상체가 모두 보이도록 찍어주세요.</div>
+          <div class="label" style="margin-top:8px">caption · 12 / 500</div>
+          <div class="t-caption">62 % · 라인 추출 중</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Components</h3>
+        <div class="comp-grid">
+          <div class="comp">
+            <div class="lbl">Buttons</div>
+            <button class="btn-primary">완료</button>
+            <button class="btn-secondary">재촬영</button>
+          </div>
+          <div class="comp">
+            <div class="lbl">Match Pill</div>
+            <span class="pill"><span class="dot">✓</span> 포즈 매칭</span>
+          </div>
+        </div>
+        <div class="comp" style="margin-top:12px">
+          <div class="lbl">Bottom Sheet</div>
+          <div class="mini-sheet">
+            <div class="grab"></div>
+            <div class="row"><div class="ico">📷</div><div class="t">가이드 사진 찍기</div></div>
+            <div class="row"><div class="ico">🖼</div><div class="t">갤러리에서 등록</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="when">
+        <b>언제 쓸까?</b> 감성·여친 사진·필름 무드를 강조하고 싶을 때. 따뜻한 인상을 1차로 전달.
+      </div>
+    </section>
+
+    <!-- ───────── MODERN ───────── -->
+    <section class="theme modern">
+      <h2>Cool Slate <span class="tag">모던</span></h2>
+      <div class="tagline">iOS 시스템 그레이 기반. 차갑고 최신스럽고 중립적. 인스타·시스템 앱 같은 느낌.</div>
+
+      <div class="block">
+        <h3>Paper / Background</h3>
+        <div class="sw-row">
+          <div class="sw"><div class="chip" style="background:#f2f2f7"></div><div class="meta"><div class="name">Paper</div><div class="hex">#F2F2F7</div></div></div>
+          <div class="sw"><div class="chip" style="background:#ffffff"></div><div class="meta"><div class="name">Paper 2 / card</div><div class="hex">#FFFFFF</div></div></div>
+          <div class="sw"><div class="chip" style="background:#e5e5ea"></div><div class="meta"><div class="name">Hairline</div><div class="hex">#E5E5EA</div></div></div>
+          <div class="sw"><div class="chip" style="background:#d1d1d6"></div><div class="meta"><div class="name">Grabber</div><div class="hex">#D1D1D6</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>State Colors</h3>
+        <div class="sw-row">
+          <div class="sw"><div class="chip" style="background:#0a7d68"></div><div class="meta"><div class="name">Done · 활성</div><div class="hex">#0A7D68</div></div></div>
+          <div class="sw"><div class="chip" style="background:#c7c7cc"></div><div class="meta"><div class="name">Done · 비활성</div><div class="hex">#C7C7CC</div></div></div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Type · Pretendard</h3>
+        <div class="type">
+          <div class="label">title · 22 / 700</div>
+          <div class="t-title">새 가이드라인</div>
+          <div class="label" style="margin-top:8px">body · 15 / 500</div>
+          <div class="t-body">얼굴과 상체가 모두 보이도록 찍어주세요.</div>
+          <div class="label" style="margin-top:8px">caption · 12 / 500</div>
+          <div class="t-caption">62 % · 라인 추출 중</div>
+        </div>
+      </div>
+
+      <div class="block">
+        <h3>Components</h3>
+        <div class="comp-grid">
+          <div class="comp">
+            <div class="lbl">Buttons</div>
+            <button class="btn-primary">완료</button>
+            <button class="btn-secondary">재촬영</button>
+          </div>
+          <div class="comp">
+            <div class="lbl">Match Pill</div>
+            <span class="pill"><span class="dot">✓</span> 포즈 매칭</span>
+          </div>
+        </div>
+        <div class="comp" style="margin-top:12px">
+          <div class="lbl">Bottom Sheet</div>
+          <div class="mini-sheet">
+            <div class="grab"></div>
+            <div class="row"><div class="ico">📷</div><div class="t">가이드 사진 찍기</div></div>
+            <div class="row"><div class="ico">🖼</div><div class="t">갤러리에서 등록</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="when">
+        <b>언제 쓸까?</b> 깔끔하고 트렌디한 톤, 카메라 영역과의 콘트라스트가 강해 기능 앱 인상을 줄 때.
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ───────── SHARED ───────── -->
+  <section class="shared">
+    <h2>공통 토큰 (테마와 무관)</h2>
+    <div class="grid">
+      <div class="cell">
+        <div class="label">Camera</div>
+        <div class="val">#0A0A0A</div>
+        <div style="background:#0a0a0a;height:32px;border-radius:8px;margin-top:8px;"></div>
+      </div>
+      <div class="cell">
+        <div class="label">Ink (Text)</div>
+        <div class="val">#0F0F10 · #3A3A3C · #8E8E93</div>
+        <div style="display:flex;gap:4px;margin-top:8px;">
+          <div style="background:#0f0f10;height:32px;flex:1;border-radius:8px;"></div>
+          <div style="background:#3a3a3c;height:32px;flex:1;border-radius:8px;"></div>
+          <div style="background:#8e8e93;height:32px;flex:1;border-radius:8px;"></div>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="label">Mint · 매칭 성공</div>
+        <div class="val">#4DD6B6 / deep #0D2B25</div>
+        <div style="display:flex;gap:4px;margin-top:8px;">
+          <div style="background:#4dd6b6;height:32px;flex:2;border-radius:8px;"></div>
+          <div style="background:#0d2b25;height:32px;flex:1;border-radius:8px;"></div>
+        </div>
+      </div>
+      <div class="cell">
+        <div class="label">Danger · 오류/삭제</div>
+        <div class="val">#FF5F57</div>
+        <div style="background:#ff5f57;height:32px;border-radius:8px;margin-top:8px;"></div>
+      </div>
+
+      <div class="cell">
+        <div class="label">Radius</div>
+        <div class="val">phone 50 · sheet 28 · card 22<br/>row 18 · thumb 14 · chip 999</div>
+      </div>
+      <div class="cell">
+        <div class="label">Spacing</div>
+        <div class="val">edge 18 · gap 8/10/14 · group 22/28</div>
+      </div>
+      <div class="cell">
+        <div class="label">Shadow</div>
+        <div class="val">card 0 14 30 rgba(0,0,0,.12)<br/>sheet 0 -8 30 rgba(0,0,0,.18)<br/>mint glow 0 6 14 rgba(77,214,182,.35)</div>
+      </div>
+      <div class="cell">
+        <div class="label">Typography</div>
+        <div class="val">Pretendard · SF Mono (수치)<br/>title 22/700 · body 15/500 · cap 12/500</div>
+      </div>
+    </div>
+
+    <div class="when" style="background:#fafafa;margin-top:18px;">
+      <b>가이드라인 컬러 규칙 (공통)</b>
+      <ul style="margin:6px 0 0 18px; padding: 0;">
+        <li>가이드라인 오버레이 기본 — <code>#FFFFFF</code></li>
+        <li>포즈 매칭 성공 시 — <code>#4DD6B6</code> + 글로우</li>
+        <li>실패/오류 메시지 — <code>#FF5F57</code> 아이콘 + 12% 틴트 배경</li>
+        <li>카메라 영역 (s1, s3) — 항상 순흑 <code>#0A0A0A</code></li>
+        <li>페이퍼 영역 (s2, s4, 시트, 알럿) — 테마 컬러로 분리</li>
+      </ul>
+    </div>
+  </section>
+</div>
+</body>
+</html>

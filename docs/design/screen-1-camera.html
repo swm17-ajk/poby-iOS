@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Poby — Screen 1 · 카메라 화면</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root{ color-scheme: light; }
+  html,body{ margin:0; padding:0; background:#e6e4dc; font-family:'Pretendard',-apple-system,system-ui,sans-serif; color:#1a1a1c; }
+  *{ box-sizing:border-box; }
+  @keyframes pobySpin { to { transform: rotate(360deg); } }
+  @keyframes pobyPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,.0); transform: scale(1); }
+    50% { box-shadow: 0 0 0 6px rgba(255,255,255,.10); transform: scale(1.03); }
+  }
+  .dc-card ::-webkit-scrollbar{ display: none; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="hifi-screens.jsx"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { DesignCanvas, DCSection, DCArtboard, PW, PH, S1Empty, S1WithGuides, S1PlusModal, S1DeleteModal } = window;
+
+function App() {
+  return (
+    <DesignCanvas
+      title="Poby — Screen 1 · 카메라 화면"
+      subtitle="메인 카메라 진입 화면 + 모달들. 매칭 성공 시 가이드 라인이 흰색에서 민트(#4dd6b6)로 변함."
+    >
+      <DCSection id="s1" title="s1 · 카메라 화면">
+        <DCArtboard id="s1-a" label="A · 첫 진입 (빈 상태)" width={PW} height={PH}>
+          <S1Empty />
+        </DCArtboard>
+        <DCArtboard id="s1-b" label="B · 가이드 목록 (미선택)" width={PW} height={PH}>
+          <S1WithGuides activeIdx={null} items={[1,2,3,4]} />
+        </DCArtboard>
+        <DCArtboard id="s1-c" label="C · 가이드 적용 (대기)" width={PW} height={PH}>
+          <S1WithGuides activeIdx={1} matched={false} items={[1,2,3,4]} />
+        </DCArtboard>
+        <DCArtboard id="s1-d" label="D · 포즈 매칭 성공" width={PW} height={PH}>
+          <S1WithGuides activeIdx={1} matched={true} items={[1,2,3,4]} />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="s1-modals" title="s1 · 모달">
+        <DCArtboard id="s1-plus" label="‘+’ 바텀시트" width={PW} height={PH}>
+          <S1PlusModal />
+        </DCArtboard>
+        <DCArtboard id="s1-del" label="가이드 삭제 확인" width={PW} height={PH}>
+          <S1DeleteModal />
+        </DCArtboard>
+      </DCSection>
+
+      <DCSection id="modern" title="✨ 모던 테마" subtitle="iOS 시스템 그레이(#f2f2f7) 기반 변형.">
+        <DCArtboard id="m-s1-d" label="s1 · 매칭 성공 (modern)" width={PW} height={PH}>
+          <S1WithGuides activeIdx={1} matched items={[1,2,3,4]} />
+        </DCArtboard>
+        <DCArtboard id="m-s1-plus" label="s1 · '+' 바텀시트 (modern)" width={PW} height={PH}>
+          <S1PlusModal theme="modern" />
+        </DCArtboard>
+      </DCSection>
+    </DesignCanvas>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
