@@ -113,8 +113,7 @@ final class CameraViewModel: ObservableObject {
     func requestDelete(_ guide: Guide) { guideToDelete = guide }
     func cancelDelete() { guideToDelete = nil }
 
-    func confirmDelete() async {
-        guard let guide = guideToDelete else { return }
+    func confirmDelete(_ guide: Guide) async {
         guideToDelete = nil
         do {
             try await guideRepository.delete(id: guide.id)

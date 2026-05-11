@@ -128,7 +128,9 @@ struct CameraView: View {
         ) {
             Button("취소", role: .cancel) { viewModel.cancelDelete() }
             Button("삭제", role: .destructive) {
-                Task { await viewModel.confirmDelete() }
+                if let guide = viewModel.guideToDelete {
+                    Task { await viewModel.confirmDelete(guide) }
+                }
             }
         } message: {
             Text("삭제한 가이드라인은 복구할 수 없어요.")
