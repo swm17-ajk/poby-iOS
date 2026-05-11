@@ -7,6 +7,7 @@ final class GuideExtractionViewModel: ObservableObject {
     let sourceImageData: Data
     private let visionService: VisionService
     private let guideRepository: GuideRepositoryProtocol
+    private var isPreview = false
 
     init(
         imageData: Data,
@@ -28,6 +29,7 @@ final class GuideExtractionViewModel: ObservableObject {
         } catch {
             fatalError("Preview repo init failed: \(error)")
         }
+        self.isPreview = true
     }
 #endif
 
@@ -37,6 +39,7 @@ final class GuideExtractionViewModel: ObservableObject {
     }
 
     func extract() async {
+        if isPreview { return }
         guard case .loading = state else { return }
         do {
             let silhouette = try await visionService.extractSilhouette(from: sourceImageData)

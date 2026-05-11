@@ -51,29 +51,32 @@ struct GuideExtractionView: View {
     }
 
     private var photoArea: some View {
-        ZStack {
-            if let uiImage = UIImage(data: viewModel.sourceImageData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .scaledToFill()
+        Color.black.opacity(0.06)
+            .aspectRatio(3.0 / 4.0, contentMode: .fit)
+            .overlay {
+                if let uiImage = UIImage(data: viewModel.sourceImageData) {
+                    Image(uiImage: uiImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                }
             }
-
-            switch viewModel.state {
-            case .loading:
-                loadingOverlay
-            case .success(let silhouette):
-                SilhouetteOverlay(silhouette: silhouette, color: .white, lineWidth: 2.5, glow: true)
-                successToast
-            case .failure(let message):
-                failureCard(message)
+            .overlay {
+                switch viewModel.state {
+                case .loading:
+                    loadingOverlay
+                case .success(let silhouette):
+                    ZStack(alignment: .bottom) {
+                        SilhouetteOverlay(silhouette: silhouette, color: .white, lineWidth: 2.5, glow: true)
+                        successToast
+                    }
+                case .failure(let message):
+                    failureCard(message)
+                }
             }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 26))
-        .padding(.horizontal, AppSpacing.edge)
-        .padding(.top, AppSpacing.edge)
-        .frame(maxWidth: .infinity)
-        .aspectRatio(3.0 / 4.0, contentMode: .fit)
-        .appShadow(AppShadow.card)
+            .clipShape(RoundedRectangle(cornerRadius: 26))
+            .appShadow(AppShadow.card)
+            .padding(.horizontal, AppSpacing.edge)
+            .padding(.top, AppSpacing.edge)
     }
 
     private var loadingOverlay: some View {
@@ -94,21 +97,18 @@ struct GuideExtractionView: View {
     }
 
     private var successToast: some View {
-        VStack {
-            Spacer()
-            HStack(spacing: AppSpacing.gapXS) {
-                Image(systemName: "checkmark")
-                    .foregroundStyle(AppColors.mint)
-                    .font(.system(size: 14, weight: .bold))
-                Text("가이드라인이 추출되었어요")
-                    .font(AppTypography.hintSmall)
-                    .foregroundStyle(.white)
-            }
-            .padding(.horizontal, AppSpacing.gapM)
-            .padding(.vertical, AppSpacing.gapS)
-            .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: AppRadius.thumb))
-            .padding(AppSpacing.gapM)
+        HStack(spacing: AppSpacing.gapXS) {
+            Image(systemName: "checkmark")
+                .foregroundStyle(AppColors.mint)
+                .font(.system(size: 14, weight: .bold))
+            Text("가이드라인이 추출되었어요")
+                .font(AppTypography.hintSmall)
+                .foregroundStyle(.white)
         }
+        .padding(.horizontal, AppSpacing.gapM)
+        .padding(.vertical, AppSpacing.gapS)
+        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: AppRadius.thumb))
+        .padding(AppSpacing.gapM)
     }
 
     private func failureCard(_ message: String) -> some View {
