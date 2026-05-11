@@ -5,6 +5,7 @@ import UIKit
 enum CameraServiceError: LocalizedError {
     case cameraPermissionDenied
     case photoLibraryPermissionDenied
+    case cameraUnavailableOnMac
     case setupFailed(String)
     case captureFailed(String)
 
@@ -12,6 +13,7 @@ enum CameraServiceError: LocalizedError {
         switch self {
         case .cameraPermissionDenied:        return "카메라 권한이 필요해요. 설정에서 허용해주세요."
         case .photoLibraryPermissionDenied:  return "사진 라이브러리 권한이 필요해요."
+        case .cameraUnavailableOnMac:        return "Mac에서는 카메라를 쓸 수 없어요. '+' 버튼으로 갤러리에서 사진을 등록해주세요."
         case .setupFailed(let m):            return "카메라 설정 실패: \(m)"
         case .captureFailed(let m):          return "촬영 실패: \(m)"
         }
@@ -27,6 +29,9 @@ final class CameraService: NSObject {
     private var pendingCapture: CheckedContinuation<Data, Error>?
 
     func start() async throws {
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            throw CameraServiceError.cameraUnavailableOnMac
+        }
         try await ensureCameraPermission()
         try await configureIfNeeded()
         await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in

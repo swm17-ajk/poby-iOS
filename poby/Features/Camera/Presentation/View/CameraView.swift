@@ -26,7 +26,7 @@ struct CameraView: View {
         ZStack {
             AppColors.cameraBlack.ignoresSafeArea()
 
-            if viewModel.state.status != .denied {
+            if viewModel.state.status == .ready || viewModel.state.status == .capturing {
                 CameraPreviewView(session: viewModel.session)
                     .ignoresSafeArea()
             }
