@@ -4,20 +4,17 @@ import PhotosUI
 struct CameraView: View {
     @StateObject private var viewModel: CameraViewModel
     @State private var pickedItem: PhotosPickerItem? = nil
-    private let onAddGuideTapped: () -> Void
     private let onGuideCaptureRequested: () -> Void
     private let onGuideImagePicked: (Data) -> Void
 
     init(
         viewModel: CameraViewModel? = nil,
-        onAddGuideTapped: @escaping () -> Void = {},
         onGuideCaptureRequested: @escaping () -> Void,
         onGuideImagePicked: @escaping (Data) -> Void
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? AppDIContainer.shared.makeCameraViewModel()
         )
-        self.onAddGuideTapped = onAddGuideTapped
         self.onGuideCaptureRequested = onGuideCaptureRequested
         self.onGuideImagePicked = onGuideImagePicked
     }
@@ -32,22 +29,52 @@ struct CameraView: View {
             }
 
             if let guide = viewModel.selectedGuide {
-                SilhouetteOverlay(silhouette: guide.silhouette, color: .white, lineWidth: 2.5, glow: true)
-                    .aspectRatio(CGFloat(guide.sourceAspectRatio ?? 1.0), contentMode: .fit)
-                    .allowsHitTesting(false)
-                    .ignoresSafeArea()
+                SilhouetteOverlay(
+                    silhouette: guide.silhouette,
+                    color: .white,
+                    lineWidth: 2.5,
+                    glow: true
+                )
+                .aspectRatio(CGFloat(guide.sourceAspectRatio ?? 1.0), contentMode: .fit)
+                .allowsHitTesting(false)
+                .ignoresSafeArea()
             }
 
             VStack(spacing: 0) {
+                TopChromeBar(
+                    ratioLabel: viewModel.state.aspectRatio.rawValue,
+                    isFlashOn: viewModel.state.isFlashOn,
+                    onRatioTap: { viewModel.cycleAspectRatio() },
+                    onFlashTap: { viewModel.toggleFlash() }
+                )
+                .padding(.top, AppSpacing.gapS)
+
                 Spacer(minLength: 0)
-                plusStrip
+
+                if viewModel.guides.isEmpty {
+                    emptyStateHint
+                        .padding(.bottom, AppSpacing.gapM)
+                }
+
+                GuideListStrip(
+                    guides: viewModel.guides,
+                    selectedGuideId: viewModel.selectedGuide?.id,
+                    thumbnailURL: { viewModel.thumbnailURL(for: $0) },
+                    onTapGuide: { viewModel.selectGuide($0) },
+                    onLongPressGuide: { viewModel.requestDelete($0) },
+                    onTapPlus: { viewModel.presentAddGuideSheet() }
+                )
+
                 ShutterButton(
                     isCapturing: viewModel.state.status == .capturing,
                     action: { Task { await viewModel.capture() } }
                 )
-                .padding(.top, AppSpacing.gapM)
                 .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
-                bottomBar
+
+                BottomControlsBar(
+                    onGalleryTap: openSystemGallery,
+                    onFlipTap: {}
+                )
             }
             .ignoresSafeArea(edges: .bottom)
 
@@ -59,8 +86,7 @@ struct CameraView: View {
             }
             if let savedAt = viewModel.state.lastSavedAt,
                Date().timeIntervalSince(savedAt) < 1.5 {
-                savedToast
-                    .transition(.opacity)
+                savedToast.transition(.opacity)
             }
         }
         .task { await viewModel.onAppear() }
@@ -88,36 +114,37 @@ struct CameraView: View {
                 pickedItem = nil
             }
         }
-    }
-
-    private var plusStrip: some View {
-        HStack {
-            Spacer()
-            Button(action: { viewModel.presentAddGuideSheet() }) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: AppRadius.thumb)
-                        .fill(Color.white.opacity(0.18))
-                        .overlay(
-                            RoundedRectangle(cornerRadius: AppRadius.thumb)
-                                .strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
-                        )
-                        .frame(width: 56, height: 56)
-                    Image(systemName: "plus")
-                        .font(.system(size: 22, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
+        .alert(
+            "가이드라인을 삭제할까요?",
+            isPresented: Binding(
+                get: { viewModel.guideToDelete != nil },
+                set: { if !$0 { viewModel.cancelDelete() } }
+            )
+        ) {
+            Button("취소", role: .cancel) { viewModel.cancelDelete() }
+            Button("삭제", role: .destructive) {
+                Task { await viewModel.confirmDelete() }
             }
-            .padding(.trailing, AppSpacing.edge)
+        } message: {
+            Text("삭제한 가이드라인은 복구할 수 없어요.")
         }
-        .frame(height: 78)
     }
 
-    private var bottomBar: some View {
-        Color.black
-            .frame(height: AppMetrics.Camera.controlsHeight)
-            .overlay(alignment: .top) {
-                Color.white.opacity(0.06).frame(height: 0.5)
-            }
+    private var emptyStateHint: some View {
+        VStack(spacing: 4) {
+            Text("첫 가이드라인을 추가해보세요")
+                .font(.system(size: 17, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.92))
+            Text("좋아하는 사진의 구도를 카메라에 띄울 수 있어요")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white.opacity(0.62))
+        }
+    }
+
+    private func openSystemGallery() {
+        if let url = URL(string: "photos-redirect://"), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+        }
     }
 
     private var deniedOverlay: some View {
@@ -152,6 +179,7 @@ struct CameraView: View {
                 .padding(.vertical, AppSpacing.gapS)
                 .background(AppColors.danger.opacity(0.9), in: RoundedRectangle(cornerRadius: AppRadius.row))
                 .padding(.top, AppSpacing.groupM)
+                .padding(.horizontal, AppSpacing.edge)
             Spacer()
         }
     }

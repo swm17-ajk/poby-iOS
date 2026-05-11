@@ -64,12 +64,24 @@ final class FileGuideRepository: GuideRepositoryProtocol {
         return guide
     }
 
+    func delete(id: UUID) async throws {
+        cache.removeAll { $0.id == id }
+        try saveToDisk()
+        subject.send(cache)
+
+        let imgURL = imagesDir.appendingPathComponent("\(id.uuidString).jpg")
+        let thumbURL = thumbsDir.appendingPathComponent("\(id.uuidString).jpg")
+        try? fileManager.removeItem(at: imgURL)
+        try? fileManager.removeItem(at: thumbURL)
+    }
+
     func sourceImageURL(for id: UUID) -> URL {
         imagesDir.appendingPathComponent("\(id.uuidString).jpg")
     }
 
-    func thumbnailURL(for id: UUID) -> URL {
-        thumbsDir.appendingPathComponent("\(id.uuidString).jpg")
+    func thumbnailURL(for id: UUID) -> URL? {
+        let url = thumbsDir.appendingPathComponent("\(id.uuidString).jpg")
+        return fileManager.fileExists(atPath: url.path) ? url : nil
     }
 
     private func loadFromDisk() {

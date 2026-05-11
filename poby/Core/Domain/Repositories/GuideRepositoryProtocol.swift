@@ -6,4 +6,8 @@ protocol GuideRepositoryProtocol: AnyObject {
 
     @discardableResult
     func add(silhouette: GuideSilhouette, sourceImage: Data) async throws -> Guide
+
+    func delete(id: UUID) async throws
+
+    func thumbnailURL(for id: UUID) -> URL?
 }

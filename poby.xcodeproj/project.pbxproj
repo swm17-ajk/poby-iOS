@@ -39,6 +39,12 @@
 		B0B1000000000000000000D03 /* FileGuideRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D03 /* FileGuideRepository.swift */; };
 		B0B1000000000000000000D04 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D04 /* VisionService.swift */; };
 		B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D05 /* SilhouetteOverlay.swift */; };
+		B0B1000000000000000000E02 /* GlassChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E02 /* GlassChip.swift */; };
+		B0B1000000000000000000E03 /* GuideThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E03 /* GuideThumb.swift */; };
+		B0B1000000000000000000E04 /* PlusThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E04 /* PlusThumb.swift */; };
+		B0B1000000000000000000E05 /* GuideListStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E05 /* GuideListStrip.swift */; };
+		B0B1000000000000000000E06 /* TopChromeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E06 /* TopChromeBar.swift */; };
+		B0B1000000000000000000E07 /* BottomControlsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E07 /* BottomControlsBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +114,12 @@
 		B0F1000000000000000000D03 /* FileGuideRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileGuideRepository.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000D04 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000D05 /* SilhouetteOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilhouetteOverlay.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E02 /* GlassChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassChip.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E03 /* GuideThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideThumb.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E04 /* PlusThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusThumb.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E05 /* GuideListStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideListStrip.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E06 /* TopChromeBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopChromeBar.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E07 /* BottomControlsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlsBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -256,8 +268,20 @@
 				B0C1000000000000000000A5 /* View */,
 				B0C1000000000000000000A6 /* ViewModel */,
 				B0C1000000000000000000A7 /* Model */,
+				B0C1000000000000000000E01 /* Components */,
 			);
 			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000E01 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000E03 /* GuideThumb.swift */,
+				B0F1000000000000000000E04 /* PlusThumb.swift */,
+				B0F1000000000000000000E05 /* GuideListStrip.swift */,
+				B0F1000000000000000000E06 /* TopChromeBar.swift */,
+			);
+			path = Components;
 			sourceTree = "<group>";
 		};
 		B0C1000000000000000000A5 /* View */ = {
@@ -367,6 +391,8 @@
 				B0F1000000000000000000B07 /* CameraPreviewView.swift */,
 				B0F1000000000000000000B08 /* ShutterButton.swift */,
 				B0F1000000000000000000D05 /* SilhouetteOverlay.swift */,
+				B0F1000000000000000000E02 /* GlassChip.swift */,
+				B0F1000000000000000000E07 /* BottomControlsBar.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -570,6 +596,12 @@
 				B0B1000000000000000000D03 /* FileGuideRepository.swift in Sources */,
 				B0B1000000000000000000D04 /* VisionService.swift in Sources */,
 				B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */,
+				B0B1000000000000000000E02 /* GlassChip.swift in Sources */,
+				B0B1000000000000000000E03 /* GuideThumb.swift in Sources */,
+				B0B1000000000000000000E04 /* PlusThumb.swift in Sources */,
+				B0B1000000000000000000E05 /* GuideListStrip.swift in Sources */,
+				B0B1000000000000000000E06 /* TopChromeBar.swift in Sources */,
+				B0B1000000000000000000E07 /* BottomControlsBar.swift in Sources */,
 				B0B1000000000000000000B01 /* AppColors.swift in Sources */,
 				B0B1000000000000000000B02 /* AppTypography.swift in Sources */,
 				B0B1000000000000000000B03 /* AppSpacing.swift in Sources */,
