@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GuideCaptureView: View {
     @StateObject private var viewModel: GuideCaptureViewModel
+    @State private var isFlashOn: Bool = false
     private let onCancel: () -> Void
     private let onConfirmed: (Data) -> Void
 
@@ -28,13 +29,25 @@ struct GuideCaptureView: View {
 
             VStack(spacing: 0) {
                 topBar
+                    .padding(.top, AppSpacing.gapS)
+
                 Spacer(minLength: 0)
+
+                Text("얼굴 · 상체가 모두 보이도록")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.78))
+                    .padding(.bottom, AppSpacing.gapM)
+
                 ShutterButton(
                     isCapturing: viewModel.state.status == .capturing,
                     action: { Task { await viewModel.capture() } }
                 )
                 .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
-                bottomBar
+
+                BottomControlsBar(
+                    onGalleryTap: openSystemGallery,
+                    onFlipTap: {}
+                )
             }
             .ignoresSafeArea(edges: .bottom)
 
@@ -57,67 +70,81 @@ struct GuideCaptureView: View {
     private var topBar: some View {
         HStack {
             Button(action: onCancel) {
-                Text("취소")
-                    .font(AppTypography.body)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, AppSpacing.gapM)
-                    .padding(.vertical, AppSpacing.gapXS)
-                    .background(.black.opacity(0.35), in: Capsule())
+                GlassChip {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
             }
+            .buttonStyle(.plain)
+
             Spacer()
+
+            Text("가이드로 쓸 사진을 찍어주세요")
+                .font(.system(size: 13, weight: .medium))
+                .foregroundStyle(.white)
+                .padding(.horizontal, AppSpacing.gapM)
+                .padding(.vertical, 8)
+                .background(Capsule().fill(.black.opacity(0.4)))
+
+            Spacer()
+
+            Button(action: { isFlashOn.toggle() }) {
+                GlassChip {
+                    Image(systemName: isFlashOn ? "bolt.fill" : "bolt.slash")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(.white)
+                }
+            }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.edge)
-        .padding(.top, AppSpacing.gapS)
-    }
-
-    private var bottomBar: some View {
-        Color.black
-            .frame(height: AppMetrics.Camera.controlsHeight)
-            .overlay(alignment: .top) {
-                Color.white.opacity(0.06).frame(height: 0.5)
-            }
     }
 
     private func recaptureCard(imageData: Data) -> some View {
         ZStack {
-            Color.black.opacity(0.6).ignoresSafeArea()
+            Color.black.opacity(0.55).ignoresSafeArea()
 
             VStack(spacing: AppSpacing.gapM) {
-                if let uiImage = UIImage(data: imageData) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(maxHeight: 400)
-                        .clipShape(RoundedRectangle(cornerRadius: AppRadius.card))
-                }
-
-                Text("이 사진으로 가이드라인을 만들까요?")
-                    .font(AppTypography.body)
+                Text("이 사진으로 가이드를 만들까요?")
+                    .font(.system(size: 17, weight: .bold))
                     .foregroundStyle(AppColors.inkPrimary)
+                Text("완료를 누르면 가이드라인을 추출해요.")
+                    .font(AppTypography.caption)
+                    .foregroundStyle(AppColors.inkTertiary)
+                    .multilineTextAlignment(.center)
 
                 HStack(spacing: AppSpacing.gapS) {
                     Button(action: { viewModel.discardCaptured() }) {
                         Text("재촬영")
-                            .font(AppTypography.buttonSecondary)
+                            .font(.system(size: 15, weight: .semibold))
                             .foregroundStyle(AppColors.inkPrimary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, AppSpacing.gapM)
-                            .background(AppColors.Warm.paper2, in: RoundedRectangle(cornerRadius: AppRadius.row))
+                            .background(AppColors.Warm.paper2, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
                     }
                     Button(action: { onConfirmed(imageData) }) {
                         Text("완료")
-                            .font(AppTypography.buttonPrimary)
+                            .font(.system(size: 15, weight: .bold))
                             .foregroundStyle(AppColors.mintDeep)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, AppSpacing.gapM)
-                            .background(AppColors.mint, in: RoundedRectangle(cornerRadius: AppRadius.row))
+                            .background(AppColors.mint, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
                             .appShadow(AppShadow.mintGlow)
                     }
                 }
             }
-            .padding(AppSpacing.groupS)
-            .background(AppColors.Warm.paper, in: RoundedRectangle(cornerRadius: AppRadius.sheet))
-            .padding(.horizontal, AppSpacing.edge)
+            .padding(.horizontal, AppSpacing.groupS)
+            .padding(.top, AppSpacing.groupS)
+            .padding(.bottom, AppSpacing.gapM + 4)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: AppRadius.card))
+            .padding(.horizontal, AppSpacing.groupM)
+        }
+    }
+
+    private func openSystemGallery() {
+        if let url = URL(string: "photos-redirect://"), UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
         }
     }
 
@@ -152,6 +179,7 @@ struct GuideCaptureView: View {
                 .padding(.vertical, AppSpacing.gapS)
                 .background(AppColors.danger.opacity(0.9), in: RoundedRectangle(cornerRadius: AppRadius.row))
                 .padding(.top, AppSpacing.groupM)
+                .padding(.horizontal, AppSpacing.edge)
             Spacer()
         }
     }
