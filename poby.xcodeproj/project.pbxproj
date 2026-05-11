@@ -19,12 +19,6 @@
 		B0B1000000000000000000A4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A4 /* CameraView.swift */; };
 		B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A5 /* CameraViewModel.swift */; };
 		B0B1000000000000000000A6 /* CameraViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A6 /* CameraViewState.swift */; };
-		B0B1000000000000000000C01 /* GuideCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C01 /* GuideCaptureView.swift */; };
-		B0B1000000000000000000C02 /* GuideCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */; };
-		B0B1000000000000000000C03 /* GuideCaptureViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C03 /* GuideCaptureViewState.swift */; };
-		B0B1000000000000000000C04 /* GuideExtractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C04 /* GuideExtractionView.swift */; };
-		B0B1000000000000000000C05 /* GuideExtractionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */; };
-		B0B1000000000000000000C06 /* GuideExtractionViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C06 /* GuideExtractionViewState.swift */; };
 		B0B1000000000000000000B01 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B01 /* AppColors.swift */; };
 		B0B1000000000000000000B02 /* AppTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B02 /* AppTypography.swift */; };
 		B0B1000000000000000000B03 /* AppSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B03 /* AppSpacing.swift */; };
@@ -34,6 +28,17 @@
 		B0B1000000000000000000B07 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B07 /* CameraPreviewView.swift */; };
 		B0B1000000000000000000B08 /* ShutterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B08 /* ShutterButton.swift */; };
 		B0B1000000000000000000B09 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B09 /* CameraService.swift */; };
+		B0B1000000000000000000C01 /* GuideCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C01 /* GuideCaptureView.swift */; };
+		B0B1000000000000000000C02 /* GuideCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */; };
+		B0B1000000000000000000C03 /* GuideCaptureViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C03 /* GuideCaptureViewState.swift */; };
+		B0B1000000000000000000C04 /* GuideExtractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C04 /* GuideExtractionView.swift */; };
+		B0B1000000000000000000C05 /* GuideExtractionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */; };
+		B0B1000000000000000000C06 /* GuideExtractionViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C06 /* GuideExtractionViewState.swift */; };
+		B0B1000000000000000000D01 /* Guide.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D01 /* Guide.swift */; };
+		B0B1000000000000000000D02 /* GuideRepositoryProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D02 /* GuideRepositoryProtocol.swift */; };
+		B0B1000000000000000000D03 /* FileGuideRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D03 /* FileGuideRepository.swift */; };
+		B0B1000000000000000000D04 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D04 /* VisionService.swift */; };
+		B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D05 /* SilhouetteOverlay.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,12 +88,6 @@
 		B0F1000000000000000000A4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A5 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A6 /* CameraViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewState.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000C01 /* GuideCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureView.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureViewModel.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000C03 /* GuideCaptureViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureViewState.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000C04 /* GuideExtractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionView.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionViewModel.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000C06 /* GuideExtractionViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionViewState.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B01 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B02 /* AppTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTypography.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B03 /* AppSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpacing.swift; sourceTree = "<group>"; };
@@ -98,6 +97,17 @@
 		B0F1000000000000000000B07 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B08 /* ShutterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShutterButton.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B09 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C01 /* GuideCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureViewModel.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C03 /* GuideCaptureViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureViewState.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C04 /* GuideExtractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionViewModel.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C06 /* GuideExtractionViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionViewState.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D01 /* Guide.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Guide.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D02 /* GuideRepositoryProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRepositoryProtocol.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D03 /* FileGuideRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileGuideRepository.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D04 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D05 /* SilhouetteOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilhouetteOverlay.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,8 +332,9 @@
 		B0C1000000000000000000B01 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				B0C1000000000000000000B02 /* Presentation */,
+				B0C1000000000000000000D01 /* Domain */,
 				B0C1000000000000000000B05 /* Data */,
+				B0C1000000000000000000B02 /* Presentation */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -355,6 +366,7 @@
 			children = (
 				B0F1000000000000000000B07 /* CameraPreviewView.swift */,
 				B0F1000000000000000000B08 /* ShutterButton.swift */,
+				B0F1000000000000000000D05 /* SilhouetteOverlay.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -362,6 +374,7 @@
 		B0C1000000000000000000B05 /* Data */ = {
 			isa = PBXGroup;
 			children = (
+				B0C1000000000000000000D04 /* Repositories */,
 				B0C1000000000000000000B06 /* Services */,
 			);
 			path = Data;
@@ -371,8 +384,42 @@
 			isa = PBXGroup;
 			children = (
 				B0F1000000000000000000B09 /* CameraService.swift */,
+				B0F1000000000000000000D04 /* VisionService.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000D01 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000D02 /* Entities */,
+				B0C1000000000000000000D03 /* Repositories */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000D02 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000D01 /* Guide.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000D03 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000D02 /* GuideRepositoryProtocol.swift */,
+			);
+			path = Repositories;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000D04 /* Repositories */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000D03 /* FileGuideRepository.swift */,
+			);
+			path = Repositories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -518,6 +565,11 @@
 				B0B1000000000000000000C04 /* GuideExtractionView.swift in Sources */,
 				B0B1000000000000000000C05 /* GuideExtractionViewModel.swift in Sources */,
 				B0B1000000000000000000C06 /* GuideExtractionViewState.swift in Sources */,
+				B0B1000000000000000000D01 /* Guide.swift in Sources */,
+				B0B1000000000000000000D02 /* GuideRepositoryProtocol.swift in Sources */,
+				B0B1000000000000000000D03 /* FileGuideRepository.swift in Sources */,
+				B0B1000000000000000000D04 /* VisionService.swift in Sources */,
+				B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */,
 				B0B1000000000000000000B01 /* AppColors.swift in Sources */,
 				B0B1000000000000000000B02 /* AppTypography.swift in Sources */,
 				B0B1000000000000000000B03 /* AppSpacing.swift in Sources */,
@@ -690,6 +742,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"poby/Preview Content\"";
+				DEVELOPMENT_TEAM = D83KY64ZJK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
@@ -721,6 +774,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"poby/Preview Content\"";
+				DEVELOPMENT_TEAM = D83KY64ZJK;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";

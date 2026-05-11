@@ -18,7 +18,7 @@ struct AppRootView: View {
                     )
                 case .guideExtraction(let data):
                     GuideExtractionView(
-                        imageData: data,
+                        viewModel: AppDIContainer.shared.makeGuideExtractionViewModel(imageData: data),
                         onCancel: { router.popToRoot() },
                         onDone: { router.popToRoot() }
                     )

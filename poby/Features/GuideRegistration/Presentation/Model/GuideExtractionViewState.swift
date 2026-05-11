@@ -1,9 +1,7 @@
 import Foundation
 
-struct GuideExtractionViewState: Equatable {
-    let sourceImage: Data
-
-    static func initial(image: Data) -> GuideExtractionViewState {
-        GuideExtractionViewState(sourceImage: image)
-    }
+enum GuideExtractionViewState: Equatable {
+    case loading
+    case success(silhouette: GuideSilhouette)
+    case failure(message: String)
 }
