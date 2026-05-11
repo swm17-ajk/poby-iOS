@@ -202,3 +202,77 @@ struct CameraView: View {
         }
     }
 }
+
+#if DEBUG
+
+private func cameraPreviewGuide() -> Guide {
+    Guide(
+        id: UUID(),
+        createdAt: Date(),
+        silhouette: GuideSilhouette(contours: [[
+            NormalizedPoint(x: 0.50, y: 0.92),
+            NormalizedPoint(x: 0.42, y: 0.88),
+            NormalizedPoint(x: 0.40, y: 0.78),
+            NormalizedPoint(x: 0.45, y: 0.72),
+            NormalizedPoint(x: 0.32, y: 0.68),
+            NormalizedPoint(x: 0.26, y: 0.55),
+            NormalizedPoint(x: 0.30, y: 0.34),
+            NormalizedPoint(x: 0.40, y: 0.46),
+            NormalizedPoint(x: 0.40, y: 0.08),
+            NormalizedPoint(x: 0.60, y: 0.08),
+            NormalizedPoint(x: 0.60, y: 0.46),
+            NormalizedPoint(x: 0.70, y: 0.34),
+            NormalizedPoint(x: 0.74, y: 0.55),
+            NormalizedPoint(x: 0.68, y: 0.68),
+            NormalizedPoint(x: 0.55, y: 0.72),
+            NormalizedPoint(x: 0.60, y: 0.78),
+            NormalizedPoint(x: 0.58, y: 0.88),
+        ]]),
+        sourceAspectRatio: 0.75
+    )
+}
+
+#Preview("빈 상태") {
+    CameraView(
+        viewModel: CameraViewModel(previewState: CameraViewState(status: .ready)),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#Preview("가이드 적용") {
+    let guide = cameraPreviewGuide()
+    return CameraView(
+        viewModel: CameraViewModel(
+            previewState: CameraViewState(status: .ready),
+            previewGuides: [guide, cameraPreviewGuide(), cameraPreviewGuide()],
+            previewSelectedGuide: guide
+        ),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#Preview("매칭 성공") {
+    let guide = cameraPreviewGuide()
+    return CameraView(
+        viewModel: CameraViewModel(
+            previewState: CameraViewState(status: .ready),
+            previewGuides: [guide, cameraPreviewGuide()],
+            previewSelectedGuide: guide,
+            previewIsMatched: true
+        ),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#Preview("권한 거부") {
+    CameraView(
+        viewModel: CameraViewModel(previewState: CameraViewState(status: .denied)),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#endif

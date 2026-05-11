@@ -41,6 +41,27 @@ final class CameraViewModel: ObservableObject {
         observeGuides()
     }
 
+#if DEBUG
+    init(
+        previewState: CameraViewState = CameraViewState(status: .ready),
+        previewGuides: [Guide] = [],
+        previewSelectedGuide: Guide? = nil,
+        previewIsMatched: Bool = false
+    ) {
+        self.state = previewState
+        self.cameraService = CameraService()
+        self.matchEngine = MatchEngine(visionService: VisionService())
+        do {
+            self.guideRepository = try FileGuideRepository()
+        } catch {
+            fatalError("Preview repo init failed: \(error)")
+        }
+        self.guides = previewGuides
+        self.selectedGuide = previewSelectedGuide
+        self.isMatched = previewIsMatched
+    }
+#endif
+
     var session: AVCaptureSession { cameraService.session }
 
     func onAppear() async {

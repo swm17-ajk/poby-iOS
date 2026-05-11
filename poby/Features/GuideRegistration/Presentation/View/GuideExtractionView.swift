@@ -198,3 +198,85 @@ private struct AnimatedProgressBar: View {
         }
     }
 }
+
+#if DEBUG
+
+private func makeSamplePhotoData() -> Data {
+    let size = CGSize(width: 600, height: 800)
+    let renderer = UIGraphicsImageRenderer(size: size)
+    return renderer.jpegData(withCompressionQuality: 0.8) { ctx in
+        let cg = ctx.cgContext
+        let cs = CGColorSpaceCreateDeviceRGB()
+        let gradient = CGGradient(
+            colorsSpace: cs,
+            colors: [
+                UIColor(red: 0.85, green: 0.78, blue: 0.6, alpha: 1).cgColor,
+                UIColor(red: 0.45, green: 0.32, blue: 0.2, alpha: 1).cgColor
+            ] as CFArray,
+            locations: [0, 1]
+        )!
+        cg.drawLinearGradient(
+            gradient,
+            start: .zero,
+            end: CGPoint(x: 0, y: size.height),
+            options: []
+        )
+    }
+}
+
+private func mockSilhouette() -> GuideSilhouette {
+    GuideSilhouette(contours: [[
+        NormalizedPoint(x: 0.50, y: 0.92),
+        NormalizedPoint(x: 0.42, y: 0.88),
+        NormalizedPoint(x: 0.40, y: 0.78),
+        NormalizedPoint(x: 0.45, y: 0.72),
+        NormalizedPoint(x: 0.32, y: 0.68),
+        NormalizedPoint(x: 0.26, y: 0.55),
+        NormalizedPoint(x: 0.30, y: 0.34),
+        NormalizedPoint(x: 0.40, y: 0.46),
+        NormalizedPoint(x: 0.40, y: 0.08),
+        NormalizedPoint(x: 0.60, y: 0.08),
+        NormalizedPoint(x: 0.60, y: 0.46),
+        NormalizedPoint(x: 0.70, y: 0.34),
+        NormalizedPoint(x: 0.74, y: 0.55),
+        NormalizedPoint(x: 0.68, y: 0.68),
+        NormalizedPoint(x: 0.55, y: 0.72),
+        NormalizedPoint(x: 0.60, y: 0.78),
+        NormalizedPoint(x: 0.58, y: 0.88),
+    ]])
+}
+
+#Preview("로딩") {
+    GuideExtractionView(
+        viewModel: GuideExtractionViewModel(
+            previewState: .loading,
+            imageData: makeSamplePhotoData()
+        ),
+        onCancel: {},
+        onDone: {}
+    )
+}
+
+#Preview("성공") {
+    GuideExtractionView(
+        viewModel: GuideExtractionViewModel(
+            previewState: .success(silhouette: mockSilhouette()),
+            imageData: makeSamplePhotoData()
+        ),
+        onCancel: {},
+        onDone: {}
+    )
+}
+
+#Preview("실패") {
+    GuideExtractionView(
+        viewModel: GuideExtractionViewModel(
+            previewState: .failure(message: "인물을 찾지 못했어요"),
+            imageData: makeSamplePhotoData()
+        ),
+        onCancel: {},
+        onDone: {}
+    )
+}
+
+#endif

@@ -18,13 +18,26 @@ final class GuideExtractionViewModel: ObservableObject {
         self.guideRepository = guideRepository
     }
 
+#if DEBUG
+    init(previewState: GuideExtractionViewState, imageData: Data) {
+        self.state = previewState
+        self.sourceImageData = imageData
+        self.visionService = VisionService()
+        do {
+            self.guideRepository = try FileGuideRepository()
+        } catch {
+            fatalError("Preview repo init failed: \(error)")
+        }
+    }
+#endif
+
     var isDoneEnabled: Bool {
         if case .success = state { return true }
         return false
     }
 
     func extract() async {
-        state = .loading
+        guard case .loading = state else { return }
         do {
             let silhouette = try await visionService.extractSilhouette(from: sourceImageData)
             state = .success(silhouette: silhouette)

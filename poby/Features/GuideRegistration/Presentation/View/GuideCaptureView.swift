@@ -184,3 +184,51 @@ struct GuideCaptureView: View {
         }
     }
 }
+
+#if DEBUG
+
+private func capturePreviewSamplePhoto() -> Data {
+    let size = CGSize(width: 400, height: 600)
+    let renderer = UIGraphicsImageRenderer(size: size)
+    return renderer.jpegData(withCompressionQuality: 0.8) { ctx in
+        let cg = ctx.cgContext
+        let cs = CGColorSpaceCreateDeviceRGB()
+        let gradient = CGGradient(
+            colorsSpace: cs,
+            colors: [UIColor(white: 0.3, alpha: 1).cgColor, UIColor.black.cgColor] as CFArray,
+            locations: [0, 1]
+        )!
+        cg.drawLinearGradient(gradient, start: .zero, end: CGPoint(x: 0, y: size.height), options: [])
+    }
+}
+
+#Preview("촬영 대기") {
+    GuideCaptureView(
+        viewModel: GuideCaptureViewModel(previewState: GuideCaptureViewState(status: .ready)),
+        onCancel: {},
+        onConfirmed: { _ in }
+    )
+}
+
+#Preview("재촬영 카드") {
+    GuideCaptureView(
+        viewModel: GuideCaptureViewModel(
+            previewState: GuideCaptureViewState(
+                status: .ready,
+                capturedImage: capturePreviewSamplePhoto()
+            )
+        ),
+        onCancel: {},
+        onConfirmed: { _ in }
+    )
+}
+
+#Preview("권한 거부") {
+    GuideCaptureView(
+        viewModel: GuideCaptureViewModel(previewState: GuideCaptureViewState(status: .denied)),
+        onCancel: {},
+        onConfirmed: { _ in }
+    )
+}
+
+#endif

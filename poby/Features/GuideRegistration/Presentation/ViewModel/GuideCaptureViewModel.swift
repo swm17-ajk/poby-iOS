@@ -12,6 +12,13 @@ final class GuideCaptureViewModel: ObservableObject {
         self.cameraService = cameraService
     }
 
+#if DEBUG
+    init(previewState: GuideCaptureViewState) {
+        self.state = previewState
+        self.cameraService = CameraService()
+    }
+#endif
+
     var session: AVCaptureSession { cameraService.session }
 
     func onAppear() async {
