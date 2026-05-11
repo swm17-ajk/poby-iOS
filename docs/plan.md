@@ -168,7 +168,7 @@ iOS 처음이라면 가장 어려운 구간. Apple의 Vision 샘플 코드와 pe
 - **빈 상태** — 가이드 0개일 때는 '+' 버튼만 (썸네일 영역 비움)
 - **있는 상태** — 썸네일 목록 + 오른쪽 끝에 '+' 버튼
 - 가이드 **탭** → 해당 가이드를 카메라 영역에 오버레이로 적용
-- 가이드 **길게 누르기** → "삭제하시겠습니까?" 모달 (`.confirmationDialog`)
+- 가이드 **길게 누르기** → "가이드라인을 삭제할까요?" iOS 알럿 (`.alert`, 280pt 카드, 취소/삭제)
 - 선택된 가이드 표시 (테두리 강조 등) — 한 번에 1개만 선택 가능
 
 **'+' 버튼 동작** (Stage 2 진입 부분):
@@ -176,10 +176,14 @@ iOS 처음이라면 가장 어려운 구간. Apple의 Vision 샘플 코드와 pe
   - "가이드 사진 찍기" → Screen 3
   - "가이드 사진 등록하기" → Screen 4
 
-**카메라 영역 부가 버튼** (1단계에서 미룬 것들):
-- **갤러리 버튼** (좌하단) → 디바이스 사진앱 열기 — 실제로는 사용자가 직전에 찍은 사진 확인용. iOS에는 "마지막 사진 썸네일"을 가져와 보여주는 패턴이 있음 (`PHAsset.fetchAssets` 최신 1장). 탭 시 시스템 사진앱 또는 in-app preview.
-- **전면/후면 전환 버튼** (우하단) → `AVCaptureDevice`를 다른 position으로 교체. `AVCaptureSession.beginConfiguration()` → 기존 input 제거 → 새 input 추가 → `commitConfiguration()`.
-- **화면 비율 조작 버튼** (중앙) → 4:3 / 1:1 / 16:9 토글. 프리뷰의 cropping 또는 `AVCaptureSession.sessionPreset` 변경. (간단히는 SwiftUI에서 aspectRatio 마스킹만 해도 시각적으론 OK)
+**Top chrome** (status bar 아래, 44pt 높이):
+- **플래시 버튼** (우): on/off 토글. `AVCaptureDevice.torchMode` 또는 `AVCapturePhotoSettings.flashMode`.
+- **화면 비율 토글** (중앙): 4:3 / 1:1 / 9:16 (세로 비율). 프리뷰의 cropping 또는 `AVCaptureSession.sessionPreset` 변경. (간단히는 SwiftUI에서 aspectRatio 마스킹만 해도 시각적으론 OK)
+
+**Bottom controls** (84pt 검정 바, 셔터는 위에 floating):
+- **갤러리 버튼** (좌): 디바이스 사진앱 열기 — 실제로는 사용자가 직전에 찍은 사진 확인용. iOS에는 "마지막 사진 썸네일"을 가져와 보여주는 패턴이 있음 (`PHAsset.fetchAssets` 최신 1장). 탭 시 시스템 사진앱 또는 in-app preview.
+- **전면/후면 전환 버튼** (우): `AVCaptureDevice`를 다른 position으로 교체. `AVCaptureSession.beginConfiguration()` → 기존 input 제거 → 새 input 추가 → `commitConfiguration()`.
+- 중앙은 비움 (셔터가 그 위에 floating).
 
 **Screen 2 복귀 시 상태 처리** (Stage 3에서 만든 인터페이스 마무리):
 - 완료 시 → 새 가이드를 목록에 추가 + 자동 선택 + 오버레이 적용된 상태로 Screen 1 복귀
