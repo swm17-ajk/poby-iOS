@@ -11,7 +11,7 @@ import SwiftUI
 struct pobyApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            AppRootView()
         }
     }
 }

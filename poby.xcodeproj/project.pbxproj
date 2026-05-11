@@ -8,12 +8,29 @@
 
 /* Begin PBXBuildFile section */
 		AE9187742FB0D6B300A79154 /* pobyApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187732FB0D6B300A79154 /* pobyApp.swift */; };
-		AE9187762FB0D6B300A79154 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187752FB0D6B300A79154 /* ContentView.swift */; };
 		AE9187782FB0D6B500A79154 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE9187772FB0D6B500A79154 /* Assets.xcassets */; };
 		AE91877B2FB0D6B500A79154 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AE91877A2FB0D6B500A79154 /* Preview Assets.xcassets */; };
 		AE9187852FB0D6B500A79154 /* pobyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187842FB0D6B500A79154 /* pobyTests.swift */; };
 		AE91878F2FB0D6B500A79154 /* pobyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE91878E2FB0D6B500A79154 /* pobyUITests.swift */; };
 		AE9187912FB0D6B500A79154 /* pobyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187902FB0D6B500A79154 /* pobyUITestsLaunchTests.swift */; };
+		B0B1000000000000000000A1 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A1 /* AppRootView.swift */; };
+		B0B1000000000000000000A2 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A2 /* AppRoute.swift */; };
+		B0B1000000000000000000A3 /* AppDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A3 /* AppDIContainer.swift */; };
+		B0B1000000000000000000A4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A4 /* CameraView.swift */; };
+		B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A5 /* CameraViewModel.swift */; };
+		B0B1000000000000000000A6 /* CameraViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A6 /* CameraViewState.swift */; };
+		B0B1000000000000000000A7 /* GuideRegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A7 /* GuideRegistrationView.swift */; };
+		B0B1000000000000000000A8 /* GuideRegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A8 /* GuideRegistrationViewModel.swift */; };
+		B0B1000000000000000000A9 /* GuideRegistrationViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A9 /* GuideRegistrationViewState.swift */; };
+		B0B1000000000000000000B01 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B01 /* AppColors.swift */; };
+		B0B1000000000000000000B02 /* AppTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B02 /* AppTypography.swift */; };
+		B0B1000000000000000000B03 /* AppSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B03 /* AppSpacing.swift */; };
+		B0B1000000000000000000B04 /* AppRadius.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B04 /* AppRadius.swift */; };
+		B0B1000000000000000000B05 /* AppShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B05 /* AppShadow.swift */; };
+		B0B1000000000000000000B06 /* AppMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B06 /* AppMetrics.swift */; };
+		B0B1000000000000000000B07 /* CameraPreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B07 /* CameraPreviewView.swift */; };
+		B0B1000000000000000000B08 /* ShutterButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B08 /* ShutterButton.swift */; };
+		B0B1000000000000000000B09 /* CameraService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B09 /* CameraService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +53,6 @@
 /* Begin PBXFileReference section */
 		AE9187702FB0D6B300A79154 /* poby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = poby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE9187732FB0D6B300A79154 /* pobyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pobyApp.swift; sourceTree = "<group>"; };
-		AE9187752FB0D6B300A79154 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		AE9187772FB0D6B500A79154 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE91877A2FB0D6B500A79154 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AE9187802FB0D6B500A79154 /* pobyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pobyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -44,6 +60,38 @@
 		AE91878A2FB0D6B500A79154 /* pobyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pobyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE91878E2FB0D6B500A79154 /* pobyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pobyUITests.swift; sourceTree = "<group>"; };
 		AE9187902FB0D6B500A79154 /* pobyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pobyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		AED471FF2FB1AD7700848A68 /* features.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = features.md; sourceTree = "<group>"; };
+		AED472012FB1B0F600848A68 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
+		AED472022FB1B26D00848A68 /* plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = plan.md; sourceTree = "<group>"; };
+		AED472032FB1B64A00848A68 /* ui.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ui.md; sourceTree = "<group>"; };
+		AED472042FB1D29A00848A68 /* components.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = components.md; sourceTree = "<group>"; };
+		AED472052FB1D29A00848A68 /* layouts.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = layouts.md; sourceTree = "<group>"; };
+		AED472062FB1D29A00848A68 /* screens.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = screens.md; sourceTree = "<group>"; };
+		AED4720A2FB2027600848A68 /* Poby Design System.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = "Poby Design System.html"; sourceTree = "<group>"; };
+		AED4720B2FB2027600848A68 /* design-canvas.jsx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "design-canvas.jsx"; sourceTree = "<group>"; };
+		AED4720E2FB2027600848A68 /* hifi-screens.jsx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "hifi-screens.jsx"; sourceTree = "<group>"; };
+		AED472192FB20FC700848A68 /* screen-3-guide-capture.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-3-guide-capture.html"; sourceTree = "<group>"; };
+		AED4721A2FB20FC700848A68 /* screen-4-gallery.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-4-gallery.html"; sourceTree = "<group>"; };
+		AED4721B2FB20FC700848A68 /* screen-2-extraction.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-2-extraction.html"; sourceTree = "<group>"; };
+		AED4721C2FB20FC700848A68 /* screen-1-camera.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-1-camera.html"; sourceTree = "<group>"; };
+		B0F1000000000000000000A1 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A2 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A3 /* AppDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDIContainer.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A5 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A6 /* CameraViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewState.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A7 /* GuideRegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRegistrationView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A8 /* GuideRegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRegistrationViewModel.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A9 /* GuideRegistrationViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRegistrationViewState.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B01 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B02 /* AppTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTypography.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B03 /* AppSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpacing.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B04 /* AppRadius.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRadius.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B05 /* AppShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppShadow.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B06 /* AppMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppMetrics.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B07 /* CameraPreviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreviewView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B08 /* ShutterButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShutterButton.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000B09 /* CameraService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,6 +122,7 @@
 		AE9187672FB0D6B300A79154 = {
 			isa = PBXGroup;
 			children = (
+				AED472002FB1AF3100848A68 /* docs */,
 				AE9187722FB0D6B300A79154 /* poby */,
 				AE9187832FB0D6B500A79154 /* pobyTests */,
 				AE91878D2FB0D6B500A79154 /* pobyUITests */,
@@ -94,8 +143,9 @@
 		AE9187722FB0D6B300A79154 /* poby */ = {
 			isa = PBXGroup;
 			children = (
-				AE9187732FB0D6B300A79154 /* pobyApp.swift */,
-				AE9187752FB0D6B300A79154 /* ContentView.swift */,
+				B0C1000000000000000000A1 /* App */,
+				B0C1000000000000000000B01 /* Core */,
+				B0C1000000000000000000A2 /* Features */,
 				AE9187772FB0D6B500A79154 /* Assets.xcassets */,
 				AE9187792FB0D6B500A79154 /* Preview Content */,
 			);
@@ -125,6 +175,195 @@
 				AE9187902FB0D6B500A79154 /* pobyUITestsLaunchTests.swift */,
 			);
 			path = pobyUITests;
+			sourceTree = "<group>";
+		};
+		AED472002FB1AF3100848A68 /* docs */ = {
+			isa = PBXGroup;
+			children = (
+				AED472072FB2025E00848A68 /* design */,
+				AED472042FB1D29A00848A68 /* components.md */,
+				AED472052FB1D29A00848A68 /* layouts.md */,
+				AED472062FB1D29A00848A68 /* screens.md */,
+				AED472022FB1B26D00848A68 /* plan.md */,
+				AED471FF2FB1AD7700848A68 /* features.md */,
+				AED472012FB1B0F600848A68 /* CLAUDE.md */,
+				AED472032FB1B64A00848A68 /* ui.md */,
+			);
+			path = docs;
+			sourceTree = "<group>";
+		};
+		AED472072FB2025E00848A68 /* design */ = {
+			isa = PBXGroup;
+			children = (
+				AED4721C2FB20FC700848A68 /* screen-1-camera.html */,
+				AED4721B2FB20FC700848A68 /* screen-2-extraction.html */,
+				AED472192FB20FC700848A68 /* screen-3-guide-capture.html */,
+				AED4721A2FB20FC700848A68 /* screen-4-gallery.html */,
+				AED4720B2FB2027600848A68 /* design-canvas.jsx */,
+				AED4720E2FB2027600848A68 /* hifi-screens.jsx */,
+				AED4720A2FB2027600848A68 /* Poby Design System.html */,
+			);
+			path = design;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A1 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				AE9187732FB0D6B300A79154 /* pobyApp.swift */,
+				B0F1000000000000000000A1 /* AppRootView.swift */,
+				B0F1000000000000000000A2 /* AppRoute.swift */,
+				B0F1000000000000000000A3 /* AppDIContainer.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A2 /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000A3 /* Camera */,
+				B0C1000000000000000000A8 /* GuideRegistration */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A3 /* Camera */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000A4 /* Presentation */,
+				B0C1000000000000000000B05 /* Data */,
+			);
+			path = Camera;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A4 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000A5 /* View */,
+				B0C1000000000000000000A6 /* ViewModel */,
+				B0C1000000000000000000A7 /* Model */,
+				B0C1000000000000000000B04 /* Components */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A5 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000A4 /* CameraView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A6 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000A5 /* CameraViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A7 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000A6 /* CameraViewState.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A8 /* GuideRegistration */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000A9 /* Presentation */,
+			);
+			path = GuideRegistration;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000A9 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000AA /* View */,
+				B0C1000000000000000000AB /* ViewModel */,
+				B0C1000000000000000000AC /* Model */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000AA /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000A7 /* GuideRegistrationView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000AB /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000A8 /* GuideRegistrationViewModel.swift */,
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000AC /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000A9 /* GuideRegistrationViewState.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000B01 /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000B02 /* Presentation */,
+			);
+			path = Core;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000B02 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000B03 /* DesignSystem */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000B03 /* DesignSystem */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000B01 /* AppColors.swift */,
+				B0F1000000000000000000B02 /* AppTypography.swift */,
+				B0F1000000000000000000B03 /* AppSpacing.swift */,
+				B0F1000000000000000000B04 /* AppRadius.swift */,
+				B0F1000000000000000000B05 /* AppShadow.swift */,
+				B0F1000000000000000000B06 /* AppMetrics.swift */,
+			);
+			path = DesignSystem;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000B04 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000B07 /* CameraPreviewView.swift */,
+				B0F1000000000000000000B08 /* ShutterButton.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000B05 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000B06 /* Services */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000B06 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000B09 /* CameraService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -257,8 +496,25 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AE9187762FB0D6B300A79154 /* ContentView.swift in Sources */,
 				AE9187742FB0D6B300A79154 /* pobyApp.swift in Sources */,
+				B0B1000000000000000000A1 /* AppRootView.swift in Sources */,
+				B0B1000000000000000000A2 /* AppRoute.swift in Sources */,
+				B0B1000000000000000000A3 /* AppDIContainer.swift in Sources */,
+				B0B1000000000000000000A4 /* CameraView.swift in Sources */,
+				B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */,
+				B0B1000000000000000000A6 /* CameraViewState.swift in Sources */,
+				B0B1000000000000000000A7 /* GuideRegistrationView.swift in Sources */,
+				B0B1000000000000000000A8 /* GuideRegistrationViewModel.swift in Sources */,
+				B0B1000000000000000000A9 /* GuideRegistrationViewState.swift in Sources */,
+				B0B1000000000000000000B01 /* AppColors.swift in Sources */,
+				B0B1000000000000000000B02 /* AppTypography.swift in Sources */,
+				B0B1000000000000000000B03 /* AppSpacing.swift in Sources */,
+				B0B1000000000000000000B04 /* AppRadius.swift in Sources */,
+				B0B1000000000000000000B05 /* AppShadow.swift in Sources */,
+				B0B1000000000000000000B06 /* AppMetrics.swift in Sources */,
+				B0B1000000000000000000B07 /* CameraPreviewView.swift in Sources */,
+				B0B1000000000000000000B08 /* ShutterButton.swift in Sources */,
+				B0B1000000000000000000B09 /* CameraService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +680,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"poby/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -452,6 +711,9 @@
 				DEVELOPMENT_ASSET_PATHS = "\"poby/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
