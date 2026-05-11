@@ -1,4 +1,5 @@
 import Foundation
+import CoreGraphics
 
 struct Guide: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
@@ -9,6 +10,22 @@ struct Guide: Identifiable, Codable, Equatable, Hashable {
 
 struct GuideSilhouette: Codable, Equatable, Hashable {
     let contours: [[NormalizedPoint]]
+
+    var boundingBox: CGRect {
+        var minX = 1.0, minY = 1.0, maxX = 0.0, maxY = 0.0
+        var anyPoint = false
+        for contour in contours {
+            for p in contour {
+                if p.x < minX { minX = p.x }
+                if p.x > maxX { maxX = p.x }
+                if p.y < minY { minY = p.y }
+                if p.y > maxY { maxY = p.y }
+                anyPoint = true
+            }
+        }
+        guard anyPoint else { return .zero }
+        return CGRect(x: minX, y: minY, width: maxX - minX, height: maxY - minY)
+    }
 }
 
 struct NormalizedPoint: Codable, Equatable, Hashable {

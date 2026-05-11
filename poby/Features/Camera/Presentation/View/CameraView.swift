@@ -31,23 +31,26 @@ struct CameraView: View {
             if let guide = viewModel.selectedGuide {
                 SilhouetteOverlay(
                     silhouette: guide.silhouette,
-                    color: .white,
+                    color: viewModel.isMatched ? AppColors.mint : .white,
                     lineWidth: 2.5,
                     glow: true
                 )
                 .aspectRatio(CGFloat(guide.sourceAspectRatio ?? 1.0), contentMode: .fit)
                 .allowsHitTesting(false)
                 .ignoresSafeArea()
+                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
             }
 
             VStack(spacing: 0) {
                 TopChromeBar(
                     ratioLabel: viewModel.state.aspectRatio.rawValue,
                     isFlashOn: viewModel.state.isFlashOn,
+                    isMatched: viewModel.isMatched,
                     onRatioTap: { viewModel.cycleAspectRatio() },
                     onFlashTap: { viewModel.toggleFlash() }
                 )
                 .padding(.top, AppSpacing.gapS)
+                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
                 Spacer(minLength: 0)
 
@@ -66,10 +69,12 @@ struct CameraView: View {
                 )
 
                 ShutterButton(
+                    matched: viewModel.isMatched,
                     isCapturing: viewModel.state.status == .capturing,
                     action: { Task { await viewModel.capture() } }
                 )
                 .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
+                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
                 BottomControlsBar(
                     onGalleryTap: openSystemGallery,
