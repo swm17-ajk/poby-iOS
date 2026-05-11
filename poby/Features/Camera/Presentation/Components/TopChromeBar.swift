@@ -36,7 +36,7 @@ struct TopChromeBar: View {
     private var ratioChip: some View {
         Button(action: onRatioTap) {
             Text(ratioLabel)
-                .font(.system(size: 13, weight: .semibold))
+                .font(AppTypography.chip)
                 .foregroundStyle(.white)
                 .padding(.horizontal, AppSpacing.gapS)
                 .padding(.vertical, 6)
@@ -52,7 +52,7 @@ struct TopChromeBar: View {
                 .font(.system(size: 11, weight: .bold))
                 .foregroundStyle(AppColors.mintDeep)
             Text("포즈 매칭")
-                .font(.system(size: 12, weight: .bold))
+                .font(AppTypography.pill)
                 .foregroundStyle(AppColors.mintDeep)
         }
         .padding(.leading, 9)

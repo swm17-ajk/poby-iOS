@@ -138,10 +138,10 @@ struct CameraView: View {
     private var emptyStateHint: some View {
         VStack(spacing: 4) {
             Text("첫 가이드라인을 추가해보세요")
-                .font(.system(size: 17, weight: .semibold))
+                .font(AppTypography.hintLarge)
                 .foregroundStyle(.white.opacity(0.92))
             Text("좋아하는 사진의 구도를 카메라에 띄울 수 있어요")
-                .font(.system(size: 13, weight: .medium))
+                .font(AppTypography.hintSmall)
                 .foregroundStyle(.white.opacity(0.62))
         }
     }

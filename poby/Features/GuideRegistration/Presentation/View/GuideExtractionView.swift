@@ -36,12 +36,12 @@ struct GuideExtractionView: View {
                 .foregroundStyle(AppColors.inkPrimary)
             Spacer()
             Text("새 가이드라인")
-                .font(.system(size: 17, weight: .semibold))
+                .font(AppTypography.hintLarge)
                 .foregroundStyle(AppColors.inkPrimary)
             Spacer()
             Button(action: { Task { await complete() } }) {
                 Text("완료")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(AppTypography.hintLarge)
                     .foregroundStyle(viewModel.isDoneEnabled ? AppColors.Warm.doneActive : AppColors.Warm.doneInactive)
             }
             .disabled(!viewModel.isDoneEnabled)
@@ -82,12 +82,12 @@ struct GuideExtractionView: View {
             VStack(spacing: AppSpacing.groupS) {
                 CircularSpinner(size: 48, lineWidth: 3, color: AppColors.mint)
                 Text("인물을 감지하고 있어요")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(Font.pretendard(.semiBold, size: 16))
                     .foregroundStyle(.white)
                 AnimatedProgressBar(targetProgress: 0.9, color: AppColors.mint)
                     .frame(width: 220, height: 6)
                 Text("분석 중")
-                    .font(.system(size: 12, design: .monospaced))
+                    .font(AppTypography.captionMono)
                     .foregroundStyle(.white.opacity(0.65))
             }
         }
@@ -101,7 +101,7 @@ struct GuideExtractionView: View {
                     .foregroundStyle(AppColors.mint)
                     .font(.system(size: 14, weight: .bold))
                 Text("가이드라인이 추출되었어요")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(AppTypography.hintSmall)
                     .foregroundStyle(.white)
             }
             .padding(.horizontal, AppSpacing.gapM)
@@ -124,7 +124,7 @@ struct GuideExtractionView: View {
                         .font(.system(size: 20, weight: .bold))
                 }
                 Text("인물을 찾지 못했어요")
-                    .font(.system(size: 17, weight: .bold))
+                    .font(Font.pretendard(.bold, size: 17))
                     .foregroundStyle(AppColors.inkPrimary)
                 Text("얼굴과 상체가 모두 보이는 사진으로\n다시 시도해주세요.")
                     .font(AppTypography.caption)
@@ -132,7 +132,7 @@ struct GuideExtractionView: View {
                     .multilineTextAlignment(.center)
                 Button(action: onCancel) {
                     Text("다른 사진 선택")
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(AppTypography.bodyEmphasis)
                         .foregroundStyle(.white)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, AppSpacing.gapM)

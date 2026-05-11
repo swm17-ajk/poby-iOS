@@ -34,7 +34,7 @@ struct GuideCaptureView: View {
                 Spacer(minLength: 0)
 
                 Text("얼굴 · 상체가 모두 보이도록")
-                    .font(.system(size: 13, weight: .medium))
+                    .font(AppTypography.hintSmall)
                     .foregroundStyle(.white.opacity(0.78))
                     .padding(.bottom, AppSpacing.gapM)
 
@@ -81,7 +81,7 @@ struct GuideCaptureView: View {
             Spacer()
 
             Text("가이드로 쓸 사진을 찍어주세요")
-                .font(.system(size: 13, weight: .medium))
+                .font(AppTypography.hintSmall)
                 .foregroundStyle(.white)
                 .padding(.horizontal, AppSpacing.gapM)
                 .padding(.vertical, 8)
@@ -107,7 +107,7 @@ struct GuideCaptureView: View {
 
             VStack(spacing: AppSpacing.gapM) {
                 Text("이 사진으로 가이드를 만들까요?")
-                    .font(.system(size: 17, weight: .bold))
+                    .font(Font.pretendard(.bold, size: 17))
                     .foregroundStyle(AppColors.inkPrimary)
                 Text("완료를 누르면 가이드라인을 추출해요.")
                     .font(AppTypography.caption)
@@ -117,7 +117,7 @@ struct GuideCaptureView: View {
                 HStack(spacing: AppSpacing.gapS) {
                     Button(action: { viewModel.discardCaptured() }) {
                         Text("재촬영")
-                            .font(.system(size: 15, weight: .semibold))
+                            .font(AppTypography.bodyEmphasis)
                             .foregroundStyle(AppColors.inkPrimary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, AppSpacing.gapM)
@@ -125,7 +125,7 @@ struct GuideCaptureView: View {
                     }
                     Button(action: { onConfirmed(imageData) }) {
                         Text("완료")
-                            .font(.system(size: 15, weight: .bold))
+                            .font(Font.pretendard(.bold, size: 15))
                             .foregroundStyle(AppColors.mintDeep)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, AppSpacing.gapM)

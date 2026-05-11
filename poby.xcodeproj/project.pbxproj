@@ -13,6 +13,11 @@
 		AE9187852FB0D6B500A79154 /* pobyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187842FB0D6B500A79154 /* pobyTests.swift */; };
 		AE91878F2FB0D6B500A79154 /* pobyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE91878E2FB0D6B500A79154 /* pobyUITests.swift */; };
 		AE9187912FB0D6B500A79154 /* pobyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187902FB0D6B500A79154 /* pobyUITestsLaunchTests.swift */; };
+		AED472262FB235CB00848A68 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED4721F2FB235CA00848A68 /* Pretendard-Bold.otf */; };
+		AED472272FB235CB00848A68 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED472202FB235CA00848A68 /* Pretendard-ExtraBold.otf */; };
+		AED472282FB235CB00848A68 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED472212FB235CA00848A68 /* Pretendard-Medium.otf */; };
+		AED472292FB235CB00848A68 /* Pretendard-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED472222FB235CA00848A68 /* Pretendard-Regular.otf */; };
+		AED4722A2FB235CB00848A68 /* Pretendard-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED472232FB235CA00848A68 /* Pretendard-SemiBold.otf */; };
 		B0B1000000000000000000A1 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A1 /* AppRootView.swift */; };
 		B0B1000000000000000000A2 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A2 /* AppRoute.swift */; };
 		B0B1000000000000000000A3 /* AppDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A3 /* AppDIContainer.swift */; };
@@ -88,6 +93,11 @@
 		AED4721A2FB20FC700848A68 /* screen-4-gallery.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-4-gallery.html"; sourceTree = "<group>"; };
 		AED4721B2FB20FC700848A68 /* screen-2-extraction.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-2-extraction.html"; sourceTree = "<group>"; };
 		AED4721C2FB20FC700848A68 /* screen-1-camera.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = "screen-1-camera.html"; sourceTree = "<group>"; };
+		AED4721F2FB235CA00848A68 /* Pretendard-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Bold.otf"; sourceTree = "<group>"; };
+		AED472202FB235CA00848A68 /* Pretendard-ExtraBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-ExtraBold.otf"; sourceTree = "<group>"; };
+		AED472212FB235CA00848A68 /* Pretendard-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Medium.otf"; sourceTree = "<group>"; };
+		AED472222FB235CA00848A68 /* Pretendard-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-Regular.otf"; sourceTree = "<group>"; };
+		AED472232FB235CA00848A68 /* Pretendard-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Pretendard-SemiBold.otf"; sourceTree = "<group>"; };
 		B0F1000000000000000000A1 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A2 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A3 /* AppDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDIContainer.swift; sourceTree = "<group>"; };
@@ -150,6 +160,7 @@
 		AE9187672FB0D6B300A79154 = {
 			isa = PBXGroup;
 			children = (
+				AED472252FB235CA00848A68 /* Resources */,
 				AED472002FB1AF3100848A68 /* docs */,
 				AE9187722FB0D6B300A79154 /* poby */,
 				AE9187832FB0D6B500A79154 /* pobyTests */,
@@ -234,6 +245,27 @@
 			path = design;
 			sourceTree = "<group>";
 		};
+		AED472242FB235CA00848A68 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				AED4721F2FB235CA00848A68 /* Pretendard-Bold.otf */,
+				AED472202FB235CA00848A68 /* Pretendard-ExtraBold.otf */,
+				AED472212FB235CA00848A68 /* Pretendard-Medium.otf */,
+				AED472222FB235CA00848A68 /* Pretendard-Regular.otf */,
+				AED472232FB235CA00848A68 /* Pretendard-SemiBold.otf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		AED472252FB235CA00848A68 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				AED472242FB235CA00848A68 /* Fonts */,
+			);
+			name = Resources;
+			path = poby/Resources;
+			sourceTree = "<group>";
+		};
 		B0C1000000000000000000A1 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -271,17 +303,6 @@
 				B0C1000000000000000000E01 /* Components */,
 			);
 			path = Presentation;
-			sourceTree = "<group>";
-		};
-		B0C1000000000000000000E01 /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				B0F1000000000000000000E03 /* GuideThumb.swift */,
-				B0F1000000000000000000E04 /* PlusThumb.swift */,
-				B0F1000000000000000000E05 /* GuideListStrip.swift */,
-				B0F1000000000000000000E06 /* TopChromeBar.swift */,
-			);
-			path = Components;
 			sourceTree = "<group>";
 		};
 		B0C1000000000000000000A5 /* View */ = {
@@ -448,6 +469,17 @@
 			path = Repositories;
 			sourceTree = "<group>";
 		};
+		B0C1000000000000000000E01 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000E03 /* GuideThumb.swift */,
+				B0F1000000000000000000E04 /* PlusThumb.swift */,
+				B0F1000000000000000000E05 /* GuideListStrip.swift */,
+				B0F1000000000000000000E06 /* TopChromeBar.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -553,6 +585,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE91877B2FB0D6B500A79154 /* Preview Assets.xcassets in Resources */,
+				AED472292FB235CB00848A68 /* Pretendard-Regular.otf in Resources */,
+				AED4722A2FB235CB00848A68 /* Pretendard-SemiBold.otf in Resources */,
+				AED472282FB235CB00848A68 /* Pretendard-Medium.otf in Resources */,
+				AED472262FB235CB00848A68 /* Pretendard-Bold.otf in Resources */,
+				AED472272FB235CB00848A68 /* Pretendard-ExtraBold.otf in Resources */,
 				AE9187782FB0D6B500A79154 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -778,6 +815,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
+				INFOPLIST_KEY_UIAppFonts = (
+					"Resources/Fonts/Pretendard-Regular.otf",
+					"Resources/Fonts/Pretendard-Medium.otf",
+					"Resources/Fonts/Pretendard-SemiBold.otf",
+					"Resources/Fonts/Pretendard-Bold.otf",
+					"Resources/Fonts/Pretendard-ExtraBold.otf",
+				);
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -810,6 +854,13 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
+				INFOPLIST_KEY_UIAppFonts = (
+					"Resources/Fonts/Pretendard-Regular.otf",
+					"Resources/Fonts/Pretendard-Medium.otf",
+					"Resources/Fonts/Pretendard-SemiBold.otf",
+					"Resources/Fonts/Pretendard-Bold.otf",
+					"Resources/Fonts/Pretendard-ExtraBold.otf",
+				);
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
 				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
