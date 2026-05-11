@@ -43,7 +43,13 @@ final class FileGuideRepository: GuideRepositoryProtocol {
     @discardableResult
     func add(silhouette: GuideSilhouette, sourceImage: Data) async throws -> Guide {
         let id = UUID()
-        let guide = Guide(id: id, createdAt: Date(), silhouette: silhouette)
+        let aspect = UIImage(data: sourceImage).map { Double($0.size.width / $0.size.height) }
+        let guide = Guide(
+            id: id,
+            createdAt: Date(),
+            silhouette: silhouette,
+            sourceAspectRatio: aspect
+        )
 
         let srcURL = imagesDir.appendingPathComponent("\(id.uuidString).jpg")
         try sourceImage.write(to: srcURL, options: .atomic)

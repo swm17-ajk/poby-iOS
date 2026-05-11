@@ -31,6 +31,13 @@ struct CameraView: View {
                     .ignoresSafeArea()
             }
 
+            if let guide = viewModel.selectedGuide {
+                SilhouetteOverlay(silhouette: guide.silhouette, color: .white, lineWidth: 2.5, glow: true)
+                    .aspectRatio(CGFloat(guide.sourceAspectRatio ?? 1.0), contentMode: .fit)
+                    .allowsHitTesting(false)
+                    .ignoresSafeArea()
+            }
+
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
                 plusStrip

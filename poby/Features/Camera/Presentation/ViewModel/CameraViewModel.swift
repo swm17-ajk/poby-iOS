@@ -1,15 +1,25 @@
 import Foundation
 import AVFoundation
+import Combine
 
 @MainActor
 final class CameraViewModel: ObservableObject {
     @Published var state: CameraViewState
+    @Published private(set) var selectedGuide: Guide?
 
     let cameraService: CameraService
+    private let guideRepository: GuideRepositoryProtocol
+    private var cancellables = Set<AnyCancellable>()
 
-    init(state: CameraViewState = .initial, cameraService: CameraService) {
+    init(
+        state: CameraViewState = .initial,
+        cameraService: CameraService,
+        guideRepository: GuideRepositoryProtocol
+    ) {
         self.state = state
         self.cameraService = cameraService
+        self.guideRepository = guideRepository
+        observeGuides()
     }
 
     var session: AVCaptureSession { cameraService.session }
@@ -55,5 +65,14 @@ final class CameraViewModel: ObservableObject {
     func presentPhotoPicker() {
         state.isAddGuideSheetPresented = false
         state.isPhotoPickerPresented = true
+    }
+
+    private func observeGuides() {
+        guideRepository.guidesPublisher
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] guides in
+                self?.selectedGuide = guides.max(by: { $0.createdAt < $1.createdAt })
+            }
+            .store(in: &cancellables)
     }
 }

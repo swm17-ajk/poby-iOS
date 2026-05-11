@@ -4,6 +4,7 @@ struct Guide: Identifiable, Codable, Equatable, Hashable {
     let id: UUID
     let createdAt: Date
     let silhouette: GuideSilhouette
+    let sourceAspectRatio: Double?
 }
 
 struct GuideSilhouette: Codable, Equatable, Hashable {
