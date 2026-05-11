@@ -17,6 +17,17 @@
 
 화면 전환과 컴포넌트 세부는 `docs/ui.md` 참조.
 
+## 실행 순서 메모
+
+단계 번호는 **의존성 순서**다. 실제 작업 순서는 다음과 같이 조정됨:
+
+- 1 → 2 → 3 → 4 → **6** → **5**
+
+이유:
+- 5단계(실시간 매칭)는 카메라 라이브 프레임이 필요해 Mac (Designed for iPad) 환경에서 검증 불가. 실기기 iPhone 확보 또는 DEV 모드 도입 시점까지 보류.
+- 6단계(UI 마무리)는 카메라 의존 없는 작업이 대부분이라 Mac에서 검증 가능. 먼저 UI 골격을 완성한 다음, 그 위에 매칭 로직을 plug-in 하는 게 자연스러움.
+- 두 단계가 손대는 영역은 거의 독립적. 충돌 지점은 Top chrome 중앙(매칭 시 "포즈 매칭" pill ↔ 비매칭 시 비율 토글) 한 곳뿐 — 상호 배타 표시.
+
 ---
 
 ## 전체 그림: 사용할 iOS 기술
@@ -141,8 +152,11 @@ iOS 처음이라면 가장 어려운 구간. Apple의 Vision 샘플 코드와 pe
 **목표**: 정적으로라도, 선택한 가이드의 외곽선이 카메라 프리뷰 위에 흰색으로 떠 있다.
 
 - SwiftUI `ZStack`으로 카메라 프리뷰 + 오버레이 레이어 쌓기
-- 오버레이는 `Canvas` 또는 `Path`로 `CGPath` 그리기
-- 프리뷰 좌표계 ↔ 가이드 이미지 좌표계 변환 (가이드 사진 비율과 카메라 비율이 다르니 fit/fill 결정 필요)
+- 오버레이는 `Canvas`로 `CGPath` 그리기 (`SilhouetteOverlay` 컴포넌트)
+- **가이드 사진 비율 vs 카메라 비율 처리** — 두 비율이 다르므로 그대로 매핑하면 실루엣이 찌그러짐. 해결:
+  - `Guide` 모델에 `sourceAspectRatio: Double?` 저장 (저장 시 `UIImage` 크기에서 계산)
+  - 오버레이 렌더 시 `.aspectRatio(sourceAspectRatio, contentMode: .fit)` 모디파이어로 letterbox 처리 → 원본 비율 유지, 화면이 더 길면 상하/좌우에 빈 공간
+- `allowsHitTesting(false)`로 터치는 셔터·'+' 버튼에 그대로 전달
 
 ---
 
@@ -152,10 +166,17 @@ iOS 처음이라면 가장 어려운 구간. Apple의 Vision 샘플 코드와 pe
 
 - `AVCaptureVideoDataOutput`로 실시간 프레임 받기 (30fps 전부 처리하면 무거우니 N프레임마다 처리)
 - 각 프레임에 `VNGeneratePersonSegmentationRequest` 적용 (정확도 모드: `.balanced` 권장)
+- **비율 정규화 (4단계와 같은 문제)**:
+  - 가이드 silhouette: **가이드 원본 사진 비율** (`sourceAspectRatio`) 기준 0-1 좌표
+  - 카메라 프레임 사람 마스크: **카메라 프레임 비율** 기준 0-1 좌표
+  - 두 비율이 다르면 IoU 계산 전에 같은 좌표계로 변환해야 함 — 가장 단순: 가이드를 카메라 비율로 letterbox 매핑한 후 비교 (Stage 4 렌더와 동일한 변환)
 - 매칭 점수 계산 — 가장 단순하게 시작:
-  - 현재 사람 마스크 vs 가이드 마스크의 **IoU (Intersection over Union)** 계산
+  - 변환된 가이드 마스크 vs 현재 사람 마스크의 **IoU (Intersection over Union)** 계산
   - 임계값(예: 0.7) 이상이면 "맞음"
-- 임계값 통과 시 SwiftUI `@Published` 변수 토글 → 오버레이 색이 흰색→민트로 애니메이션
+- 임계값 통과 시 SwiftUI `@Published` 변수 토글:
+  - `SilhouetteOverlay`의 색: 흰색 → 민트
+  - `ShutterButton`의 `matched` 프롭: true (mint + glow)
+  - Top chrome 중앙: 비율 칩 → "포즈 매칭" pill (mint 배경, mintDeep 텍스트, ✓ 아이콘)
 
 ---
 
