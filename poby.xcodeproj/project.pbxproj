@@ -19,9 +19,12 @@
 		B0B1000000000000000000A4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A4 /* CameraView.swift */; };
 		B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A5 /* CameraViewModel.swift */; };
 		B0B1000000000000000000A6 /* CameraViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A6 /* CameraViewState.swift */; };
-		B0B1000000000000000000A7 /* GuideRegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A7 /* GuideRegistrationView.swift */; };
-		B0B1000000000000000000A8 /* GuideRegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A8 /* GuideRegistrationViewModel.swift */; };
-		B0B1000000000000000000A9 /* GuideRegistrationViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A9 /* GuideRegistrationViewState.swift */; };
+		B0B1000000000000000000C01 /* GuideCaptureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C01 /* GuideCaptureView.swift */; };
+		B0B1000000000000000000C02 /* GuideCaptureViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */; };
+		B0B1000000000000000000C03 /* GuideCaptureViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C03 /* GuideCaptureViewState.swift */; };
+		B0B1000000000000000000C04 /* GuideExtractionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C04 /* GuideExtractionView.swift */; };
+		B0B1000000000000000000C05 /* GuideExtractionViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */; };
+		B0B1000000000000000000C06 /* GuideExtractionViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000C06 /* GuideExtractionViewState.swift */; };
 		B0B1000000000000000000B01 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B01 /* AppColors.swift */; };
 		B0B1000000000000000000B02 /* AppTypography.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B02 /* AppTypography.swift */; };
 		B0B1000000000000000000B03 /* AppSpacing.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B03 /* AppSpacing.swift */; };
@@ -80,9 +83,12 @@
 		B0F1000000000000000000A4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A5 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A6 /* CameraViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewState.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000A7 /* GuideRegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRegistrationView.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000A8 /* GuideRegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRegistrationViewModel.swift; sourceTree = "<group>"; };
-		B0F1000000000000000000A9 /* GuideRegistrationViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideRegistrationViewState.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C01 /* GuideCaptureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureViewModel.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C03 /* GuideCaptureViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideCaptureViewState.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C04 /* GuideExtractionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionViewModel.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000C06 /* GuideExtractionViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideExtractionViewState.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B01 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B02 /* AppTypography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppTypography.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B03 /* AppSpacing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSpacing.swift; sourceTree = "<group>"; };
@@ -230,7 +236,6 @@
 			isa = PBXGroup;
 			children = (
 				B0C1000000000000000000A4 /* Presentation */,
-				B0C1000000000000000000B05 /* Data */,
 			);
 			path = Camera;
 			sourceTree = "<group>";
@@ -241,7 +246,6 @@
 				B0C1000000000000000000A5 /* View */,
 				B0C1000000000000000000A6 /* ViewModel */,
 				B0C1000000000000000000A7 /* Model */,
-				B0C1000000000000000000B04 /* Components */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -291,7 +295,8 @@
 		B0C1000000000000000000AA /* View */ = {
 			isa = PBXGroup;
 			children = (
-				B0F1000000000000000000A7 /* GuideRegistrationView.swift */,
+				B0F1000000000000000000C01 /* GuideCaptureView.swift */,
+				B0F1000000000000000000C04 /* GuideExtractionView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -299,7 +304,8 @@
 		B0C1000000000000000000AB /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				B0F1000000000000000000A8 /* GuideRegistrationViewModel.swift */,
+				B0F1000000000000000000C02 /* GuideCaptureViewModel.swift */,
+				B0F1000000000000000000C05 /* GuideExtractionViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -307,7 +313,8 @@
 		B0C1000000000000000000AC /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B0F1000000000000000000A9 /* GuideRegistrationViewState.swift */,
+				B0F1000000000000000000C03 /* GuideCaptureViewState.swift */,
+				B0F1000000000000000000C06 /* GuideExtractionViewState.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -316,6 +323,7 @@
 			isa = PBXGroup;
 			children = (
 				B0C1000000000000000000B02 /* Presentation */,
+				B0C1000000000000000000B05 /* Data */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -324,6 +332,7 @@
 			isa = PBXGroup;
 			children = (
 				B0C1000000000000000000B03 /* DesignSystem */,
+				B0C1000000000000000000B04 /* Components */,
 			);
 			path = Presentation;
 			sourceTree = "<group>";
@@ -503,9 +512,12 @@
 				B0B1000000000000000000A4 /* CameraView.swift in Sources */,
 				B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */,
 				B0B1000000000000000000A6 /* CameraViewState.swift in Sources */,
-				B0B1000000000000000000A7 /* GuideRegistrationView.swift in Sources */,
-				B0B1000000000000000000A8 /* GuideRegistrationViewModel.swift in Sources */,
-				B0B1000000000000000000A9 /* GuideRegistrationViewState.swift in Sources */,
+				B0B1000000000000000000C01 /* GuideCaptureView.swift in Sources */,
+				B0B1000000000000000000C02 /* GuideCaptureViewModel.swift in Sources */,
+				B0B1000000000000000000C03 /* GuideCaptureViewState.swift in Sources */,
+				B0B1000000000000000000C04 /* GuideExtractionView.swift in Sources */,
+				B0B1000000000000000000C05 /* GuideExtractionViewModel.swift in Sources */,
+				B0B1000000000000000000C06 /* GuideExtractionViewState.swift in Sources */,
 				B0B1000000000000000000B01 /* AppColors.swift in Sources */,
 				B0B1000000000000000000B02 /* AppTypography.swift in Sources */,
 				B0B1000000000000000000B03 /* AppSpacing.swift in Sources */,

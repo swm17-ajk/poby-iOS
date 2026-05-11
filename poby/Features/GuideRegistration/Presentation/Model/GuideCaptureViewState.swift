@@ -1,6 +1,6 @@
 import Foundation
 
-struct CameraViewState: Equatable {
+struct GuideCaptureViewState: Equatable {
     enum Status: Equatable {
         case idle
         case preparing
@@ -11,9 +11,7 @@ struct CameraViewState: Equatable {
     }
 
     var status: Status = .idle
-    var lastSavedAt: Date? = nil
-    var isAddGuideSheetPresented: Bool = false
-    var isPhotoPickerPresented: Bool = false
+    var capturedImage: Data? = nil
 
-    static let initial = CameraViewState()
+    static let initial = GuideCaptureViewState()
 }

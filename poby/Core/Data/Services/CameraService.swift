@@ -43,15 +43,25 @@ final class CameraService: NSObject {
         }
     }
 
-    func capturePhoto() async throws {
-        let data = try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Data, Error>) in
+    func capturePhoto() async throws -> Data {
+        try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Data, Error>) in
             sessionQueue.async { [self] in
                 pendingCapture = cont
                 let settings = AVCapturePhotoSettings()
                 photoOutput.capturePhoto(with: settings, delegate: self)
             }
         }
-        try await saveToPhotoLibrary(imageData: data)
+    }
+
+    func saveToPhotoLibrary(_ imageData: Data) async throws {
+        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+        guard status == .authorized || status == .limited else {
+            throw CameraServiceError.photoLibraryPermissionDenied
+        }
+        try await PHPhotoLibrary.shared().performChanges {
+            let request = PHAssetCreationRequest.forAsset()
+            request.addResource(with: .photo, data: imageData, options: nil)
+        }
     }
 
     private func ensureCameraPermission() async throws {
@@ -101,16 +111,6 @@ final class CameraService: NSObject {
         }
     }
 
-    private func saveToPhotoLibrary(imageData: Data) async throws {
-        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
-        guard status == .authorized || status == .limited else {
-            throw CameraServiceError.photoLibraryPermissionDenied
-        }
-        try await PHPhotoLibrary.shared().performChanges {
-            let request = PHAssetCreationRequest.forAsset()
-            request.addResource(with: .photo, data: imageData, options: nil)
-        }
-    }
 }
 
 extension CameraService: AVCapturePhotoCaptureDelegate {

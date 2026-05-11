@@ -5,13 +5,25 @@ struct AppRootView: View {
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            CameraView(onAddGuideTapped: { router.path.append(.guideRegistration) })
-                .navigationDestination(for: AppRoute.self) { route in
-                    switch route {
-                    case .guideRegistration:
-                        GuideRegistrationView(onDone: { router.path.removeLast() })
-                    }
+            CameraView(
+                onGuideCaptureRequested: { router.push(.guideCapture) },
+                onGuideImagePicked: { data in router.push(.guideExtraction(imageData: data)) }
+            )
+            .navigationDestination(for: AppRoute.self) { route in
+                switch route {
+                case .guideCapture:
+                    GuideCaptureView(
+                        onCancel: { router.popToRoot() },
+                        onConfirmed: { data in router.push(.guideExtraction(imageData: data)) }
+                    )
+                case .guideExtraction(let data):
+                    GuideExtractionView(
+                        imageData: data,
+                        onCancel: { router.popToRoot() },
+                        onDone: { router.popToRoot() }
+                    )
                 }
+            }
         }
     }
 }

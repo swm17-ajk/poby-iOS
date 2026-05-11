@@ -2,12 +2,12 @@ import Foundation
 import AVFoundation
 
 @MainActor
-final class CameraViewModel: ObservableObject {
-    @Published var state: CameraViewState
+final class GuideCaptureViewModel: ObservableObject {
+    @Published private(set) var state: GuideCaptureViewState
 
     let cameraService: CameraService
 
-    init(state: CameraViewState = .initial, cameraService: CameraService) {
+    init(state: GuideCaptureViewState = .initial, cameraService: CameraService) {
         self.state = state
         self.cameraService = cameraService
     }
@@ -40,20 +40,14 @@ final class CameraViewModel: ObservableObject {
         state.status = .capturing
         do {
             let data = try await cameraService.capturePhoto()
-            try await cameraService.saveToPhotoLibrary(data)
-            state.lastSavedAt = Date()
+            state.capturedImage = data
             state.status = .ready
         } catch {
             state.status = .failed(message: error.localizedDescription)
         }
     }
 
-    func presentAddGuideSheet() {
-        state.isAddGuideSheetPresented = true
-    }
-
-    func presentPhotoPicker() {
-        state.isAddGuideSheetPresented = false
-        state.isPhotoPickerPresented = true
+    func discardCaptured() {
+        state.capturedImage = nil
     }
 }

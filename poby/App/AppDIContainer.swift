@@ -12,7 +12,7 @@ final class AppDIContainer {
         CameraViewModel(cameraService: cameraService)
     }
 
-    func makeGuideRegistrationViewModel() -> GuideRegistrationViewModel {
-        GuideRegistrationViewModel()
+    func makeGuideCaptureViewModel() -> GuideCaptureViewModel {
+        GuideCaptureViewModel(cameraService: cameraService)
     }
 }
