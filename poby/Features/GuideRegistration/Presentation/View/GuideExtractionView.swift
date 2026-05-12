@@ -29,6 +29,15 @@ struct GuideExtractionView: View {
         .task { await viewModel.extract() }
     }
 
+    private var sourceImage: UIImage? {
+        UIImage(data: viewModel.sourceImageData)
+    }
+
+    private var sourceAspectRatio: CGFloat {
+        guard let img = sourceImage, img.size.height > 0 else { return 3.0 / 4.0 }
+        return img.size.width / img.size.height
+    }
+
     private var topBar: some View {
         HStack {
             Button("취소", action: onCancel)
@@ -52,12 +61,12 @@ struct GuideExtractionView: View {
 
     private var photoArea: some View {
         Color.black.opacity(0.06)
-            .aspectRatio(3.0 / 4.0, contentMode: .fit)
+            .aspectRatio(sourceAspectRatio, contentMode: .fit)
             .overlay {
-                if let uiImage = UIImage(data: viewModel.sourceImageData) {
+                if let uiImage = sourceImage {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .aspectRatio(contentMode: .fit)
                 }
             }
             .overlay {
