@@ -225,25 +225,38 @@ private func makeSamplePhotoData() -> Data {
 }
 
 private func mockSilhouette() -> GuideSilhouette {
-    GuideSilhouette(contours: [[
-        NormalizedPoint(x: 0.50, y: 0.92),
-        NormalizedPoint(x: 0.42, y: 0.88),
-        NormalizedPoint(x: 0.40, y: 0.78),
-        NormalizedPoint(x: 0.45, y: 0.72),
-        NormalizedPoint(x: 0.32, y: 0.68),
-        NormalizedPoint(x: 0.26, y: 0.55),
-        NormalizedPoint(x: 0.30, y: 0.34),
-        NormalizedPoint(x: 0.40, y: 0.46),
-        NormalizedPoint(x: 0.40, y: 0.08),
-        NormalizedPoint(x: 0.60, y: 0.08),
-        NormalizedPoint(x: 0.60, y: 0.46),
-        NormalizedPoint(x: 0.70, y: 0.34),
-        NormalizedPoint(x: 0.74, y: 0.55),
-        NormalizedPoint(x: 0.68, y: 0.68),
-        NormalizedPoint(x: 0.55, y: 0.72),
-        NormalizedPoint(x: 0.60, y: 0.78),
-        NormalizedPoint(x: 0.58, y: 0.88),
-    ]])
+    GuideSilhouette(
+        contours: [[
+            NormalizedPoint(x: 0.50, y: 0.92),
+            NormalizedPoint(x: 0.42, y: 0.88),
+            NormalizedPoint(x: 0.40, y: 0.78),
+            NormalizedPoint(x: 0.45, y: 0.72),
+            NormalizedPoint(x: 0.32, y: 0.68),
+            NormalizedPoint(x: 0.26, y: 0.55),
+            NormalizedPoint(x: 0.30, y: 0.34),
+            NormalizedPoint(x: 0.40, y: 0.46),
+            NormalizedPoint(x: 0.40, y: 0.08),
+            NormalizedPoint(x: 0.60, y: 0.08),
+            NormalizedPoint(x: 0.60, y: 0.46),
+            NormalizedPoint(x: 0.70, y: 0.34),
+            NormalizedPoint(x: 0.74, y: 0.55),
+            NormalizedPoint(x: 0.68, y: 0.68),
+            NormalizedPoint(x: 0.55, y: 0.72),
+            NormalizedPoint(x: 0.60, y: 0.78),
+            NormalizedPoint(x: 0.58, y: 0.88),
+        ]],
+        faceContour: [
+            NormalizedPoint(x: 0.40, y: 0.92),
+            NormalizedPoint(x: 0.41, y: 0.86),
+            NormalizedPoint(x: 0.43, y: 0.81),
+            NormalizedPoint(x: 0.46, y: 0.78),
+            NormalizedPoint(x: 0.50, y: 0.77),
+            NormalizedPoint(x: 0.54, y: 0.78),
+            NormalizedPoint(x: 0.57, y: 0.81),
+            NormalizedPoint(x: 0.59, y: 0.86),
+            NormalizedPoint(x: 0.60, y: 0.92),
+        ]
+    )
 }
 
 #Preview("로딩") {

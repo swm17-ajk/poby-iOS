@@ -66,15 +66,39 @@ final class VisionService {
             throw VisionServiceError.invalidImage
         }
 
-        let contours = try await Task.detached(priority: .userInitiated) {
+        async let contours = Task.detached(priority: .userInitiated) {
             try Self.extractContoursSync(from: cgImage)
         }.value
+        async let faceContour = Task.detached(priority: .userInitiated) {
+            Self.detectLargestFaceContourSync(in: cgImage)
+        }.value
 
-        let filtered = contours.filter { $0.count >= 8 }
+        let resolved = try await contours
+        let filtered = resolved.filter { $0.count >= 8 }
         guard !filtered.isEmpty else {
             throw VisionServiceError.noPersonFound
         }
-        return GuideSilhouette(contours: filtered)
+        return GuideSilhouette(contours: filtered, faceContour: await faceContour)
+    }
+
+    private static func detectLargestFaceContourSync(in cgImage: CGImage) -> [NormalizedPoint]? {
+        let request = VNDetectFaceLandmarksRequest()
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do { try handler.perform([request]) } catch { return nil }
+        guard let faces = request.results, !faces.isEmpty else { return nil }
+        let face = faces.max(by: { lhs, rhs in
+            (lhs.boundingBox.width * lhs.boundingBox.height) <
+                (rhs.boundingBox.width * rhs.boundingBox.height)
+        })!
+        guard let contour = face.landmarks?.faceContour else { return nil }
+        let box = face.boundingBox  // 정규화된 이미지 좌표 (lower-left)
+        // faceContour 포인트는 face bbox 내부 정규화 → 이미지 정규화로 변환
+        return contour.normalizedPoints.map { p in
+            NormalizedPoint(
+                x: box.origin.x + Double(p.x) * box.width,
+                y: box.origin.y + Double(p.y) * box.height
+            )
+        }
     }
 
     private static func extractContoursSync(from cgImage: CGImage) throws -> [[NormalizedPoint]] {

@@ -10,6 +10,13 @@ struct Guide: Identifiable, Codable, Equatable, Hashable {
 
 struct GuideSilhouette: Codable, Equatable, Hashable {
     let contours: [[NormalizedPoint]]
+    /// 관자놀이 → 턱 → 관자놀이 라인. 얼굴 미검출 시 nil.
+    let faceContour: [NormalizedPoint]?
+
+    init(contours: [[NormalizedPoint]], faceContour: [NormalizedPoint]? = nil) {
+        self.contours = contours
+        self.faceContour = faceContour
+    }
 
     var boundingBox: CGRect {
         var minX = 1.0, minY = 1.0, maxX = 0.0, maxY = 0.0
