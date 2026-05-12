@@ -31,23 +31,26 @@ struct CameraView: View {
             if let guide = viewModel.selectedGuide {
                 SilhouetteOverlay(
                     silhouette: guide.silhouette,
-                    color: .white,
+                    color: viewModel.isMatched ? AppColors.mint : .white,
                     lineWidth: 2.5,
                     glow: true
                 )
                 .aspectRatio(CGFloat(guide.sourceAspectRatio ?? 1.0), contentMode: .fit)
                 .allowsHitTesting(false)
                 .ignoresSafeArea()
+                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
             }
 
             VStack(spacing: 0) {
                 TopChromeBar(
                     ratioLabel: viewModel.state.aspectRatio.rawValue,
                     isFlashOn: viewModel.state.isFlashOn,
+                    isMatched: viewModel.isMatched,
                     onRatioTap: { viewModel.cycleAspectRatio() },
                     onFlashTap: { viewModel.toggleFlash() }
                 )
                 .padding(.top, AppSpacing.gapS)
+                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
                 Spacer(minLength: 0)
 
@@ -66,10 +69,12 @@ struct CameraView: View {
                 )
 
                 ShutterButton(
+                    matched: viewModel.isMatched,
                     isCapturing: viewModel.state.status == .capturing,
                     action: { Task { await viewModel.capture() } }
                 )
                 .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
+                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
                 BottomControlsBar(
                     onGalleryTap: openSystemGallery,
@@ -123,7 +128,9 @@ struct CameraView: View {
         ) {
             Button("취소", role: .cancel) { viewModel.cancelDelete() }
             Button("삭제", role: .destructive) {
-                Task { await viewModel.confirmDelete() }
+                if let guide = viewModel.guideToDelete {
+                    Task { await viewModel.confirmDelete(guide) }
+                }
             }
         } message: {
             Text("삭제한 가이드라인은 복구할 수 없어요.")
@@ -133,10 +140,10 @@ struct CameraView: View {
     private var emptyStateHint: some View {
         VStack(spacing: 4) {
             Text("첫 가이드라인을 추가해보세요")
-                .font(.system(size: 17, weight: .semibold))
+                .font(AppTypography.hintLarge)
                 .foregroundStyle(.white.opacity(0.92))
             Text("좋아하는 사진의 구도를 카메라에 띄울 수 있어요")
-                .font(.system(size: 13, weight: .medium))
+                .font(AppTypography.hintSmall)
                 .foregroundStyle(.white.opacity(0.62))
         }
     }
@@ -197,3 +204,90 @@ struct CameraView: View {
         }
     }
 }
+
+#if DEBUG
+
+private func cameraPreviewGuide() -> Guide {
+    Guide(
+        id: UUID(),
+        createdAt: Date(),
+        silhouette: GuideSilhouette(
+            contours: [[
+                NormalizedPoint(x: 0.50, y: 0.92),
+                NormalizedPoint(x: 0.42, y: 0.88),
+                NormalizedPoint(x: 0.40, y: 0.78),
+                NormalizedPoint(x: 0.45, y: 0.72),
+                NormalizedPoint(x: 0.32, y: 0.68),
+                NormalizedPoint(x: 0.26, y: 0.55),
+                NormalizedPoint(x: 0.30, y: 0.34),
+                NormalizedPoint(x: 0.40, y: 0.46),
+                NormalizedPoint(x: 0.40, y: 0.08),
+                NormalizedPoint(x: 0.60, y: 0.08),
+                NormalizedPoint(x: 0.60, y: 0.46),
+                NormalizedPoint(x: 0.70, y: 0.34),
+                NormalizedPoint(x: 0.74, y: 0.55),
+                NormalizedPoint(x: 0.68, y: 0.68),
+                NormalizedPoint(x: 0.55, y: 0.72),
+                NormalizedPoint(x: 0.60, y: 0.78),
+                NormalizedPoint(x: 0.58, y: 0.88),
+            ]],
+            faceContour: [
+                NormalizedPoint(x: 0.40, y: 0.92),
+                NormalizedPoint(x: 0.41, y: 0.86),
+                NormalizedPoint(x: 0.43, y: 0.81),
+                NormalizedPoint(x: 0.46, y: 0.78),
+                NormalizedPoint(x: 0.50, y: 0.77),
+                NormalizedPoint(x: 0.54, y: 0.78),
+                NormalizedPoint(x: 0.57, y: 0.81),
+                NormalizedPoint(x: 0.59, y: 0.86),
+                NormalizedPoint(x: 0.60, y: 0.92),
+            ]
+        ),
+        sourceAspectRatio: 0.75
+    )
+}
+
+#Preview("빈 상태") {
+    CameraView(
+        viewModel: CameraViewModel(previewState: CameraViewState(status: .ready)),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#Preview("가이드 적용") {
+    let guide = cameraPreviewGuide()
+    return CameraView(
+        viewModel: CameraViewModel(
+            previewState: CameraViewState(status: .ready),
+            previewGuides: [guide, cameraPreviewGuide(), cameraPreviewGuide()],
+            previewSelectedGuide: guide
+        ),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#Preview("매칭 성공") {
+    let guide = cameraPreviewGuide()
+    return CameraView(
+        viewModel: CameraViewModel(
+            previewState: CameraViewState(status: .ready),
+            previewGuides: [guide, cameraPreviewGuide()],
+            previewSelectedGuide: guide,
+            previewIsMatched: true
+        ),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#Preview("권한 거부") {
+    CameraView(
+        viewModel: CameraViewModel(previewState: CameraViewState(status: .denied)),
+        onGuideCaptureRequested: {},
+        onGuideImagePicked: { _ in }
+    )
+}
+
+#endif

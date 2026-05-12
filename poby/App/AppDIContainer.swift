@@ -17,7 +17,11 @@ final class AppDIContainer {
     private init() {}
 
     func makeCameraViewModel() -> CameraViewModel {
-        CameraViewModel(cameraService: cameraService, guideRepository: guideRepository)
+        CameraViewModel(
+            cameraService: cameraService,
+            guideRepository: guideRepository,
+            visionService: visionService
+        )
     }
 
     func makeGuideCaptureViewModel() -> GuideCaptureViewModel {

@@ -24,9 +24,13 @@ final class CameraService: NSObject {
     let session = AVCaptureSession()
 
     private let photoOutput = AVCapturePhotoOutput()
+    private let videoOutput = AVCaptureVideoDataOutput()
     private let sessionQueue = DispatchQueue(label: "yuna.poby.camera.session")
+    private let videoQueue = DispatchQueue(label: "yuna.poby.camera.video", qos: .userInitiated)
     private var isConfigured = false
     private var pendingCapture: CheckedContinuation<Data, Error>?
+
+    var onVideoFrame: (@Sendable (CVPixelBuffer) -> Void)?
 
     func start() async throws {
         if ProcessInfo.processInfo.isiOSAppOnMac {
@@ -105,6 +109,15 @@ final class CameraService: NSObject {
                     }
                     session.addOutput(photoOutput)
 
+                    videoOutput.videoSettings = [
+                        kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA
+                    ]
+                    videoOutput.alwaysDiscardsLateVideoFrames = true
+                    videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
+                    if session.canAddOutput(videoOutput) {
+                        session.addOutput(videoOutput)
+                    }
+
                     session.commitConfiguration()
                     isConfigured = true
                     cont.resume()
@@ -116,6 +129,17 @@ final class CameraService: NSObject {
         }
     }
 
+}
+
+extension CameraService: AVCaptureVideoDataOutputSampleBufferDelegate {
+    func captureOutput(
+        _ output: AVCaptureOutput,
+        didOutput sampleBuffer: CMSampleBuffer,
+        from connection: AVCaptureConnection
+    ) {
+        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else { return }
+        onVideoFrame?(pixelBuffer)
+    }
 }
 
 extension CameraService: AVCapturePhotoCaptureDelegate {

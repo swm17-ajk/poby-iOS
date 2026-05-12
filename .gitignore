@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode — 사용자별/머신별 상태
+xcuserdata/
+*.xcuserstate
+*.xcuserdatad/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# Xcode — 빌드 산출물
+DerivedData/
+build/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.swiftpm/
+.build/
+Package.resolved
+
+# CocoaPods (혹시 도입 시)
+Pods/
+
+# Carthage (혹시 도입 시)
+Carthage/Build/
+
+# 환경/시크릿
+*.env
+*.env.*
+secrets.plist
+GoogleService-Info.plist
+
+# 스크린샷/임시 파일
+Screenshot*.png
+*.tmp
