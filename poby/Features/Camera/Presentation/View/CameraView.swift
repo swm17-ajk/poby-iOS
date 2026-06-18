@@ -4,154 +4,356 @@ import PhotosUI
 struct CameraView: View {
     @StateObject private var viewModel: CameraViewModel
     @State private var pickedItem: PhotosPickerItem? = nil
+    @State private var isRatioPickerVisible = false
+    @State private var isThemePickerVisible = false
+    @State private var ratioFlash = false
+    @State private var shutterFlash = false
     private let onGuideCaptureRequested: () -> Void
     private let onGuideImagePicked: (Data) -> Void
+    private let onGalleryTap: () -> Void
 
     init(
         viewModel: CameraViewModel? = nil,
         onGuideCaptureRequested: @escaping () -> Void,
-        onGuideImagePicked: @escaping (Data) -> Void
+        onGuideImagePicked: @escaping (Data) -> Void,
+        onGalleryTap: @escaping () -> Void
     ) {
         _viewModel = StateObject(
             wrappedValue: viewModel ?? AppDIContainer.shared.makeCameraViewModel()
         )
         self.onGuideCaptureRequested = onGuideCaptureRequested
         self.onGuideImagePicked = onGuideImagePicked
+        self.onGalleryTap = onGalleryTap
     }
 
     var body: some View {
-        ZStack {
-            AppColors.cameraBlack.ignoresSafeArea()
+        let palette = viewModel.palette
+        if ProcessInfo.processInfo.isiOSAppOnMac {
+            MacCameraFallbackView(
+                viewModel: viewModel,
+                onGuideCaptureRequested: onGuideCaptureRequested,
+                onGuideImagePicked: onGuideImagePicked,
+                onGalleryTap: onGalleryTap
+            )
+        } else {
+            ZStack {
+                palette.surface.ignoresSafeArea()
 
-            if viewModel.state.status == .ready || viewModel.state.status == .capturing {
-                CameraPreviewView(session: viewModel.session)
-                    .ignoresSafeArea()
-            }
+                VStack(spacing: 0) {
+                    TopChromeBar(
+                        selectedRatio: viewModel.state.aspectRatio,
+                        isFlashOn: viewModel.state.isFlashOn,
+                        showFlash: cameraShowsFlash,
+                        isMatched: viewModel.isMatched && viewModel.selectedGuide != nil,
+                        onRatioTap: {
+                            isRatioPickerVisible.toggle()
+                            if isRatioPickerVisible { isThemePickerVisible = false }
+                        },
+                        onThemeTap: {
+                            isThemePickerVisible.toggle()
+                            if isThemePickerVisible { isRatioPickerVisible = false }
+                        },
+                        onFlashTap: { viewModel.cycleFlashMode() },
+                        palette: palette
+                    )
+                    .padding(.top, AppSpacing.gapS)
+                    .background(palette.surface)
+                    .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
-            if let guide = viewModel.selectedGuide {
-                SilhouetteOverlay(
-                    silhouette: guide.silhouette,
-                    color: viewModel.isMatched ? AppColors.mint : .white,
-                    lineWidth: 2.5,
-                    glow: true
-                )
-                .aspectRatio(CGFloat(guide.sourceAspectRatio ?? 1.0), contentMode: .fit)
-                .allowsHitTesting(false)
-                .ignoresSafeArea()
-                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
-            }
+                    cameraBox(palette: palette)
 
-            VStack(spacing: 0) {
-                TopChromeBar(
-                    ratioLabel: viewModel.state.aspectRatio.rawValue,
-                    isFlashOn: viewModel.state.isFlashOn,
-                    isMatched: viewModel.isMatched,
-                    onRatioTap: { viewModel.cycleAspectRatio() },
-                    onFlashTap: { viewModel.toggleFlash() }
-                )
-                .padding(.top, AppSpacing.gapS)
-                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
+                    palette.surface
+                        .frame(maxWidth: .infinity)
+                        .frame(maxHeight: .infinity)
+                }
 
-                Spacer(minLength: 0)
+                if shouldShowExternalZoom {
+                    ZoomControlStrip(
+                        zooms: viewModel.availableZooms,
+                        selectedZoom: viewModel.selectedZoom,
+                        onSelect: { viewModel.selectZoom($0) },
+                        palette: palette
+                    )
+                    .positionedAboveControls()
+                }
+
+                VStack(spacing: 0) {
+                    Spacer(minLength: 0)
+                    GuideListStrip(
+                        guides: viewModel.guides,
+                        selectedGuideId: viewModel.selectedGuide?.id,
+                        thumbnailURL: { viewModel.thumbnailURL(for: $0) },
+                        palette: palette,
+                        onTapGuide: { viewModel.selectGuide($0) },
+                        onLongPressGuide: { viewModel.requestDelete($0) },
+                        onTapPlus: { viewModel.presentAddGuideSheet() }
+                    )
+
+                    ShutterButton(
+                        matched: viewModel.isMatched,
+                        isCapturing: viewModel.state.status == .capturing,
+                        palette: palette,
+                        action: { Task { await viewModel.capture() } }
+                    )
+                    .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
+                    .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
+
+                    BottomControlsBar(
+                        onGalleryTap: onGalleryTap,
+                        onFlipTap: { viewModel.switchCamera() },
+                        palette: palette
+                    )
+                }
+                .ignoresSafeArea(edges: .bottom)
+
+                if isThemePickerVisible {
+                    themePicker(palette: palette)
+                }
+
+                if isRatioPickerVisible {
+                    ratioPicker(palette: palette)
+                }
 
                 if viewModel.guides.isEmpty {
                     emptyStateHint
-                        .padding(.bottom, AppSpacing.gapM)
                 }
 
-                GuideListStrip(
-                    guides: viewModel.guides,
-                    selectedGuideId: viewModel.selectedGuide?.id,
-                    thumbnailURL: { viewModel.thumbnailURL(for: $0) },
-                    onTapGuide: { viewModel.selectGuide($0) },
-                    onLongPressGuide: { viewModel.requestDelete($0) },
-                    onTapPlus: { viewModel.presentAddGuideSheet() }
-                )
-
-                ShutterButton(
-                    matched: viewModel.isMatched,
-                    isCapturing: viewModel.state.status == .capturing,
-                    action: { Task { await viewModel.capture() } }
-                )
-                .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
-                .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
-
-                BottomControlsBar(
-                    onGalleryTap: openSystemGallery,
-                    onFlipTap: {}
-                )
-            }
-            .ignoresSafeArea(edges: .bottom)
-
-            if case .denied = viewModel.state.status {
-                deniedOverlay
-            }
-            if case let .failed(message) = viewModel.state.status {
-                errorBanner(message)
-            }
-            if let savedAt = viewModel.state.lastSavedAt,
-               Date().timeIntervalSince(savedAt) < 1.5 {
-                savedToast.transition(.opacity)
-            }
-        }
-        .task { await viewModel.onAppear() }
-        .onDisappear { viewModel.onDisappear() }
-        .confirmationDialog(
-            "가이드라인 추가",
-            isPresented: $viewModel.state.isAddGuideSheetPresented,
-            titleVisibility: .visible
-        ) {
-            Button("가이드 사진 찍기") { onGuideCaptureRequested() }
-            Button("갤러리에서 등록") { viewModel.presentPhotoPicker() }
-            Button("취소", role: .cancel) {}
-        }
-        .photosPicker(
-            isPresented: $viewModel.state.isPhotoPickerPresented,
-            selection: $pickedItem,
-            matching: .images
-        )
-        .onChange(of: pickedItem) { _, newValue in
-            guard let newValue else { return }
-            Task {
-                if let data = try? await newValue.loadTransferable(type: Data.self) {
-                    onGuideImagePicked(data)
+                if case .denied = viewModel.state.status {
+                    deniedOverlay
                 }
-                pickedItem = nil
+                if case let .failed(message) = viewModel.state.status {
+                    errorBanner(message)
+                }
+                if let savedAt = viewModel.state.lastSavedAt,
+                   Date().timeIntervalSince(savedAt) < 1.5 {
+                    savedToast.transition(.opacity)
+                }
+
+                if let pending = viewModel.state.pendingCapture {
+                    CapturedPreviewOverlay(
+                        pending: pending,
+                        onBack: { viewModel.discardCapture() },
+                        onRetake: { viewModel.discardCapture() },
+                        onSave: { Task { await viewModel.confirmSaveCapture() } },
+                        onToggleGuide: { viewModel.togglePendingGuide() },
+                        palette: palette
+                    )
+                }
             }
-        }
-        .alert(
-            "가이드라인을 삭제할까요?",
-            isPresented: Binding(
-                get: { viewModel.guideToDelete != nil },
-                set: { if !$0 { viewModel.cancelDelete() } }
+            .task { await viewModel.onAppear() }
+            .onDisappear { viewModel.onDisappear() }
+            .onChange(of: viewModel.state.status) { _, status in
+                if status == .capturing {
+                    withAnimation(.linear(duration: 0.01)) { shutterFlash = true }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                        shutterFlash = false
+                    }
+                }
+            }
+            .onChange(of: viewModel.isMatched) { _, matched in
+                if matched, viewModel.selectedGuide != nil {
+                    isRatioPickerVisible = false
+                }
+            }
+            .onAppear {
+                if AppDIContainer.shared.makeSettingsStore().consumePendingOpenAddGuideDialog() {
+                    viewModel.presentAddGuideSheet()
+                }
+            }
+            .confirmationDialog(
+                "가이드라인 추가",
+                isPresented: $viewModel.state.isAddGuideSheetPresented,
+                titleVisibility: .visible
+            ) {
+                Button("가이드 사진 찍기") { onGuideCaptureRequested() }
+                Button("갤러리에서 등록") { viewModel.presentPhotoPicker() }
+                Button("취소", role: .cancel) {}
+            }
+            .photosPicker(
+                isPresented: $viewModel.state.isPhotoPickerPresented,
+                selection: $pickedItem,
+                matching: .images
             )
-        ) {
-            Button("취소", role: .cancel) { viewModel.cancelDelete() }
-            Button("삭제", role: .destructive) {
-                if let guide = viewModel.guideToDelete {
-                    Task { await viewModel.confirmDelete(guide) }
+            .onChange(of: pickedItem) { _, newValue in
+                guard let newValue else { return }
+                Task {
+                    if let data = try? await newValue.loadTransferable(type: Data.self) {
+                        onGuideImagePicked(data)
+                    }
+                    pickedItem = nil
                 }
             }
-        } message: {
-            Text("삭제한 가이드라인은 복구할 수 없어요.")
+            .alert(
+                "가이드라인을 삭제할까요?",
+                isPresented: Binding(
+                    get: { viewModel.guideToDelete != nil },
+                    set: { if !$0 { viewModel.cancelDelete() } }
+                )
+            ) {
+                Button("취소", role: .cancel) { viewModel.cancelDelete() }
+                Button("삭제", role: .destructive) {
+                    if let guide = viewModel.guideToDelete {
+                        Task { await viewModel.confirmDelete(guide) }
+                    }
+                }
+            } message: {
+                Text("삭제한 가이드라인은 복구할 수 없어요.")
+            }
         }
     }
 
     private var emptyStateHint: some View {
-        VStack(spacing: 4) {
-            Text("첫 가이드라인을 추가해보세요")
-                .font(AppTypography.hintLarge)
-                .foregroundStyle(.white.opacity(0.92))
-            Text("좋아하는 사진의 구도를 카메라에 띄울 수 있어요")
-                .font(AppTypography.hintSmall)
-                .foregroundStyle(.white.opacity(0.62))
-        }
+        Text("첫 가이드라인을 추가해보세요")
+            .font(AppTypography.body)
+            .foregroundStyle(.white.opacity(0.85))
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, AppSpacing.groupM)
     }
 
-    private func openSystemGallery() {
-        if let url = URL(string: "photos-redirect://"), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
+    private var cameraShowsFlash: Bool {
+        viewModel.cameraService.position == .back
+    }
+
+    private var shouldShowExternalZoom: Bool {
+        viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio == .nineSixteen
+    }
+
+    private func cameraBox(palette: AppPalette) -> some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let isSquare = viewModel.state.aspectRatio == .oneOne
+            let containerRatio = isSquare ? CameraAspectRatio.fourThree.value : viewModel.state.aspectRatio.value
+            let containerHeight = width / containerRatio
+            let visibleHeight = isSquare ? width : containerHeight
+            let maskHeight = max((containerHeight - visibleHeight) / 2, 0)
+
+            ZStack {
+                if viewModel.state.status == .ready || viewModel.state.status == .capturing {
+                    CameraPreviewView(session: viewModel.session)
+                        .frame(width: width, height: isSquare ? width : containerHeight)
+                        .position(x: width / 2, y: containerHeight / 2)
+                        .clipped()
+                }
+
+                if let guide = viewModel.selectedGuide {
+                    guideOverlay(guide, visibleSize: CGSize(width: width, height: visibleHeight))
+                        .position(x: width / 2, y: containerHeight - maskHeight - visibleHeight / 2)
+                        .allowsHitTesting(false)
+                        .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
+                }
+
+                if ratioFlash {
+                    Color.black
+                }
+                if shutterFlash {
+                    Color.white
+                }
+
+                if isSquare {
+                    VStack(spacing: 0) {
+                        palette.surface.frame(height: maskHeight)
+                        Spacer(minLength: 0)
+                        palette.surface.frame(height: maskHeight)
+                    }
+                }
+
+                if viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio != .nineSixteen {
+                    ZoomControlStrip(
+                        zooms: viewModel.availableZooms,
+                        selectedZoom: viewModel.selectedZoom,
+                        onSelect: { viewModel.selectZoom($0) },
+                        palette: palette
+                    )
+                    .position(x: width / 2, y: containerHeight - maskHeight - AppSpacing.gapM - 21)
+                }
+            }
+            .background(Color.black)
+            .frame(width: width, height: containerHeight)
+            .clipped()
         }
+        .frame(height: cameraContainerHeight)
+    }
+
+    private var cameraContainerHeight: CGFloat {
+        let width = UIScreen.main.bounds.width
+        let ratio = viewModel.state.aspectRatio == .oneOne ? CameraAspectRatio.fourThree.value : viewModel.state.aspectRatio.value
+        return width / ratio
+    }
+
+    private func guideOverlay(_ guide: Guide, visibleSize: CGSize) -> some View {
+        let aspect = CGFloat(guide.sourceAspectRatio ?? 1.0)
+        let fit = bottomAnchoredFit(visibleSize: visibleSize, guideAspect: aspect)
+        return SilhouetteOverlay(
+            silhouette: guide.silhouette,
+            color: viewModel.isMatched ? AppColors.mint : .white,
+            lineWidth: AppMetrics.Camera.guideLineWidth,
+            glow: true
+        )
+        .frame(width: fit.width, height: fit.height)
+    }
+
+    private func themePicker(palette: AppPalette) -> some View {
+        VStack(alignment: .leading, spacing: AppSpacing.gapS) {
+            ForEach(AppTheme.allCases, id: \.self) { theme in
+                optionChip(
+                    label: theme.label,
+                    selected: theme == viewModel.state.selectedTheme,
+                    palette: palette
+                ) {
+                    viewModel.selectTheme(theme)
+                    isThemePickerVisible = false
+                }
+            }
+        }
+        .padding(.top, AppMetrics.Camera.topChromeHeight + AppSpacing.groupM)
+        .padding(.leading, AppSpacing.edge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func ratioPicker(palette: AppPalette) -> some View {
+        HStack(spacing: AppSpacing.gapS) {
+            ForEach(CameraAspectRatio.allCases, id: \.self) { ratio in
+                optionChip(
+                    label: ratio.rawValue,
+                    selected: ratio == viewModel.state.aspectRatio,
+                    palette: palette
+                ) {
+                    if ratio != viewModel.state.aspectRatio {
+                        ratioFlash = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.20) {
+                            ratioFlash = false
+                        }
+                    }
+                    viewModel.selectAspectRatio(ratio)
+                    isRatioPickerVisible = false
+                }
+            }
+        }
+        .padding(.top, AppMetrics.Camera.topChromeHeight + AppSpacing.groupM)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func optionChip(
+        label: String,
+        selected: Bool,
+        palette: AppPalette,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            Text(label)
+                .font(AppTypography.buttonSecondary)
+                .foregroundStyle(selected ? AppColors.mintDeep : palette.onSurface)
+                .padding(.horizontal, AppSpacing.gapM)
+                .padding(.vertical, AppSpacing.gapS)
+                .background(selected ? AppColors.mint : palette.glassFill, in: Capsule())
+                .overlay(Capsule().strokeBorder(
+                    selected ? AppColors.mint : palette.glassBorder,
+                    lineWidth: AppMetrics.borderHairline
+                ))
+        }
+        .buttonStyle(.plain)
     }
 
     private var deniedOverlay: some View {
@@ -205,6 +407,139 @@ struct CameraView: View {
     }
 }
 
+private struct CapturedPreviewOverlay: View {
+    let pending: PendingCapture
+    let onBack: () -> Void
+    let onRetake: () -> Void
+    let onSave: () -> Void
+    let onToggleGuide: () -> Void
+    let palette: AppPalette
+
+    private var image: UIImage? { UIImage(data: pending.imageData) }
+
+    var body: some View {
+        GeometryReader { geo in
+            let imageFrame = fittedImageFrame(in: geo.size)
+
+            ZStack {
+                palette.surface.ignoresSafeArea()
+
+                if let image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: imageFrame.width, height: imageFrame.height)
+                        .clipped()
+                        .position(x: geo.size.width / 2, y: geo.size.height / 2)
+                }
+
+                if pending.showGuide, let guide = pending.capturedGuide {
+                    let fit = bottomAnchoredFit(
+                        visibleSize: CGSize(width: imageFrame.width, height: imageFrame.height),
+                        guideAspect: CGFloat(guide.sourceAspectRatio ?? 1.0)
+                    )
+                    SilhouetteOverlay(
+                        silhouette: guide.silhouette,
+                        color: .white,
+                        lineWidth: AppMetrics.Camera.guideLineWidth,
+                        glow: true
+                    )
+                    .frame(width: fit.width, height: fit.height)
+                    .position(
+                        x: geo.size.width / 2,
+                        y: geo.size.height / 2 + imageFrame.height / 2 - fit.height / 2
+                    )
+                }
+
+                VStack {
+                    HStack {
+                        Button(action: onBack) {
+                            GlassChip(palette: palette) {
+                                Image(systemName: "chevron.left")
+                                    .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                                    .foregroundStyle(palette.onSurface)
+                            }
+                        }
+                        .buttonStyle(.plain)
+
+                        Spacer()
+
+                        if pending.capturedGuide != nil {
+                            Button(action: onToggleGuide) {
+                                GlassChip(palette: palette) {
+                                    Image(systemName: pending.showGuide ? "eye.fill" : "eye.slash.fill")
+                                        .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                                        .foregroundStyle(palette.onSurface)
+                                }
+                            }
+                            .buttonStyle(.plain)
+                        }
+
+                        Spacer()
+                        Color.clear.frame(width: AppMetrics.iconButton, height: AppMetrics.iconButton)
+                    }
+                    .padding(.top, AppSpacing.gapS)
+                    .padding(.horizontal, AppSpacing.edge)
+
+                    Spacer()
+
+                    HStack(spacing: AppSpacing.gapS) {
+                        Button(action: onRetake) {
+                            Text("재촬영")
+                                .font(AppTypography.bodyEmphasis)
+                                .foregroundStyle(palette.onSurface)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: AppMetrics.Control.buttonHeight)
+                                .background(palette.glassFill, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
+                        }
+                        Button(action: onSave) {
+                            Text("저장")
+                                .font(AppTypography.buttonPrimary)
+                                .foregroundStyle(AppColors.mintDeep)
+                                .frame(maxWidth: .infinity)
+                                .frame(height: AppMetrics.Control.buttonHeight)
+                                .background(AppColors.mint, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
+                        }
+                    }
+                    .padding(.horizontal, AppSpacing.edge)
+                    .frame(height: AppMetrics.Camera.controlsHeight)
+                    .background(palette.surface)
+                }
+                .ignoresSafeArea(edges: .bottom)
+            }
+        }
+    }
+
+    private func fittedImageFrame(in container: CGSize) -> CGSize {
+        let imageAspect = pending.aspectRatio.value
+        let containerAspect = container.width / container.height
+        if imageAspect > containerAspect {
+            return CGSize(width: container.width, height: container.width / imageAspect)
+        }
+        return CGSize(width: container.height * imageAspect, height: container.height)
+    }
+}
+
+private func bottomAnchoredFit(visibleSize: CGSize, guideAspect: CGFloat) -> CGSize {
+    let visibleAspect = visibleSize.width / visibleSize.height
+    if guideAspect > visibleAspect {
+        return CGSize(width: visibleSize.width, height: visibleSize.width / guideAspect)
+    }
+    return CGSize(width: visibleSize.height * guideAspect, height: visibleSize.height)
+}
+
+private extension View {
+    func positionedAboveControls() -> some View {
+        let controlsTotal = AppMetrics.Camera.guideStripHeight +
+            AppMetrics.Camera.shutterSize +
+            AppMetrics.Camera.shutterBottomOffset +
+            AppMetrics.Camera.controlsHeight
+        return self
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
+            .padding(.bottom, controlsTotal + AppSpacing.gapM)
+    }
+}
+
 #if DEBUG
 
 private func cameraPreviewGuide() -> Guide {
@@ -251,7 +586,8 @@ private func cameraPreviewGuide() -> Guide {
     CameraView(
         viewModel: CameraViewModel(previewState: CameraViewState(status: .ready)),
         onGuideCaptureRequested: {},
-        onGuideImagePicked: { _ in }
+        onGuideImagePicked: { _ in },
+        onGalleryTap: {}
     )
 }
 
@@ -264,7 +600,8 @@ private func cameraPreviewGuide() -> Guide {
             previewSelectedGuide: guide
         ),
         onGuideCaptureRequested: {},
-        onGuideImagePicked: { _ in }
+        onGuideImagePicked: { _ in },
+        onGalleryTap: {}
     )
 }
 
@@ -278,7 +615,8 @@ private func cameraPreviewGuide() -> Guide {
             previewIsMatched: true
         ),
         onGuideCaptureRequested: {},
-        onGuideImagePicked: { _ in }
+        onGuideImagePicked: { _ in },
+        onGalleryTap: {}
     )
 }
 
@@ -286,7 +624,8 @@ private func cameraPreviewGuide() -> Guide {
     CameraView(
         viewModel: CameraViewModel(previewState: CameraViewState(status: .denied)),
         onGuideCaptureRequested: {},
-        onGuideImagePicked: { _ in }
+        onGuideImagePicked: { _ in },
+        onGalleryTap: {}
     )
 }
 

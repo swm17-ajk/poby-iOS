@@ -1,5 +1,64 @@
 import SwiftUI
 
+struct AppPalette: Equatable {
+    let surface: Color
+    let surfaceMuted: Color
+    let onSurface: Color
+    let onSurfaceMuted: Color
+    let divider: Color
+    let glassFill: Color
+    let glassBorder: Color
+}
+
+enum AppTheme: String, CaseIterable, Codable, Equatable {
+    case dark
+    case warm
+    case cold
+
+    var label: String {
+        switch self {
+        case .dark: return "Dark"
+        case .warm: return "Warm"
+        case .cold: return "Cold"
+        }
+    }
+
+    var palette: AppPalette {
+        switch self {
+        case .dark:
+            return AppPalette(
+                surface: AppColors.cameraBlack,
+                surfaceMuted: Color(hex: 0x1A1A1A),
+                onSurface: .white,
+                onSurfaceMuted: .white.opacity(0.7),
+                divider: .white.opacity(0.2),
+                glassFill: .white.opacity(0.10),
+                glassBorder: .white.opacity(0.16)
+            )
+        case .warm:
+            return AppPalette(
+                surface: AppColors.Warm.paper,
+                surfaceMuted: AppColors.Warm.paper2,
+                onSurface: AppColors.inkPrimary,
+                onSurfaceMuted: AppColors.inkSecondary,
+                divider: AppColors.Warm.hairline,
+                glassFill: .black.opacity(0.06),
+                glassBorder: .black.opacity(0.14)
+            )
+        case .cold:
+            return AppPalette(
+                surface: AppColors.Modern.paper,
+                surfaceMuted: AppColors.Modern.paper2,
+                onSurface: AppColors.inkPrimary,
+                onSurfaceMuted: AppColors.inkSecondary,
+                divider: AppColors.Modern.hairline,
+                glassFill: .black.opacity(0.06),
+                glassBorder: .black.opacity(0.14)
+            )
+        }
+    }
+}
+
 enum AppColors {
     static let cameraBlack = Color(hex: 0x0A0A0A)
 
@@ -34,7 +93,7 @@ enum AppColors {
     }
 }
 
-private extension Color {
+extension Color {
     init(hex: Int, opacity: Double = 1) {
         self.init(
             .sRGB,

@@ -1,15 +1,26 @@
 import SwiftUI
 
 struct TopChromeBar: View {
-    let ratioLabel: String
+    let selectedRatio: CameraAspectRatio
     let isFlashOn: Bool
+    let showFlash: Bool
     let isMatched: Bool
     let onRatioTap: () -> Void
+    let onThemeTap: () -> Void
     let onFlashTap: () -> Void
+    let palette: AppPalette
 
     var body: some View {
         HStack {
-            Spacer().frame(width: 36)
+            Button(action: onThemeTap) {
+                GlassChip(palette: palette) {
+                    Image(systemName: "paintpalette.fill")
+                        .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                        .foregroundStyle(palette.onSurface)
+                }
+            }
+            .buttonStyle(.plain)
+
             Spacer()
 
             if isMatched {
@@ -20,14 +31,18 @@ struct TopChromeBar: View {
 
             Spacer()
 
-            Button(action: onFlashTap) {
-                GlassChip {
-                    Image(systemName: isFlashOn ? "bolt.fill" : "bolt.slash")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
+            if showFlash {
+                Button(action: onFlashTap) {
+                    GlassChip(palette: palette) {
+                        Image(systemName: isFlashOn ? "bolt.fill" : "bolt.slash")
+                            .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                            .foregroundStyle(palette.onSurface)
+                    }
                 }
+                .buttonStyle(.plain)
+            } else {
+                Color.clear.frame(width: AppMetrics.iconButton, height: AppMetrics.iconButton)
             }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.edge)
         .frame(height: AppMetrics.Camera.topChromeHeight)
@@ -37,19 +52,21 @@ struct TopChromeBar: View {
         Button(action: onRatioTap) {
             Text(ratioLabel)
                 .font(AppTypography.chip)
-                .foregroundStyle(.white)
+                .foregroundStyle(palette.onSurface)
                 .padding(.horizontal, AppSpacing.gapS)
                 .padding(.vertical, 6)
-                .background(Capsule().fill(Color.white.opacity(0.10)))
-                .overlay(Capsule().strokeBorder(Color.white.opacity(0.18), lineWidth: 1))
+                .background(Capsule().fill(palette.glassFill))
+                .overlay(Capsule().strokeBorder(palette.glassBorder, lineWidth: AppMetrics.borderHairline))
         }
         .buttonStyle(.plain)
     }
 
+    private var ratioLabel: String { selectedRatio.rawValue }
+
     private var matchPill: some View {
         HStack(spacing: 5) {
             Image(systemName: "checkmark")
-                .font(.system(size: 11, weight: .bold))
+                .font(.system(size: AppMetrics.iconS - 3, weight: .bold))
                 .foregroundStyle(AppColors.mintDeep)
             Text("포즈 매칭")
                 .font(AppTypography.pill)

@@ -3,14 +3,16 @@ import SwiftUI
 struct ShutterButton: View {
     var matched: Bool = false
     var isCapturing: Bool = false
+    var palette: AppPalette = AppTheme.dark.palette
     let action: () -> Void
 
     var body: some View {
+        let activeColor = matched ? AppColors.mint : palette.onSurface
         Button(action: action) {
             ZStack {
                 Circle()
                     .strokeBorder(
-                        matched ? AppColors.mint : Color.white,
+                        activeColor,
                         lineWidth: AppMetrics.Camera.shutterBorderWidth
                     )
                     .frame(
@@ -19,7 +21,7 @@ struct ShutterButton: View {
                     )
 
                 Circle()
-                    .fill(matched ? AppColors.mint : Color.white)
+                    .fill(activeColor)
                     .frame(
                         width: AppMetrics.Camera.shutterInnerSize,
                         height: AppMetrics.Camera.shutterInnerSize

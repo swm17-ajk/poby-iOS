@@ -4,6 +4,7 @@ struct GuideThumb: View {
     let guide: Guide
     let thumbnailURL: URL?
     let isActive: Bool
+    var palette: AppPalette = AppTheme.dark.palette
     let onTap: () -> Void
     let onLongPress: () -> Void
 
@@ -18,16 +19,16 @@ struct GuideThumb: View {
                             .resizable()
                             .scaledToFill()
                     } else {
-                        Color.white.opacity(0.10)
+                        palette.glassFill
                     }
                 }
-                .frame(width: 56, height: 56)
+                .frame(width: AppMetrics.Camera.guideThumbSize, height: AppMetrics.Camera.guideThumbSize)
                 .clipShape(RoundedRectangle(cornerRadius: AppRadius.thumb))
                 .overlay(
                     RoundedRectangle(cornerRadius: AppRadius.thumb)
                         .strokeBorder(
-                            isActive ? AppColors.mint : Color.white.opacity(0.28),
-                            lineWidth: isActive ? 2.5 : 1
+                            isActive ? AppColors.mint : palette.glassBorder,
+                            lineWidth: isActive ? AppMetrics.borderEmphasis : AppMetrics.borderHairline
                         )
                 )
                 .shadow(color: isActive ? AppColors.mint.opacity(0.45) : .clear, radius: 8)
@@ -36,9 +37,9 @@ struct GuideThumb: View {
                     ZStack {
                         Circle()
                             .fill(AppColors.mint)
-                            .frame(width: 18, height: 18)
+                            .frame(width: AppMetrics.iconM, height: AppMetrics.iconM)
                         Image(systemName: "checkmark")
-                            .font(.system(size: 10, weight: .bold))
+                            .font(.system(size: AppMetrics.iconXS, weight: .bold))
                             .foregroundStyle(AppColors.mintDeep)
                     }
                     .offset(x: 4, y: -4)

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct PlusThumb: View {
     let pulse: Bool
+    var palette: AppPalette = AppTheme.dark.palette
     let onTap: () -> Void
 
     @State private var pulsing = false
@@ -10,20 +11,20 @@ struct PlusThumb: View {
         Button(action: onTap) {
             ZStack {
                 RoundedRectangle(cornerRadius: AppRadius.thumb)
-                    .fill(Color.white.opacity(0.18))
+                    .fill(palette.glassFill)
                     .overlay(
                         RoundedRectangle(cornerRadius: AppRadius.thumb)
-                            .strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
+                            .strokeBorder(palette.glassBorder, lineWidth: AppMetrics.borderHairline)
                     )
-                    .frame(width: 56, height: 56)
+                    .frame(width: AppMetrics.Camera.guideThumbSize, height: AppMetrics.Camera.guideThumbSize)
 
                 Image(systemName: "plus")
-                    .font(.system(size: 22, weight: .semibold))
-                    .foregroundStyle(.white)
+                    .font(.system(size: AppMetrics.iconM + 4, weight: .semibold))
+                    .foregroundStyle(palette.onSurface)
             }
             .scaleEffect(pulse && pulsing ? 1.04 : 1.0)
             .shadow(
-                color: pulse && pulsing ? Color.white.opacity(0.18) : .clear,
+                color: pulse && pulsing ? palette.onSurface.opacity(0.18) : .clear,
                 radius: 8
             )
         }

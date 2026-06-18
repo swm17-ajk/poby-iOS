@@ -22,6 +22,7 @@
 		B0B1000000000000000000A2 /* AppRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A2 /* AppRoute.swift */; };
 		B0B1000000000000000000A3 /* AppDIContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A3 /* AppDIContainer.swift */; };
 		B0B1000000000000000000A4 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A4 /* CameraView.swift */; };
+		B0B1000000000000000000A7 /* MacCameraFallbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A7 /* MacCameraFallbackView.swift */; };
 		B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A5 /* CameraViewModel.swift */; };
 		B0B1000000000000000000A6 /* CameraViewState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000A6 /* CameraViewState.swift */; };
 		B0B1000000000000000000B01 /* AppColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000B01 /* AppColors.swift */; };
@@ -44,12 +45,16 @@
 		B0B1000000000000000000D03 /* FileGuideRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D03 /* FileGuideRepository.swift */; };
 		B0B1000000000000000000D04 /* VisionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D04 /* VisionService.swift */; };
 		B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D05 /* SilhouetteOverlay.swift */; };
+		B0B1000000000000000000D06 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D06 /* AppSettings.swift */; };
+		B0B1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift */; };
 		B0B1000000000000000000E02 /* GlassChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E02 /* GlassChip.swift */; };
 		B0B1000000000000000000E03 /* GuideThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E03 /* GuideThumb.swift */; };
 		B0B1000000000000000000E04 /* PlusThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E04 /* PlusThumb.swift */; };
 		B0B1000000000000000000E05 /* GuideListStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E05 /* GuideListStrip.swift */; };
 		B0B1000000000000000000E06 /* TopChromeBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E06 /* TopChromeBar.swift */; };
 		B0B1000000000000000000E07 /* BottomControlsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E07 /* BottomControlsBar.swift */; };
+		B0B1000000000000000000E08 /* ZoomControlStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E08 /* ZoomControlStrip.swift */; };
+		B0B1000000000000000000F01 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000F01 /* OnboardingView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -102,6 +107,7 @@
 		B0F1000000000000000000A2 /* AppRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoute.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A3 /* AppDIContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDIContainer.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A4 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000A7 /* MacCameraFallbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCameraFallbackView.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A5 /* CameraViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewModel.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000A6 /* CameraViewState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewState.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000B01 /* AppColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppColors.swift; sourceTree = "<group>"; };
@@ -124,12 +130,16 @@
 		B0F1000000000000000000D03 /* FileGuideRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileGuideRepository.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000D04 /* VisionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VisionService.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000D05 /* SilhouetteOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilhouetteOverlay.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D06 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsAppSettingsStore.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E02 /* GlassChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassChip.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E03 /* GuideThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideThumb.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E04 /* PlusThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusThumb.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E05 /* GuideListStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideListStrip.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E06 /* TopChromeBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopChromeBar.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E07 /* BottomControlsBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlsBar.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000E08 /* ZoomControlStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomControlStrip.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000F01 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -282,6 +292,7 @@
 			children = (
 				B0C1000000000000000000A3 /* Camera */,
 				B0C1000000000000000000A8 /* GuideRegistration */,
+				B0C1000000000000000000F01 /* Onboarding */,
 			);
 			path = Features;
 			sourceTree = "<group>";
@@ -309,6 +320,7 @@
 			isa = PBXGroup;
 			children = (
 				B0F1000000000000000000A4 /* CameraView.swift */,
+				B0F1000000000000000000A7 /* MacCameraFallbackView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -449,6 +461,7 @@
 			isa = PBXGroup;
 			children = (
 				B0F1000000000000000000D01 /* Guide.swift */,
+				B0F1000000000000000000D06 /* AppSettings.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -465,6 +478,7 @@
 			isa = PBXGroup;
 			children = (
 				B0F1000000000000000000D03 /* FileGuideRepository.swift */,
+				B0F1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift */,
 			);
 			path = Repositories;
 			sourceTree = "<group>";
@@ -476,8 +490,33 @@
 				B0F1000000000000000000E04 /* PlusThumb.swift */,
 				B0F1000000000000000000E05 /* GuideListStrip.swift */,
 				B0F1000000000000000000E06 /* TopChromeBar.swift */,
+				B0F1000000000000000000E08 /* ZoomControlStrip.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000F01 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000F02 /* Presentation */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000F02 /* Presentation */ = {
+			isa = PBXGroup;
+			children = (
+				B0C1000000000000000000F03 /* View */,
+			);
+			path = Presentation;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000F03 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000F01 /* OnboardingView.swift */,
+			);
+			path = View;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -620,6 +659,7 @@
 				B0B1000000000000000000A2 /* AppRoute.swift in Sources */,
 				B0B1000000000000000000A3 /* AppDIContainer.swift in Sources */,
 				B0B1000000000000000000A4 /* CameraView.swift in Sources */,
+				B0B1000000000000000000A7 /* MacCameraFallbackView.swift in Sources */,
 				B0B1000000000000000000A5 /* CameraViewModel.swift in Sources */,
 				B0B1000000000000000000A6 /* CameraViewState.swift in Sources */,
 				B0B1000000000000000000C01 /* GuideCaptureView.swift in Sources */,
@@ -633,12 +673,16 @@
 				B0B1000000000000000000D03 /* FileGuideRepository.swift in Sources */,
 				B0B1000000000000000000D04 /* VisionService.swift in Sources */,
 				B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */,
+				B0B1000000000000000000D06 /* AppSettings.swift in Sources */,
+				B0B1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift in Sources */,
 				B0B1000000000000000000E02 /* GlassChip.swift in Sources */,
 				B0B1000000000000000000E03 /* GuideThumb.swift in Sources */,
 				B0B1000000000000000000E04 /* PlusThumb.swift in Sources */,
 				B0B1000000000000000000E05 /* GuideListStrip.swift in Sources */,
 				B0B1000000000000000000E06 /* TopChromeBar.swift in Sources */,
 				B0B1000000000000000000E07 /* BottomControlsBar.swift in Sources */,
+				B0B1000000000000000000E08 /* ZoomControlStrip.swift in Sources */,
+				B0B1000000000000000000F01 /* OnboardingView.swift in Sources */,
 				B0B1000000000000000000B01 /* AppColors.swift in Sources */,
 				B0B1000000000000000000B02 /* AppTypography.swift in Sources */,
 				B0B1000000000000000000B03 /* AppSpacing.swift in Sources */,
