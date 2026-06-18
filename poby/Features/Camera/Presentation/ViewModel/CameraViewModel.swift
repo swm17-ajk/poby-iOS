@@ -242,7 +242,7 @@ final class CameraViewModel: ObservableObject {
                 guard let self else { return }
                 let currentIds = Set(guides.map(\.id))
                 let newIds = currentIds.subtracting(seenGuideIds)
-                self.guides = guides.sorted(by: { $0.createdAt > $1.createdAt })
+                self.guides = guides.sorted(by: { $0.createdAt < $1.createdAt })
 
                 if let newest = guides
                     .filter({ newIds.contains($0.id) })
