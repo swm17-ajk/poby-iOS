@@ -5,6 +5,7 @@ struct AppRootView: View {
     @StateObject private var router = AppRouter()
     @State private var settings = UserDefaultsAppSettingsStore().load()
     @State private var hasEnteredCamera = UserDefaultsAppSettingsStore().load().hasCompletedOnboarding
+    private let analytics = AppDIContainer.shared.makeAnalyticsService()
 
     var body: some View {
         Group {
@@ -18,7 +19,7 @@ struct AppRootView: View {
                     .navigationDestination(for: AppRoute.self) { route in
                         switch route {
                         case .gallery:
-                            GalleryView(onBack: { router.pop() })
+                            GalleryView(analytics: analytics, onBack: { router.pop() })
                         case .guideCapture:
                             GuideCaptureView(
                                 onCancel: { router.popToRoot() },
@@ -34,7 +35,8 @@ struct AppRootView: View {
                     }
                 }
             } else {
-                OnboardingView(skipDetail: settings.hasSeenTutorialDetail) {
+                OnboardingView(skipDetail: settings.hasSeenTutorialDetail, analytics: analytics) {
+                    analytics.log(AnalyticsEvent.tutorialCompleted)
                     AppDIContainer.shared.makeSettingsStore().completeTutorial()
                     settings = AppDIContainer.shared.makeSettingsStore().load()
                     hasEnteredCamera = true
@@ -49,12 +51,14 @@ struct AppRootView: View {
 }
 
 struct GalleryView: View {
+    let analytics: AnalyticsService
     let onBack: () -> Void
 
     @State private var assets: [PHAsset] = []
     @State private var selectedIndex: Int?
     @State private var assetToDelete: PHAsset?
     @State private var settings = UserDefaultsAppSettingsStore().load()
+    @State private var hasLoggedView = false
 
     var body: some View {
         let palette = settings.selectedTheme.palette
@@ -66,7 +70,10 @@ struct GalleryView: View {
                     assets: assets,
                     initialIndex: selectedIndex,
                     onClose: { self.selectedIndex = nil },
-                    onDeleteRequest: { asset in assetToDelete = asset },
+                    onDeleteRequest: { asset in
+                        analytics.log(AnalyticsEvent.galleryPhotoDeleteRequested)
+                        assetToDelete = asset
+                    },
                     palette: palette
                 )
             } else {
@@ -106,7 +113,10 @@ struct GalleryView: View {
                                         aspectRatio: settings.selectedAspectRatio.value,
                                         palette: palette
                                     )
-                                    .onTapGesture { selectedIndex = index }
+                                    .onTapGesture {
+                                        analytics.log(AnalyticsEvent.galleryPhotoOpened)
+                                        selectedIndex = index
+                                    }
                                 }
                             }
                         }
@@ -142,7 +152,16 @@ struct GalleryView: View {
             return
         }
         let loaded = Self.fetchPobyAssets()
-        await MainActor.run { assets = loaded }
+        await MainActor.run {
+            assets = loaded
+            if !hasLoggedView {
+                analytics.log(
+                    AnalyticsEvent.galleryViewed,
+                    properties: ["photo_count": loaded.count]
+                )
+                hasLoggedView = true
+            }
+        }
     }
 
     private func delete(_ asset: PHAsset) async {
@@ -152,6 +171,7 @@ struct GalleryView: View {
             }
             assetToDelete = nil
             await loadPhotos()
+            analytics.log(AnalyticsEvent.galleryPhotoDeleted)
             if let selectedIndex, selectedIndex >= assets.count {
                 self.selectedIndex = assets.isEmpty ? nil : assets.count - 1
             }

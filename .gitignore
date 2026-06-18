@@ -39,6 +39,7 @@ Carthage/Build/
 # 환경/시크릿
 *.env
 *.env.*
+Config/Secrets.xcconfig
 secrets.plist
 GoogleService-Info.plist
 

@@ -6,6 +6,7 @@ final class AppDIContainer {
 
     private lazy var cameraService = CameraService()
     private lazy var visionService = VisionService()
+    private lazy var analyticsService: AnalyticsService = AmplitudeAnalyticsService()
     private lazy var settingsStore = UserDefaultsAppSettingsStore()
     private lazy var guideRepository: GuideRepositoryProtocol = {
         do {
@@ -22,14 +23,16 @@ final class AppDIContainer {
             cameraService: cameraService,
             guideRepository: guideRepository,
             visionService: visionService,
-            settingsStore: settingsStore
+            settingsStore: settingsStore,
+            analytics: analyticsService
         )
     }
 
     func makeGuideCaptureViewModel() -> GuideCaptureViewModel {
         GuideCaptureViewModel(
             cameraService: cameraService,
-            settingsStore: settingsStore
+            settingsStore: settingsStore,
+            analytics: analyticsService
         )
     }
 
@@ -37,11 +40,16 @@ final class AppDIContainer {
         GuideExtractionViewModel(
             imageData: imageData,
             visionService: visionService,
-            guideRepository: guideRepository
+            guideRepository: guideRepository,
+            analytics: analyticsService
         )
     }
 
     func makeSettingsStore() -> UserDefaultsAppSettingsStore {
         settingsStore
+    }
+
+    func makeAnalyticsService() -> AnalyticsService {
+        analyticsService
     }
 }

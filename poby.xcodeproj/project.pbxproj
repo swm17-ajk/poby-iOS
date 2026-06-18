@@ -47,6 +47,8 @@
 		B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D05 /* SilhouetteOverlay.swift */; };
 		B0B1000000000000000000D06 /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D06 /* AppSettings.swift */; };
 		B0B1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift */; };
+		B0B1000000000000000000D08 /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D08 /* AnalyticsService.swift */; };
+		B0B1000000000000000000D09 /* AmplitudeAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000D09 /* AmplitudeAnalyticsService.swift */; };
 		B0B1000000000000000000E02 /* GlassChip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E02 /* GlassChip.swift */; };
 		B0B1000000000000000000E03 /* GuideThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E03 /* GuideThumb.swift */; };
 		B0B1000000000000000000E04 /* PlusThumb.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E04 /* PlusThumb.swift */; };
@@ -55,6 +57,7 @@
 		B0B1000000000000000000E07 /* BottomControlsBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E07 /* BottomControlsBar.swift */; };
 		B0B1000000000000000000E08 /* ZoomControlStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000E08 /* ZoomControlStrip.swift */; };
 		B0B1000000000000000000F01 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0F1000000000000000000F01 /* OnboardingView.swift */; };
+		B0B1000000000000000000P01 /* AmplitudeSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B0P1000000000000000000P02 /* AmplitudeSwift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +80,7 @@
 /* Begin PBXFileReference section */
 		AE9187702FB0D6B300A79154 /* poby.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = poby.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE9187732FB0D6B300A79154 /* pobyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pobyApp.swift; sourceTree = "<group>"; };
+		AE9187752FB0D6B300A79154 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AE9187772FB0D6B500A79154 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AE91877A2FB0D6B500A79154 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		AE9187802FB0D6B500A79154 /* pobyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pobyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -84,6 +88,7 @@
 		AE91878A2FB0D6B500A79154 /* pobyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = pobyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE91878E2FB0D6B500A79154 /* pobyUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pobyUITests.swift; sourceTree = "<group>"; };
 		AE9187902FB0D6B500A79154 /* pobyUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = pobyUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000G01 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
 		AED471FF2FB1AD7700848A68 /* features.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = features.md; sourceTree = "<group>"; };
 		AED472012FB1B0F600848A68 /* CLAUDE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CLAUDE.md; sourceTree = "<group>"; };
 		AED472022FB1B26D00848A68 /* plan.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = plan.md; sourceTree = "<group>"; };
@@ -132,6 +137,8 @@
 		B0F1000000000000000000D05 /* SilhouetteOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SilhouetteOverlay.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000D06 /* AppSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsAppSettingsStore.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D08 /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
+		B0F1000000000000000000D09 /* AmplitudeAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmplitudeAnalyticsService.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E02 /* GlassChip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassChip.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E03 /* GuideThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideThumb.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000E04 /* PlusThumb.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusThumb.swift; sourceTree = "<group>"; };
@@ -147,6 +154,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0B1000000000000000000P01 /* AmplitudeSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -170,6 +178,7 @@
 		AE9187672FB0D6B300A79154 = {
 			isa = PBXGroup;
 			children = (
+				B0C1000000000000000000G01 /* Config */,
 				AED472252FB235CA00848A68 /* Resources */,
 				AED472002FB1AF3100848A68 /* docs */,
 				AE9187722FB0D6B300A79154 /* poby */,
@@ -195,6 +204,7 @@
 				B0C1000000000000000000A1 /* App */,
 				B0C1000000000000000000B01 /* Core */,
 				B0C1000000000000000000A2 /* Features */,
+				AE9187752FB0D6B300A79154 /* Info.plist */,
 				AE9187772FB0D6B500A79154 /* Assets.xcassets */,
 				AE9187792FB0D6B500A79154 /* Preview Content */,
 			);
@@ -274,6 +284,14 @@
 			);
 			name = Resources;
 			path = poby/Resources;
+			sourceTree = "<group>";
+		};
+		B0C1000000000000000000G01 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				B0F1000000000000000000G01 /* Secrets.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		B0C1000000000000000000A1 /* App */ = {
@@ -444,6 +462,8 @@
 			children = (
 				B0F1000000000000000000B09 /* CameraService.swift */,
 				B0F1000000000000000000D04 /* VisionService.swift */,
+				B0F1000000000000000000D08 /* AnalyticsService.swift */,
+				B0F1000000000000000000D09 /* AmplitudeAnalyticsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -535,6 +555,9 @@
 			dependencies = (
 			);
 			name = poby;
+			packageProductDependencies = (
+				B0P1000000000000000000P02 /* AmplitudeSwift */,
+			);
 			productName = poby;
 			productReference = AE9187702FB0D6B300A79154 /* poby.app */;
 			productType = "com.apple.product-type.application";
@@ -607,6 +630,9 @@
 				Base,
 			);
 			mainGroup = AE9187672FB0D6B300A79154;
+			packageReferences = (
+				B0P1000000000000000000P01 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */,
+			);
 			productRefGroup = AE9187712FB0D6B300A79154 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -675,6 +701,8 @@
 				B0B1000000000000000000D05 /* SilhouetteOverlay.swift in Sources */,
 				B0B1000000000000000000D06 /* AppSettings.swift in Sources */,
 				B0B1000000000000000000D07 /* UserDefaultsAppSettingsStore.swift in Sources */,
+				B0B1000000000000000000D08 /* AnalyticsService.swift in Sources */,
+				B0B1000000000000000000D09 /* AmplitudeAnalyticsService.swift in Sources */,
 				B0B1000000000000000000E02 /* GlassChip.swift in Sources */,
 				B0B1000000000000000000E03 /* GuideThumb.swift in Sources */,
 				B0B1000000000000000000E04 /* PlusThumb.swift in Sources */,
@@ -726,6 +754,25 @@
 			targetProxy = AE91878B2FB0D6B500A79154 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B0P1000000000000000000P01 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/amplitude/Amplitude-Swift.git";
+			requirement = {
+				kind = exactVersion;
+				version = 1.8.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B0P1000000000000000000P02 /* AmplitudeSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0P1000000000000000000P01 /* XCRemoteSwiftPackageReference "Amplitude-Swift" */;
+			productName = AmplitudeSwift;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCBuildConfiguration section */
 		AE9187922FB0D6B500A79154 /* Debug */ = {
@@ -849,6 +896,7 @@
 		};
 		AE9187952FB0D6B500A79154 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0F1000000000000000000G01 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -857,7 +905,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"poby/Preview Content\"";
 				DEVELOPMENT_TEAM = D83KY64ZJK;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = poby/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
 				INFOPLIST_KEY_UIAppFonts = (
 					"Resources/Fonts/Pretendard-Regular.otf",
@@ -888,6 +937,7 @@
 		};
 		AE9187962FB0D6B500A79154 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B0F1000000000000000000G01 /* Secrets.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -896,7 +946,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"poby/Preview Content\"";
 				DEVELOPMENT_TEAM = D83KY64ZJK;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = poby/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "사진을 찍기 위해 카메라 권한이 필요해요.";
 				INFOPLIST_KEY_UIAppFonts = (
 					"Resources/Fonts/Pretendard-Regular.otf",

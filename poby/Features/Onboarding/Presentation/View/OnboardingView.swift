@@ -2,6 +2,7 @@ import SwiftUI
 
 struct OnboardingView: View {
     let skipDetail: Bool
+    let analytics: AnalyticsService
     let onComplete: () -> Void
 
     @State private var step: TutorialStep = .landing
@@ -41,6 +42,10 @@ struct OnboardingView: View {
             }
         }
         .task {
+            analytics.log(
+                AnalyticsEvent.tutorialStepViewed,
+                properties: ["step": TutorialStep.landing.analyticsValue]
+            )
             try? await Task.sleep(nanoseconds: 2_400_000_000)
             guard step == .landing else { return }
             if skipDetail {
@@ -49,6 +54,10 @@ struct OnboardingView: View {
                 withAnimation(.easeOut(duration: 0.35)) {
                     step = .whyPoby
                 }
+                analytics.log(
+                    AnalyticsEvent.tutorialStepViewed,
+                    properties: ["step": TutorialStep.whyPoby.analyticsValue]
+                )
             }
         }
     }
@@ -161,6 +170,13 @@ struct OnboardingView: View {
 private enum TutorialStep {
     case landing
     case whyPoby
+
+    var analyticsValue: String {
+        switch self {
+        case .landing: return "landing"
+        case .whyPoby: return "why_poby"
+        }
+    }
 }
 
 private struct ViewfinderMark: View {
@@ -211,6 +227,6 @@ private struct PobyWordmark: View {
 
 #if DEBUG
 #Preview {
-    OnboardingView(skipDetail: false, onComplete: {})
+    OnboardingView(skipDetail: false, analytics: AmplitudeAnalyticsService(), onComplete: {})
 }
 #endif

@@ -185,7 +185,10 @@ struct GuideCaptureView: View {
                             .frame(height: AppMetrics.Control.buttonHeight)
                             .background(palette.glassFill, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
                     }
-                    Button(action: { onConfirmed(imageData) }) {
+                    Button(action: {
+                        viewModel.confirmCaptured()
+                        onConfirmed(imageData)
+                    }) {
                         Text("완료")
                             .font(AppTypography.buttonPrimary)
                             .foregroundStyle(AppColors.mintDeep)

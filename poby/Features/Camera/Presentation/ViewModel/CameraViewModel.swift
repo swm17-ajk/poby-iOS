@@ -20,6 +20,7 @@ final class CameraViewModel: ObservableObject {
     let cameraService: CameraService
     private let guideRepository: GuideRepositoryProtocol
     private let settingsStore: UserDefaultsAppSettingsStore
+    private let analytics: AnalyticsService
     private let matchEngine: MatchEngine
     private var cancellables = Set<AnyCancellable>()
     private var seenGuideIds: Set<UUID> = []
@@ -30,7 +31,8 @@ final class CameraViewModel: ObservableObject {
         cameraService: CameraService,
         guideRepository: GuideRepositoryProtocol,
         visionService: VisionService,
-        settingsStore: UserDefaultsAppSettingsStore
+        settingsStore: UserDefaultsAppSettingsStore,
+        analytics: AnalyticsService
     ) {
         let loadedSettings = settingsStore.load()
         var initialState = state
@@ -41,6 +43,7 @@ final class CameraViewModel: ObservableObject {
         self.cameraService = cameraService
         self.guideRepository = guideRepository
         self.settingsStore = settingsStore
+        self.analytics = analytics
         self.matchEngine = MatchEngine(visionService: visionService)
         self.settings = loadedSettings
         self.selectedZoom = loadedSettings.selectedZoom
@@ -68,6 +71,7 @@ final class CameraViewModel: ObservableObject {
         self.state = previewState
         self.cameraService = CameraService()
         self.settingsStore = UserDefaultsAppSettingsStore()
+        self.analytics = AmplitudeAnalyticsService()
         self.matchEngine = MatchEngine(visionService: VisionService())
         self.settings = .defaults
         self.guideColorPreference = settings.guideColor
@@ -102,6 +106,7 @@ final class CameraViewModel: ObservableObject {
         } catch let error as CameraServiceError {
             if case .cameraPermissionDenied = error {
                 state.status = .denied
+                analytics.log(AnalyticsEvent.cameraPermissionDenied)
             } else {
                 state.status = .failed(message: error.localizedDescription)
             }
@@ -126,6 +131,16 @@ final class CameraViewModel: ObservableObject {
                 capturedGuide: selectedGuide,
                 showGuide: selectedGuide != nil
             )
+            analytics.log(
+                AnalyticsEvent.photoCaptured,
+                properties: [
+                    "guide_applied": selectedGuide != nil,
+                    "is_matched": isMatched,
+                    "aspect_ratio": state.aspectRatio.rawValue,
+                    "facing": settings.cameraPosition.rawValue
+                ]
+            )
+            analytics.log(AnalyticsEvent.capturePreviewViewed)
             state.status = .ready
         } catch {
             state.status = .failed(message: error.localizedDescription)
@@ -134,6 +149,10 @@ final class CameraViewModel: ObservableObject {
 
     func confirmSaveCapture() async {
         guard let pending = state.pendingCapture else { return }
+        analytics.log(
+            AnalyticsEvent.capturePreviewAction,
+            properties: ["action": "save"]
+        )
         state.pendingCapture = nil
         do {
             try await cameraService.saveToPhotoLibrary(pending.imageData)
@@ -143,7 +162,11 @@ final class CameraViewModel: ObservableObject {
         }
     }
 
-    func discardCapture() {
+    func discardCapture(action: String) {
+        analytics.log(
+            AnalyticsEvent.capturePreviewAction,
+            properties: ["action": action]
+        )
         state.pendingCapture = nil
     }
 
@@ -151,12 +174,30 @@ final class CameraViewModel: ObservableObject {
         guard var pending = state.pendingCapture else { return }
         pending.showGuide.toggle()
         state.pendingCapture = pending
+        analytics.log(
+            AnalyticsEvent.capturePreviewAction,
+            properties: [
+                "action": "toggle_guide",
+                "show_guide": pending.showGuide
+            ]
+        )
     }
 
-    func presentAddGuideSheet() { state.isAddGuideSheetPresented = true }
+    func presentAddGuideSheet() {
+        state.isAddGuideSheetPresented = true
+        analytics.log(AnalyticsEvent.addGuideOpened)
+    }
     func presentPhotoPicker() {
         state.isAddGuideSheetPresented = false
         state.isPhotoPickerPresented = true
+        logAddGuideMethodSelected(source: "gallery")
+    }
+
+    func logAddGuideMethodSelected(source: String) {
+        analytics.log(
+            AnalyticsEvent.addGuideMethodSelected,
+            properties: ["source": source]
+        )
     }
 
     func selectGuide(_ guide: Guide) {
@@ -171,6 +212,10 @@ final class CameraViewModel: ObservableObject {
         isMatched = false
         matchEngine.setGuide(guide)
         persist { $0.selectedGuideId = guide.id }
+        analytics.log(
+            AnalyticsEvent.guideApplied,
+            properties: ["guide_id": guide.id.uuidString]
+        )
     }
 
     func requestDelete(_ guide: Guide) { guideToDelete = guide }
@@ -186,13 +231,22 @@ final class CameraViewModel: ObservableObject {
     }
 
     func selectAspectRatio(_ ratio: CameraAspectRatio) {
+        guard ratio != state.aspectRatio else { return }
         state.aspectRatio = ratio
         persist { $0.selectedAspectRatio = state.aspectRatio }
+        analytics.log(
+            AnalyticsEvent.aspectRatioChanged,
+            properties: ["aspect_ratio": ratio.rawValue]
+        )
     }
 
     func selectTheme(_ theme: AppTheme) {
         state.selectedTheme = theme
         persist { $0.selectedTheme = theme }
+        analytics.log(
+            AnalyticsEvent.themeSelected,
+            properties: ["theme": theme.rawValue]
+        )
     }
 
     func cycleFlashMode() {
@@ -200,6 +254,10 @@ final class CameraViewModel: ObservableObject {
         state.isFlashOn = settings.flashMode != .off
         cameraService.setFlashMode(settings.flashMode)
         settingsStore.save(settings)
+        analytics.log(
+            AnalyticsEvent.flashToggled,
+            properties: ["flash_on": state.isFlashOn]
+        )
     }
 
     func toggleGuideColor() {
@@ -209,9 +267,19 @@ final class CameraViewModel: ObservableObject {
 
     func selectZoom(_ zoom: Double) {
         Task {
+            let previous = selectedZoom
             let applied = await cameraService.setZoomFactor(zoom)
             selectedZoom = applied
             persist { $0.selectedZoom = applied }
+            if applied != previous {
+                analytics.log(
+                    AnalyticsEvent.zoomChanged,
+                    properties: [
+                        "zoom": applied,
+                        "facing": settings.cameraPosition.rawValue
+                    ]
+                )
+            }
         }
     }
 
@@ -225,6 +293,10 @@ final class CameraViewModel: ObservableObject {
                     $0.cameraPosition = position
                     $0.selectedZoom = selectedZoom
                 }
+                analytics.log(
+                    AnalyticsEvent.cameraFacingToggled,
+                    properties: ["facing": position.rawValue]
+                )
             } catch {
                 state.status = .failed(message: error.localizedDescription)
             }

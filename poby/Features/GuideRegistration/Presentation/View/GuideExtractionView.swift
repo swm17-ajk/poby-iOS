@@ -44,7 +44,10 @@ struct GuideExtractionView: View {
 
     private func topBar(palette: AppPalette) -> some View {
         HStack {
-            Button("취소", action: onCancel)
+            Button("취소") {
+                viewModel.cancel()
+                onCancel()
+            }
                 .font(AppTypography.body)
                 .foregroundStyle(palette.onSurface)
             Spacer()

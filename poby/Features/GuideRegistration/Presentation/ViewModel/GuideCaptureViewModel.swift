@@ -9,17 +9,20 @@ final class GuideCaptureViewModel: ObservableObject {
 
     let cameraService: CameraService
     private let settingsStore: UserDefaultsAppSettingsStore
+    private let analytics: AnalyticsService
     private var settings: AppSettings
 
     init(
         state: GuideCaptureViewState = .initial,
         cameraService: CameraService,
-        settingsStore: UserDefaultsAppSettingsStore
+        settingsStore: UserDefaultsAppSettingsStore,
+        analytics: AnalyticsService
     ) {
         let loadedSettings = settingsStore.load()
         self.state = state
         self.cameraService = cameraService
         self.settingsStore = settingsStore
+        self.analytics = analytics
         self.settings = loadedSettings
         self.isFlashOn = loadedSettings.flashMode != .off
         self.cameraPosition = loadedSettings.cameraPosition
@@ -30,6 +33,7 @@ final class GuideCaptureViewModel: ObservableObject {
         self.state = previewState
         self.cameraService = CameraService()
         self.settingsStore = UserDefaultsAppSettingsStore()
+        self.analytics = AmplitudeAnalyticsService()
         self.settings = .defaults
         self.isFlashOn = settings.flashMode != .off
         self.cameraPosition = settings.cameraPosition
@@ -40,6 +44,7 @@ final class GuideCaptureViewModel: ObservableObject {
 
     func onAppear() async {
         guard state.status == .idle || state.status == .denied else { return }
+        analytics.log(AnalyticsEvent.guideCaptureViewed)
         state.status = .preparing
         do {
             try await cameraService.start()
@@ -65,6 +70,7 @@ final class GuideCaptureViewModel: ObservableObject {
 
     func capture() async {
         guard state.status == .ready else { return }
+        analytics.log(AnalyticsEvent.guideCaptureShutterTapped)
         state.status = .capturing
         do {
             let data = try await cameraService.capturePhoto()
@@ -76,7 +82,18 @@ final class GuideCaptureViewModel: ObservableObject {
     }
 
     func discardCaptured() {
+        analytics.log(
+            AnalyticsEvent.guideCaptureAction,
+            properties: ["action": "retake"]
+        )
         state.capturedImage = nil
+    }
+
+    func confirmCaptured() {
+        analytics.log(
+            AnalyticsEvent.guideCaptureAction,
+            properties: ["action": "confirm"]
+        )
     }
 
     func toggleFlash() {

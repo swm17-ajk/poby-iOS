@@ -132,8 +132,8 @@ struct CameraView: View {
                 if let pending = viewModel.state.pendingCapture {
                     CapturedPreviewOverlay(
                         pending: pending,
-                        onBack: { viewModel.discardCapture() },
-                        onRetake: { viewModel.discardCapture() },
+                        onBack: { viewModel.discardCapture(action: "back") },
+                        onRetake: { viewModel.discardCapture(action: "retake") },
                         onSave: { Task { await viewModel.confirmSaveCapture() } },
                         onToggleGuide: { viewModel.togglePendingGuide() },
                         palette: palette
@@ -165,7 +165,10 @@ struct CameraView: View {
                 isPresented: $viewModel.state.isAddGuideSheetPresented,
                 titleVisibility: .visible
             ) {
-                Button("가이드 사진 찍기") { onGuideCaptureRequested() }
+                Button("가이드 사진 찍기") {
+                    viewModel.logAddGuideMethodSelected(source: "capture")
+                    onGuideCaptureRequested()
+                }
                 Button("갤러리에서 등록") { viewModel.presentPhotoPicker() }
                 Button("취소", role: .cancel) {}
             }

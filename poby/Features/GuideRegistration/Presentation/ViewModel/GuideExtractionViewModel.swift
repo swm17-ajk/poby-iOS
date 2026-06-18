@@ -7,16 +7,19 @@ final class GuideExtractionViewModel: ObservableObject {
     let sourceImageData: Data
     private let visionService: VisionService
     private let guideRepository: GuideRepositoryProtocol
+    private let analytics: AnalyticsService
     private var isPreview = false
 
     init(
         imageData: Data,
         visionService: VisionService,
-        guideRepository: GuideRepositoryProtocol
+        guideRepository: GuideRepositoryProtocol,
+        analytics: AnalyticsService
     ) {
         self.sourceImageData = imageData
         self.visionService = visionService
         self.guideRepository = guideRepository
+        self.analytics = analytics
     }
 
 #if DEBUG
@@ -24,6 +27,7 @@ final class GuideExtractionViewModel: ObservableObject {
         self.state = previewState
         self.sourceImageData = imageData
         self.visionService = VisionService()
+        self.analytics = AmplitudeAnalyticsService()
         do {
             self.guideRepository = try FileGuideRepository()
         } catch {
@@ -41,13 +45,17 @@ final class GuideExtractionViewModel: ObservableObject {
     func extract() async {
         if isPreview { return }
         guard case .loading = state else { return }
+        logViewedStatus()
         do {
             let silhouette = try await visionService.extractSilhouette(from: sourceImageData)
             state = .success(silhouette: silhouette)
+            logViewedStatus()
         } catch let error as VisionServiceError {
             state = .failure(message: error.localizedDescription)
+            logViewedStatus()
         } catch {
             state = .failure(message: error.localizedDescription)
+            logViewedStatus()
         }
     }
 
@@ -55,6 +63,35 @@ final class GuideExtractionViewModel: ObservableObject {
         guard case let .success(silhouette) = state else {
             throw VisionServiceError.noPersonFound
         }
-        return try await guideRepository.add(silhouette: silhouette, sourceImage: sourceImageData)
+        let guide = try await guideRepository.add(silhouette: silhouette, sourceImage: sourceImageData)
+        analytics.log(AnalyticsEvent.guideSaved)
+        return guide
+    }
+
+    func cancel() {
+        analytics.log(
+            AnalyticsEvent.guideExtractionCancelled,
+            properties: ["status": state.analyticsStatus]
+        )
+    }
+
+    private func logViewedStatus() {
+        analytics.log(
+            AnalyticsEvent.guideExtractionViewed,
+            properties: ["status": state.analyticsStatus]
+        )
+    }
+}
+
+private extension GuideExtractionViewState {
+    var analyticsStatus: String {
+        switch self {
+        case .loading:
+            return "loading"
+        case .success:
+            return "success"
+        case .failure:
+            return "failure"
+        }
     }
 }
