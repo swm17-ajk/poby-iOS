@@ -129,7 +129,26 @@ final class VisionService {
             throw VisionServiceError.noPersonFound
         }
         return observation.topLevelContours.map { contour in
-            contour.normalizedPoints.map { NormalizedPoint(x: Double($0.x), y: Double($0.y)) }
+            let points = contour.normalizedPoints.map { NormalizedPoint(x: Double($0.x), y: Double($0.y)) }
+            return smoothedContour(points)
+        }
+    }
+
+    private static func smoothedContour(_ points: [NormalizedPoint]) -> [NormalizedPoint] {
+        guard points.count > 12 else { return points }
+        let step = max(1, Int(ceil(Double(points.count) / 96.0)))
+        let sampled = points.enumerated().compactMap { index, point in
+            index % step == 0 ? point : nil
+        }
+        guard sampled.count > 4 else { return sampled }
+        return sampled.indices.map { index in
+            let previous = sampled[(index - 1 + sampled.count) % sampled.count]
+            let current = sampled[index]
+            let next = sampled[(index + 1) % sampled.count]
+            return NormalizedPoint(
+                x: (previous.x + current.x * 2 + next.x) / 4,
+                y: (previous.y + current.y * 2 + next.y) / 4
+            )
         }
     }
 }

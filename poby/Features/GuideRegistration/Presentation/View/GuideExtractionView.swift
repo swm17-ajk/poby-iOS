@@ -2,6 +2,7 @@ import SwiftUI
 
 struct GuideExtractionView: View {
     @StateObject private var viewModel: GuideExtractionViewModel
+    @State private var settings = UserDefaultsAppSettingsStore().load()
     private let onCancel: () -> Void
     private let onDone: () -> Void
 
@@ -16,17 +17,20 @@ struct GuideExtractionView: View {
     }
 
     var body: some View {
-        ZStack {
-            AppColors.Warm.paper.ignoresSafeArea()
+        let palette = settings.selectedTheme.palette
 
-            VStack(spacing: 0) {
-                topBar
-                photoArea
-                Spacer(minLength: 0)
-            }
+        VStack(spacing: 0) {
+            topBar(palette: palette)
+            Spacer().frame(height: AppSpacing.edge)
+            photoArea(palette: palette)
+            Spacer().frame(height: AppSpacing.groupS)
+            statusArea(palette: palette)
+            Spacer(minLength: 0)
         }
+        .background(palette.surface.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
         .task { await viewModel.extract() }
+        .onAppear { settings = AppDIContainer.shared.makeSettingsStore().load() }
     }
 
     private var sourceImage: UIImage? {
@@ -38,120 +42,118 @@ struct GuideExtractionView: View {
         return img.size.width / img.size.height
     }
 
-    private var topBar: some View {
+    private func topBar(palette: AppPalette) -> some View {
         HStack {
-            Button("취소", action: onCancel)
+            Button("취소") {
+                viewModel.cancel()
+                onCancel()
+            }
                 .font(AppTypography.body)
-                .foregroundStyle(AppColors.inkPrimary)
+                .foregroundStyle(palette.onSurface)
             Spacer()
             Text("새 가이드라인")
                 .font(AppTypography.hintLarge)
-                .foregroundStyle(AppColors.inkPrimary)
+                .foregroundStyle(palette.onSurface)
             Spacer()
             Button(action: { Task { await complete() } }) {
                 Text("완료")
                     .font(AppTypography.hintLarge)
-                    .foregroundStyle(viewModel.isDoneEnabled ? AppColors.Warm.doneActive : AppColors.Warm.doneInactive)
+                    .foregroundStyle(AppColors.mint.opacity(viewModel.isDoneEnabled ? 1.0 : 0.3))
             }
             .disabled(!viewModel.isDoneEnabled)
         }
         .padding(.horizontal, AppSpacing.edge)
-        .frame(height: 52)
+        .frame(height: AppMetrics.Control.buttonHeight)
+        .padding(.top, AppSpacing.gapS)
     }
 
-    private var photoArea: some View {
-        Color.black.opacity(0.06)
-            .aspectRatio(sourceAspectRatio, contentMode: .fit)
+    private func photoArea(palette: AppPalette) -> some View {
+        let ratio = successAspectRatio ?? 3.0 / 4.0
+        return palette.surfaceMuted
+            .aspectRatio(ratio, contentMode: .fit)
             .overlay {
                 if let uiImage = sourceImage {
                     Image(uiImage: uiImage)
                         .resizable()
-                        .aspectRatio(contentMode: .fit)
+                        .scaledToFit()
                 }
             }
             .overlay {
                 switch viewModel.state {
                 case .loading:
-                    loadingOverlay
+                    loadingSpinner
                 case .success(let silhouette):
-                    ZStack(alignment: .bottom) {
-                        SilhouetteOverlay(silhouette: silhouette, color: .white, lineWidth: 2.5, glow: true)
-                        successToast
-                    }
-                case .failure(let message):
-                    failureCard(message)
+                    SilhouetteOverlay(
+                        silhouette: silhouette,
+                        color: palette.onSurface,
+                        lineWidth: AppMetrics.Camera.guideLineWidth,
+                        glow: false
+                    )
+                case .failure:
+                    EmptyView()
                 }
             }
-            .clipShape(RoundedRectangle(cornerRadius: 26))
-            .appShadow(AppShadow.card)
+            .clipShape(RoundedRectangle(cornerRadius: AppRadius.card))
             .padding(.horizontal, AppSpacing.edge)
-            .padding(.top, AppSpacing.edge)
     }
 
-    private var loadingOverlay: some View {
+    private var successAspectRatio: CGFloat? {
+        if case .success = viewModel.state {
+            return sourceAspectRatio
+        }
+        return nil
+    }
+
+    private var loadingSpinner: some View {
         ZStack {
-            Color.black.opacity(0.42)
-            VStack(spacing: AppSpacing.groupS) {
-                CircularSpinner(size: 48, lineWidth: 3, color: AppColors.mint)
-                Text("인물을 감지하고 있어요")
-                    .font(Font.pretendard(.semiBold, size: 16))
-                    .foregroundStyle(.white)
+            RoundedRectangle(cornerRadius: AppRadius.row)
+                .fill(Color.black.opacity(0.35))
+                .frame(
+                    width: AppMetrics.GuideExtraction.loadingBoxSize,
+                    height: AppMetrics.GuideExtraction.loadingBoxSize
+                )
+            CircularSpinner(
+                size: AppMetrics.GuideExtraction.spinnerSize,
+                lineWidth: AppMetrics.GuideExtraction.spinnerLineWidth,
+                color: AppColors.mint
+            )
+        }
+    }
+
+    private func statusArea(palette: AppPalette) -> some View {
+        Group {
+            switch viewModel.state {
+            case .loading:
+                VStack(spacing: AppSpacing.gapM) {
                 AnimatedProgressBar(targetProgress: 0.9, color: AppColors.mint)
-                    .frame(width: 220, height: 6)
-                Text("분석 중")
-                    .font(AppTypography.captionMono)
-                    .foregroundStyle(.white.opacity(0.65))
-            }
-        }
-    }
-
-    private var successToast: some View {
-        HStack(spacing: AppSpacing.gapXS) {
-            Image(systemName: "checkmark")
-                .foregroundStyle(AppColors.mint)
-                .font(.system(size: 14, weight: .bold))
-            Text("가이드라인이 추출되었어요")
-                .font(AppTypography.hintSmall)
-                .foregroundStyle(.white)
-        }
-        .padding(.horizontal, AppSpacing.gapM)
-        .padding(.vertical, AppSpacing.gapS)
-        .background(.black.opacity(0.5), in: RoundedRectangle(cornerRadius: AppRadius.thumb))
-        .padding(AppSpacing.gapM)
-    }
-
-    private func failureCard(_ message: String) -> some View {
-        ZStack {
-            Color.black.opacity(0.55)
-            VStack(spacing: AppSpacing.gapM) {
-                ZStack {
-                    Circle()
-                        .fill(AppColors.danger.opacity(0.12))
-                        .frame(width: 44, height: 44)
-                    Image(systemName: "exclamationmark")
-                        .foregroundStyle(AppColors.danger)
-                        .font(.system(size: 20, weight: .bold))
+                    .frame(height: AppMetrics.GuideExtraction.progressHeight)
+                    .clipShape(Capsule())
+                Text("인물을 감지하고 있어요")
+                    .font(AppTypography.body)
+                    .foregroundStyle(palette.onSurfaceMuted)
                 }
-                Text("인물을 찾지 못했어요")
-                    .font(Font.pretendard(.bold, size: 17))
-                    .foregroundStyle(AppColors.inkPrimary)
-                Text("얼굴과 상체가 모두 보이는 사진으로\n다시 시도해주세요.")
-                    .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.inkTertiary)
+                .padding(.horizontal, AppSpacing.edge)
+            case .success:
+                Text("가이드라인이 추출되었어요")
+                    .font(AppTypography.body)
+                    .foregroundStyle(palette.onSurfaceMuted)
                     .multilineTextAlignment(.center)
-                Button(action: onCancel) {
-                    Text("다른 사진 선택")
-                        .font(AppTypography.bodyEmphasis)
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, AppSpacing.gapM)
-                        .background(AppColors.inkPrimary, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, AppSpacing.groupM)
+            case .failure(let message):
+                VStack(spacing: AppSpacing.gapM) {
+                    Text(message)
+                        .font(AppTypography.body)
+                        .foregroundStyle(AppColors.danger)
+                        .multilineTextAlignment(.center)
+                    Button(action: { Task { await viewModel.extract() } }) {
+                        Text("다시 시도")
+                            .font(AppTypography.buttonPrimary)
+                            .foregroundStyle(AppColors.mint)
+                    }
                 }
-                .padding(.top, AppSpacing.gapXS)
+                .padding(.horizontal, AppSpacing.groupM)
             }
-            .padding(AppSpacing.groupS)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: AppRadius.card))
-            .padding(AppSpacing.groupS)
         }
     }
 

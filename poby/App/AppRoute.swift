@@ -2,6 +2,7 @@ import Foundation
 import SwiftUI
 
 enum AppRoute: Hashable {
+    case gallery
     case guideCapture
     case guideExtraction(imageData: Data)
 }
@@ -12,6 +13,10 @@ final class AppRouter: ObservableObject {
 
     func push(_ route: AppRoute) {
         path.append(route)
+    }
+
+    func pop() {
+        _ = path.popLast()
     }
 
     func popToRoot() {

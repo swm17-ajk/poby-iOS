@@ -2,7 +2,8 @@ import SwiftUI
 
 struct GuideCaptureView: View {
     @StateObject private var viewModel: GuideCaptureViewModel
-    @State private var isFlashOn: Bool = false
+    @State private var settings = UserDefaultsAppSettingsStore().load()
+    @State private var shutterFlash = false
     private let onCancel: () -> Void
     private let onConfirmed: (Data) -> Void
 
@@ -19,20 +20,22 @@ struct GuideCaptureView: View {
     }
 
     var body: some View {
+        let palette = settings.selectedTheme.palette
         ZStack {
-            AppColors.cameraBlack.ignoresSafeArea()
-
-            if viewModel.state.status == .ready || viewModel.state.status == .capturing {
-                CameraPreviewView(session: viewModel.session)
-                    .ignoresSafeArea()
-            }
+            palette.surface.ignoresSafeArea()
 
             VStack(spacing: 0) {
                 topBar
                     .padding(.top, AppSpacing.gapS)
+                    .background(palette.surface)
+
+                guideCameraBox(palette: palette)
 
                 Spacer(minLength: 0)
+            }
 
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
                 Text("얼굴 · 상체가 모두 보이도록")
                     .font(AppTypography.hintSmall)
                     .foregroundStyle(.white.opacity(0.78))
@@ -40,14 +43,13 @@ struct GuideCaptureView: View {
 
                 ShutterButton(
                     isCapturing: viewModel.state.status == .capturing,
+                    palette: palette,
                     action: { Task { await viewModel.capture() } }
                 )
                 .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
 
-                BottomControlsBar(
-                    onGalleryTap: openSystemGallery,
-                    onFlipTap: {}
-                )
+                palette.surface
+                    .frame(height: AppMetrics.Camera.controlsHeight)
             }
             .ignoresSafeArea(edges: .bottom)
 
@@ -59,21 +61,32 @@ struct GuideCaptureView: View {
             }
 
             if let data = viewModel.state.capturedImage {
-                recaptureCard(imageData: data)
+                recaptureView(imageData: data, palette: palette)
             }
         }
         .navigationBarBackButtonHidden(true)
         .task { await viewModel.onAppear() }
         .onDisappear { viewModel.onDisappear() }
+        .onAppear { settings = AppDIContainer.shared.makeSettingsStore().load() }
+        .onChange(of: viewModel.state.status) { _, status in
+            if status == .capturing {
+                shutterFlash = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
+                    shutterFlash = false
+                }
+            }
+        }
     }
 
+    @ViewBuilder
     private var topBar: some View {
+        let palette = settings.selectedTheme.palette
         HStack {
             Button(action: onCancel) {
-                GlassChip {
+                GlassChip(palette: palette) {
                     Image(systemName: "chevron.left")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
+                        .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                        .foregroundStyle(palette.onSurface)
                 }
             }
             .buttonStyle(.plain)
@@ -82,69 +95,113 @@ struct GuideCaptureView: View {
 
             Text("가이드로 쓸 사진을 찍어주세요")
                 .font(AppTypography.hintSmall)
-                .foregroundStyle(.white)
+                .foregroundStyle(palette.onSurface)
                 .padding(.horizontal, AppSpacing.gapM)
                 .padding(.vertical, 8)
                 .background(Capsule().fill(.black.opacity(0.4)))
 
             Spacer()
 
-            Button(action: { isFlashOn.toggle() }) {
-                GlassChip {
-                    Image(systemName: isFlashOn ? "bolt.fill" : "bolt.slash")
-                        .font(.system(size: 14, weight: .semibold))
-                        .foregroundStyle(.white)
+            if viewModel.cameraPosition == .back {
+                Button(action: { viewModel.toggleFlash() }) {
+                    GlassChip(palette: palette) {
+                        Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash")
+                            .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                            .foregroundStyle(palette.onSurface)
+                    }
                 }
+                .buttonStyle(.plain)
+            } else {
+                Color.clear
+                    .frame(width: AppMetrics.iconButton, height: AppMetrics.iconButton)
             }
-            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.edge)
     }
 
-    private func recaptureCard(imageData: Data) -> some View {
-        ZStack {
-            Color.black.opacity(0.55).ignoresSafeArea()
+    private func guideCameraBox(palette: AppPalette) -> some View {
+        GeometryReader { geo in
+            let width = geo.size.width
+            let ratio = settings.selectedAspectRatio.value
+            let topOffset = settings.selectedAspectRatio == .oneOne ? width / 6 : 0
+            let height = width / ratio
 
-            VStack(spacing: AppSpacing.gapM) {
-                Text("이 사진으로 가이드를 만들까요?")
-                    .font(Font.pretendard(.bold, size: 17))
-                    .foregroundStyle(AppColors.inkPrimary)
-                Text("완료를 누르면 가이드라인을 추출해요.")
-                    .font(AppTypography.caption)
-                    .foregroundStyle(AppColors.inkTertiary)
-                    .multilineTextAlignment(.center)
+            ZStack {
+                if viewModel.state.status == .ready || viewModel.state.status == .capturing {
+                    CameraPreviewView(session: viewModel.session)
+                        .frame(width: width, height: height)
+                        .clipped()
+                }
+                if shutterFlash {
+                    Color.white
+                }
+            }
+            .frame(width: width, height: height)
+            .padding(.top, topOffset)
+        }
+        .frame(height: guideCameraContainerHeight)
+    }
+
+    private var guideCameraContainerHeight: CGFloat {
+        let width = UIScreen.main.bounds.width
+        let topOffset = settings.selectedAspectRatio == .oneOne ? width / 6 : 0
+        return topOffset + width / settings.selectedAspectRatio.value
+    }
+
+    private func recaptureView(imageData: Data, palette: AppPalette) -> some View {
+        ZStack {
+            palette.surface.ignoresSafeArea()
+
+            if let image = UIImage(data: imageData) {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+
+            VStack {
+                HStack {
+                    Button(action: onCancel) {
+                        GlassChip(palette: palette) {
+                            Image(systemName: "chevron.left")
+                                .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                                .foregroundStyle(palette.onSurface)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    Spacer()
+                }
+                .padding(.top, AppSpacing.gapS)
+                .padding(.horizontal, AppSpacing.edge)
+
+                Spacer()
 
                 HStack(spacing: AppSpacing.gapS) {
                     Button(action: { viewModel.discardCaptured() }) {
                         Text("재촬영")
                             .font(AppTypography.bodyEmphasis)
-                            .foregroundStyle(AppColors.inkPrimary)
+                            .foregroundStyle(palette.onSurface)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, AppSpacing.gapM)
-                            .background(AppColors.Warm.paper2, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
+                            .frame(height: AppMetrics.Control.buttonHeight)
+                            .background(palette.glassFill, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
                     }
-                    Button(action: { onConfirmed(imageData) }) {
+                    Button(action: {
+                        viewModel.confirmCaptured()
+                        onConfirmed(imageData)
+                    }) {
                         Text("완료")
-                            .font(Font.pretendard(.bold, size: 15))
+                            .font(AppTypography.buttonPrimary)
                             .foregroundStyle(AppColors.mintDeep)
                             .frame(maxWidth: .infinity)
-                            .padding(.vertical, AppSpacing.gapM)
+                            .frame(height: AppMetrics.Control.buttonHeight)
                             .background(AppColors.mint, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
-                            .appShadow(AppShadow.mintGlow)
                     }
                 }
+                .padding(.horizontal, AppSpacing.edge)
+                .frame(height: AppMetrics.Camera.controlsHeight)
+                .background(palette.surface)
             }
-            .padding(.horizontal, AppSpacing.groupS)
-            .padding(.top, AppSpacing.groupS)
-            .padding(.bottom, AppSpacing.gapM + 4)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: AppRadius.card))
-            .padding(.horizontal, AppSpacing.groupM)
-        }
-    }
-
-    private func openSystemGallery() {
-        if let url = URL(string: "photos-redirect://"), UIApplication.shared.canOpenURL(url) {
-            UIApplication.shared.open(url)
+            .ignoresSafeArea(edges: .bottom)
         }
     }
 
