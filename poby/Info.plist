@@ -39,11 +39,11 @@
 	<true/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>Resources/Fonts/Pretendard-Regular.otf</string>
-		<string>Resources/Fonts/Pretendard-Medium.otf</string>
-		<string>Resources/Fonts/Pretendard-SemiBold.otf</string>
-		<string>Resources/Fonts/Pretendard-Bold.otf</string>
-		<string>Resources/Fonts/Pretendard-ExtraBold.otf</string>
+		<string>Pretendard-Regular.otf</string>
+		<string>Pretendard-Medium.otf</string>
+		<string>Pretendard-SemiBold.otf</string>
+		<string>Pretendard-Bold.otf</string>
+		<string>Pretendard-ExtraBold.otf</string>
 	</array>
 	<key>UILaunchScreen</key>
 	<dict/>
