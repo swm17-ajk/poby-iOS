@@ -127,9 +127,55 @@ final class VisionService {
     }
 
     private static func extractObjectContoursSync(from cgImage: CGImage) throws -> [[NormalizedPoint]] {
+        if let foregroundContours = try extractForegroundContoursSync(from: cgImage),
+           foregroundContours.contains(where: { $0.count >= 8 }) {
+            return foregroundContours
+        }
+
+        let darkOnLightContours = try detectObjectContours(from: cgImage, detectsDarkOnLight: true)
+        let lightOnDarkContours = try detectObjectContours(from: cgImage, detectsDarkOnLight: false)
+        let contours = (darkOnLightContours + lightOnDarkContours)
+            .filter { isObjectCandidate($0.normalizedPath.boundingBox) }
+            .sorted { contourArea($0.normalizedPath.boundingBox) > contourArea($1.normalizedPath.boundingBox) }
+            .prefix(3)
+        let resolved = contours.map { contour in
+            let points = contour.normalizedPoints.map { NormalizedPoint(x: Double($0.x), y: Double($0.y)) }
+            return smoothedContour(points)
+        }
+        guard !resolved.isEmpty else {
+            throw VisionServiceError.noOutlineFound
+        }
+        return resolved
+    }
+
+    private static func extractForegroundContoursSync(from cgImage: CGImage) throws -> [[NormalizedPoint]]? {
+        let request = VNGenerateForegroundInstanceMaskRequest()
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([request])
+            guard let observation = request.results?.first,
+                  !observation.allInstances.isEmpty else {
+                return nil
+            }
+            let mask = try observation.generateScaledMaskForImage(
+                forInstances: observation.allInstances,
+                from: handler
+            )
+            return try extractContours(from: mask)
+        } catch VisionServiceError.noOutlineFound {
+            return nil
+        } catch {
+            throw VisionServiceError.processingFailed(error.localizedDescription)
+        }
+    }
+
+    private static func detectObjectContours(
+        from cgImage: CGImage,
+        detectsDarkOnLight: Bool
+    ) throws -> [VNContour] {
         let contourRequest = VNDetectContoursRequest()
         contourRequest.contrastAdjustment = 1.0
-        contourRequest.detectsDarkOnLight = false
+        contourRequest.detectsDarkOnLight = detectsDarkOnLight
         contourRequest.maximumImageDimension = 512
         let contourHandler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         do {
@@ -137,16 +183,7 @@ final class VisionService {
         } catch {
             throw VisionServiceError.processingFailed(error.localizedDescription)
         }
-        guard let observation = contourRequest.results?.first else {
-            throw VisionServiceError.noOutlineFound
-        }
-        let contours = observation.topLevelContours
-            .sorted { contourArea($0.normalizedPath.boundingBox) > contourArea($1.normalizedPath.boundingBox) }
-            .prefix(3)
-        return contours.map { contour in
-            let points = contour.normalizedPoints.map { NormalizedPoint(x: Double($0.x), y: Double($0.y)) }
-            return smoothedContour(points)
-        }
+        return contourRequest.results?.first?.topLevelContours ?? []
     }
 
     private static func extractContours(from mask: CVPixelBuffer) throws -> [[NormalizedPoint]] {
@@ -171,6 +208,17 @@ final class VisionService {
 
     private static func contourArea(_ rect: CGRect) -> CGFloat {
         rect.width * rect.height
+    }
+
+    private static func isObjectCandidate(_ rect: CGRect) -> Bool {
+        let edgeTolerance = 0.015
+        let touchesImageEdge = rect.minX <= edgeTolerance ||
+            rect.minY <= edgeTolerance ||
+            rect.maxX >= 1 - edgeTolerance ||
+            rect.maxY >= 1 - edgeTolerance
+        let coversAlmostWholeImage = rect.width >= 0.92 || rect.height >= 0.92
+        let tooSmall = rect.width < 0.03 || rect.height < 0.03
+        return !touchesImageEdge && !coversAlmostWholeImage && !tooSmall
     }
 
     private static func smoothedContour(_ points: [NormalizedPoint]) -> [NormalizedPoint] {

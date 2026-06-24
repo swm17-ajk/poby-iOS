@@ -37,10 +37,6 @@ struct GuideCaptureView: View {
 
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
-                Text("얼굴 · 상체가 모두 보이도록")
-                    .font(AppTypography.hintSmall)
-                    .foregroundStyle(.white.opacity(0.78))
-                    .padding(.bottom, AppSpacing.gapM)
 
                 ShutterButton(
                     isCapturing: viewModel.state.status == .capturing,
