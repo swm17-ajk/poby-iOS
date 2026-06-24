@@ -72,7 +72,7 @@ struct CameraView: View {
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
 
-                    if shouldShowExternalZoom {
+                    if shouldShowZoomControl {
                         zoomControl(palette: palette)
                             .padding(.bottom, AppSpacing.gapM)
                     }
@@ -227,8 +227,8 @@ struct CameraView: View {
         viewModel.cameraService.position == .back
     }
 
-    private var shouldShowExternalZoom: Bool {
-        viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio == .nineSixteen
+    private var shouldShowZoomControl: Bool {
+        viewModel.availableZooms.count > 1
     }
 
     private var controlRotation: Angle {
@@ -291,11 +291,6 @@ struct CameraView: View {
                         Spacer(minLength: 0)
                         palette.surface.frame(height: maskHeight)
                     }
-                }
-
-                if viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio != .nineSixteen {
-                    zoomControl(palette: palette)
-                    .position(x: width / 2, y: containerHeight - maskHeight - AppSpacing.gapM - 21)
                 }
             }
             .background(Color.black)
