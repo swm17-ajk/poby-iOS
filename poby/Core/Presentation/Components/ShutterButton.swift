@@ -29,7 +29,6 @@ struct ShutterButton: View {
                     .scaleEffect(isCapturing ? 0.85 : 1)
                     .animation(.easeOut(duration: 0.12), value: isCapturing)
             }
-            .appShadow(matched ? AppShadow.mintGlow : AppShadow.shutter)
         }
         .buttonStyle(.plain)
         .disabled(isCapturing)

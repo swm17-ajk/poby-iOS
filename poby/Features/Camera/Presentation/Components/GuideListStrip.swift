@@ -31,9 +31,26 @@ struct GuideListStrip: View {
                     .frame(minWidth: stripWidth, alignment: .center)
                 }
                 .frame(width: stripWidth)
+                .mask(edgeFadeMask)
+                .transaction { transaction in
+                    transaction.animation = nil
+                }
                 Spacer(minLength: 0)
             }
         }
         .frame(height: AppMetrics.Camera.guideStripHeight)
+    }
+
+    private var edgeFadeMask: some View {
+        LinearGradient(
+            stops: [
+                .init(color: .clear, location: 0),
+                .init(color: .black, location: 0.1),
+                .init(color: .black, location: 0.9),
+                .init(color: .clear, location: 1)
+            ],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
     }
 }
