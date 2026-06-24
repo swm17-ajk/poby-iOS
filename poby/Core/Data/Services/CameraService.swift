@@ -32,6 +32,7 @@ final class CameraService: NSObject {
     private var currentInput: AVCaptureDeviceInput?
     private var currentPosition: CameraPosition = .back
     private var flashMode: FlashMode = .off
+    private var activeBackLens: BackLens = .wide
 
     var onVideoFrame: (@Sendable (CVPixelBuffer) -> Void)?
     var position: CameraPosition { currentPosition }
@@ -83,11 +84,15 @@ final class CameraService: NSObject {
         if ProcessInfo.processInfo.isiOSAppOnMac {
             return
         }
+        if position == currentPosition {
+            return
+        }
         try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Void, Error>) in
             sessionQueue.async { [self] in
                 do {
                     session.beginConfiguration()
                     try replaceInput(position: position)
+                    configureVideoConnections()
                     session.commitConfiguration()
                     cont.resume()
                 } catch {
@@ -110,20 +115,41 @@ final class CameraService: NSObject {
     func setZoomFactor(_ factor: Double) async -> Double {
         await withCheckedContinuation { (cont: CheckedContinuation<Double, Never>) in
             sessionQueue.async { [self] in
+                if currentPosition == .back, factor < 1.0 {
+                    do {
+                        session.beginConfiguration()
+                        try replaceInput(position: .back, backLens: .ultraWide)
+                        configureVideoConnections()
+                        session.commitConfiguration()
+                    } catch {
+                        session.commitConfiguration()
+                    }
+                } else if currentPosition == .back, activeBackLens == .ultraWide, factor >= 1.0 {
+                    do {
+                        session.beginConfiguration()
+                        try replaceInput(position: .back, backLens: .wide)
+                        configureVideoConnections()
+                        session.commitConfiguration()
+                    } catch {
+                        session.commitConfiguration()
+                    }
+                }
                 guard let device = currentInput?.device else {
                     cont.resume(returning: 1.0)
                     return
                 }
                 let minZoom = Double(device.minAvailableVideoZoomFactor)
                 let maxZoom = min(Double(device.maxAvailableVideoZoomFactor), 3.0)
-                let clamped = min(max(factor, minZoom), maxZoom)
+                let targetZoom = activeBackLens == .ultraWide ? max(factor / 0.6, 1.0) : factor
+                let clamped = min(max(targetZoom, minZoom), maxZoom)
                 do {
                     try device.lockForConfiguration()
                     device.videoZoomFactor = CGFloat(clamped)
                     device.unlockForConfiguration()
-                    cont.resume(returning: clamped)
+                    cont.resume(returning: activeBackLens == .ultraWide ? 0.6 : clamped)
                 } catch {
-                    cont.resume(returning: Double(device.videoZoomFactor))
+                    let current = Double(device.videoZoomFactor)
+                    cont.resume(returning: activeBackLens == .ultraWide ? 0.6 : current)
                 }
             }
         }
@@ -142,7 +168,9 @@ final class CameraService: NSObject {
                 }
                 let minZoom = Double(device.minAvailableVideoZoomFactor)
                 let maxZoom = min(Double(device.maxAvailableVideoZoomFactor), 3.0)
-                let values = [0.6, 1.0, 2.0, 3.0].filter { $0 >= minZoom && $0 <= maxZoom }
+                let hasUltraWide = Self.ultraWideBackDevice() != nil
+                let zoomCandidates = [1.0, 2.0, 3.0].filter { $0 >= minZoom && $0 <= maxZoom }
+                let values = hasUltraWide ? [0.6] + zoomCandidates : zoomCandidates
                 cont.resume(returning: values.isEmpty ? [1.0] : values)
             }
         }
@@ -205,6 +233,7 @@ final class CameraService: NSObject {
                     session.sessionPreset = ProcessInfo.processInfo.isiOSAppOnMac ? .low : .photo
 
                     try replaceInput(position: currentPosition)
+                    configureVideoConnections()
 
                     guard session.canAddOutput(photoOutput) else {
                         throw CameraServiceError.setupFailed("사진 출력을 추가할 수 없어요.")
@@ -234,24 +263,37 @@ final class CameraService: NSObject {
         }
     }
 
-    private func replaceInput(position: CameraPosition) throws {
-        if let currentInput {
-            session.removeInput(currentInput)
-            self.currentInput = nil
-        }
-
+    private func replaceInput(position: CameraPosition, backLens: BackLens = .wide) throws {
         let avPosition: AVCaptureDevice.Position = position == .back ? .back : .front
-        guard let device = Self.preferredDevice(for: avPosition) else {
+        guard let device = Self.preferredDevice(for: avPosition, backLens: backLens) else {
             let label = position == .back ? "후면" : "전면"
             throw CameraServiceError.setupFailed("\(label) 카메라를 찾을 수 없어요.")
         }
+        if currentInput?.device.uniqueID == device.uniqueID {
+            currentPosition = position
+            activeBackLens = position == .back ? backLens : .wide
+            return
+        }
         let input = try AVCaptureDeviceInput(device: device)
+
+        let previousInput = currentInput
+        if let previousInput {
+            session.removeInput(previousInput)
+            self.currentInput = nil
+        }
+
         guard session.canAddInput(input) else {
+            if let previousInput, session.canAddInput(previousInput) {
+                session.addInput(previousInput)
+                self.currentInput = previousInput
+            }
             throw CameraServiceError.setupFailed("카메라 입력을 추가할 수 없어요.")
         }
+
         session.addInput(input)
         currentInput = input
         currentPosition = position
+        activeBackLens = position == .back ? backLens : .wide
     }
 
     private func configurePhotoOutputForCurrentPlatform() {
@@ -265,7 +307,19 @@ final class CameraService: NSObject {
         }
     }
 
-    private static func preferredDevice(for position: AVCaptureDevice.Position) -> AVCaptureDevice? {
+    private func configureVideoConnections() {
+        [photoOutput.connection(with: .video), videoOutput.connection(with: .video)].forEach { connection in
+            guard let connection else { return }
+            if connection.isVideoOrientationSupported {
+                connection.videoOrientation = Self.currentVideoOrientation()
+            }
+            if connection.isVideoMirroringSupported {
+                connection.isVideoMirrored = currentPosition == .front
+            }
+        }
+    }
+
+    private static func preferredDevice(for position: AVCaptureDevice.Position, backLens: BackLens = .wide) -> AVCaptureDevice? {
         if ProcessInfo.processInfo.isiOSAppOnMac {
             return AVCaptureDevice.DiscoverySession(
                     deviceTypes: [.builtInWideAngleCamera, .external],
@@ -275,6 +329,9 @@ final class CameraService: NSObject {
                 ?? AVCaptureDevice.default(for: .video)
         }
         if position == .back {
+            if backLens == .ultraWide {
+                return ultraWideBackDevice()
+            }
             return AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back)
                 ?? AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
                 ?? AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back)
@@ -282,6 +339,10 @@ final class CameraService: NSObject {
         }
         return AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front)
             ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
+    }
+
+    private static func ultraWideBackDevice() -> AVCaptureDevice? {
+        AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back)
     }
 
     private static func currentVideoOrientation() -> AVCaptureVideoOrientation {
@@ -296,6 +357,11 @@ final class CameraService: NSObject {
             return .portrait
         }
     }
+}
+
+private enum BackLens {
+    case wide
+    case ultraWide
 }
 
 private extension FlashMode {

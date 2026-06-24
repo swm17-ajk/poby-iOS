@@ -8,6 +8,7 @@ struct CameraView: View {
     @State private var isThemePickerVisible = false
     @State private var ratioFlash = false
     @State private var shutterFlash = false
+    @State private var deviceOrientation = UIDevice.current.orientation
     private let onGuideCaptureRequested: () -> Void
     private let onGuideImagePicked: (Data) -> Void
     private let onGalleryTap: () -> Void
@@ -56,6 +57,7 @@ struct CameraView: View {
                         onFlashTap: { viewModel.cycleFlashMode() },
                         palette: palette
                     )
+                    .rotationEffect(controlRotation)
                     .padding(.top, AppSpacing.gapS)
                     .background(palette.surface)
                     .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
@@ -67,18 +69,14 @@ struct CameraView: View {
                         .frame(maxHeight: .infinity)
                 }
 
-                if shouldShowExternalZoom {
-                    ZoomControlStrip(
-                        zooms: viewModel.availableZooms,
-                        selectedZoom: viewModel.selectedZoom,
-                        onSelect: { viewModel.selectZoom($0) },
-                        palette: palette
-                    )
-                    .positionedAboveControls()
-                }
-
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
+
+                    if shouldShowExternalZoom {
+                        zoomControl(palette: palette)
+                            .padding(.bottom, AppSpacing.gapM)
+                    }
+
                     GuideListStrip(
                         guides: viewModel.guides,
                         selectedGuideId: viewModel.selectedGuide?.id,
@@ -88,6 +86,7 @@ struct CameraView: View {
                         onLongPressGuide: { viewModel.requestDelete($0) },
                         onTapPlus: { viewModel.presentAddGuideSheet() }
                     )
+                    .rotationEffect(controlRotation)
 
                     ShutterButton(
                         matched: viewModel.isMatched,
@@ -95,6 +94,7 @@ struct CameraView: View {
                         palette: palette,
                         action: { Task { await viewModel.capture() } }
                     )
+                    .rotationEffect(controlRotation)
                     .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
                     .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
@@ -103,6 +103,7 @@ struct CameraView: View {
                         onFlipTap: { viewModel.switchCamera() },
                         palette: palette
                     )
+                    .rotationEffect(controlRotation)
                 }
                 .ignoresSafeArea(edges: .bottom)
 
@@ -141,7 +142,10 @@ struct CameraView: View {
                 }
             }
             .task { await viewModel.onAppear() }
-            .onDisappear { viewModel.onDisappear() }
+            .onDisappear {
+                viewModel.onDisappear()
+                UIDevice.current.endGeneratingDeviceOrientationNotifications()
+            }
             .onChange(of: viewModel.state.status) { _, status in
                 if status == .capturing {
                     withAnimation(.linear(duration: 0.01)) { shutterFlash = true }
@@ -156,9 +160,15 @@ struct CameraView: View {
                 }
             }
             .onAppear {
+                UIDevice.current.beginGeneratingDeviceOrientationNotifications()
                 if AppDIContainer.shared.makeSettingsStore().consumePendingOpenAddGuideDialog() {
                     viewModel.presentAddGuideSheet()
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                let orientation = UIDevice.current.orientation
+                guard orientation.isPortrait || orientation.isLandscape else { return }
+                deviceOrientation = orientation
             }
             .confirmationDialog(
                 "가이드라인 추가",
@@ -221,6 +231,29 @@ struct CameraView: View {
         viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio == .nineSixteen
     }
 
+    private var controlRotation: Angle {
+        switch deviceOrientation {
+        case .landscapeLeft:
+            return .degrees(90)
+        case .landscapeRight:
+            return .degrees(-90)
+        case .portraitUpsideDown:
+            return .degrees(180)
+        default:
+            return .zero
+        }
+    }
+
+    private func zoomControl(palette: AppPalette) -> some View {
+        ZoomControlStrip(
+            zooms: viewModel.availableZooms,
+            selectedZoom: viewModel.selectedZoom,
+            onSelect: { viewModel.selectZoom($0) },
+            palette: palette
+        )
+        .rotationEffect(controlRotation)
+    }
+
     private func cameraBox(palette: AppPalette) -> some View {
         GeometryReader { geo in
             let width = geo.size.width
@@ -261,12 +294,7 @@ struct CameraView: View {
                 }
 
                 if viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio != .nineSixteen {
-                    ZoomControlStrip(
-                        zooms: viewModel.availableZooms,
-                        selectedZoom: viewModel.selectedZoom,
-                        onSelect: { viewModel.selectZoom($0) },
-                        palette: palette
-                    )
+                    zoomControl(palette: palette)
                     .position(x: width / 2, y: containerHeight - maskHeight - AppSpacing.gapM - 21)
                 }
             }
