@@ -26,6 +26,8 @@ final class CameraViewModel: ObservableObject {
     private var seenGuideIds: Set<UUID> = []
     private var settings: AppSettings
     private var hasActiveCameraSession = false
+    private var zoomUpdateTask: Task<Void, Never>?
+    private var pendingZoomUpdate: (zoom: Double, persistsSelection: Bool)?
 
     init(
         state: CameraViewState = .initial,
@@ -278,12 +280,34 @@ final class CameraViewModel: ObservableObject {
     }
 
     func selectZoom(_ zoom: Double) {
-        Task {
-            let previous = selectedZoom
-            let applied = await cameraService.setZoomFactor(zoom)
+        updateZoom(zoom, persistsSelection: true)
+    }
+
+    func pinchZoom(to zoom: Double, isFinal: Bool) {
+        updateZoom(zoom, persistsSelection: isFinal)
+    }
+
+    private func updateZoom(_ zoom: Double, persistsSelection: Bool) {
+        if zoomUpdateTask != nil {
+            pendingZoomUpdate = (
+                zoom: zoom,
+                persistsSelection: pendingZoomUpdate?.persistsSelection == true || persistsSelection
+            )
+            return
+        }
+        zoomUpdateTask = Task { [weak self] in
+            await self?.runZoomUpdates(zoom: zoom, persistsSelection: persistsSelection)
+        }
+    }
+
+    private func runZoomUpdates(zoom: Double, persistsSelection: Bool) async {
+        var nextZoom = zoom
+        var shouldPersist = persistsSelection
+        while true {
+            let applied = await cameraService.setZoomFactor(nextZoom)
             selectedZoom = applied
-            persist { $0.selectedZoom = applied }
-            if applied != previous {
+            if shouldPersist {
+                persist { $0.selectedZoom = applied }
                 analytics.log(
                     AnalyticsEvent.zoomChanged,
                     properties: [
@@ -292,6 +316,14 @@ final class CameraViewModel: ObservableObject {
                     ]
                 )
             }
+            if let pendingZoomUpdate {
+                self.pendingZoomUpdate = nil
+                nextZoom = pendingZoomUpdate.zoom
+                shouldPersist = pendingZoomUpdate.persistsSelection
+                continue
+            }
+            zoomUpdateTask = nil
+            return
         }
     }
 

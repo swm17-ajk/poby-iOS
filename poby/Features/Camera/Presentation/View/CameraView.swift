@@ -9,6 +9,7 @@ struct CameraView: View {
     @State private var ratioFlash = false
     @State private var shutterFlash = false
     @State private var deviceOrientation = UIDevice.current.orientation
+    @State private var pinchStartZoom: Double?
     private let onGuideCaptureRequested: () -> Void
     private let onGuideImagePicked: (Data) -> Void
     private let onGalleryTap: () -> Void
@@ -254,6 +255,22 @@ struct CameraView: View {
         .rotationEffect(controlRotation)
     }
 
+    private var pinchZoomGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                if pinchStartZoom == nil {
+                    pinchStartZoom = baseZoom
+                }
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: false)
+            }
+            .onEnded { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: true)
+                pinchStartZoom = nil
+            }
+    }
+
     private func cameraBox(palette: AppPalette) -> some View {
         GeometryReader { geo in
             let width = geo.size.width
@@ -298,6 +315,7 @@ struct CameraView: View {
             .clipped()
         }
         .frame(height: cameraContainerHeight)
+        .simultaneousGesture(pinchZoomGesture)
     }
 
     private var cameraContainerHeight: CGFloat {

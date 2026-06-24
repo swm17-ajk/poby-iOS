@@ -4,6 +4,7 @@ struct GuideCaptureView: View {
     @StateObject private var viewModel: GuideCaptureViewModel
     @State private var settings = UserDefaultsAppSettingsStore().load()
     @State private var shutterFlash = false
+    @State private var pinchStartZoom: Double?
     private let onCancel: () -> Void
     private let onConfirmed: (Data) -> Void
 
@@ -140,6 +141,23 @@ struct GuideCaptureView: View {
             .padding(.top, topOffset)
         }
         .frame(height: guideCameraContainerHeight)
+        .simultaneousGesture(pinchZoomGesture)
+    }
+
+    private var pinchZoomGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                if pinchStartZoom == nil {
+                    pinchStartZoom = baseZoom
+                }
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: false)
+            }
+            .onEnded { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: true)
+                pinchStartZoom = nil
+            }
     }
 
     private var guideCameraContainerHeight: CGFloat {

@@ -153,10 +153,10 @@ final class CameraService: NSObject {
                     try device.lockForConfiguration()
                     device.videoZoomFactor = CGFloat(clamped)
                     device.unlockForConfiguration()
-                    cont.resume(returning: activeBackLens == .ultraWide ? minimumBackZoom : clamped)
+                    cont.resume(returning: activeBackLens == .ultraWide ? minimumBackZoom * clamped : clamped)
                 } catch {
                     let current = Double(device.videoZoomFactor)
-                    cont.resume(returning: activeBackLens == .ultraWide ? minimumBackZoom : current)
+                    cont.resume(returning: activeBackLens == .ultraWide ? minimumBackZoom * current : current)
                 }
             }
         }
