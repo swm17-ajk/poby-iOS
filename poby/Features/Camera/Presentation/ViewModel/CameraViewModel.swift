@@ -167,12 +167,12 @@ final class CameraViewModel: ObservableObject {
             AnalyticsEvent.capturePreviewAction,
             properties: ["action": "save"]
         )
-        state.pendingCapture = nil
         do {
             try await cameraService.saveToPhotoLibrary(pending.imageData)
+            state.pendingCapture = nil
             state.lastSavedAt = Date()
         } catch {
-            state.status = .failed(message: error.localizedDescription)
+            state.status = .ready
         }
     }
 

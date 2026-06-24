@@ -64,13 +64,14 @@ final class CameraService: NSObject {
     }
 
     func capturePhoto() async throws -> Data {
-        try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Data, Error>) in
+        let videoOrientation = await Self.currentInterfaceVideoOrientation()
+        return try await withCheckedThrowingContinuation { (cont: CheckedContinuation<Data, Error>) in
             sessionQueue.async { [self] in
                 pendingCapture = cont
                 let settings = AVCapturePhotoSettings()
                 if let connection = photoOutput.connection(with: .video),
                    connection.isVideoOrientationSupported {
-                    connection.videoOrientation = Self.currentVideoOrientation()
+                    connection.videoOrientation = videoOrientation
                 }
                 if currentInput?.device.hasFlash == true {
                     settings.flashMode = flashMode.avFlashMode
@@ -377,6 +378,27 @@ final class CameraService: NSObject {
             return .portraitUpsideDown
         default:
             return .portrait
+        }
+    }
+
+    @MainActor
+    private static func currentInterfaceVideoOrientation() -> AVCaptureVideoOrientation {
+        let sceneOrientation = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }?
+            .interfaceOrientation
+
+        switch sceneOrientation {
+        case .landscapeLeft:
+            return .landscapeLeft
+        case .landscapeRight:
+            return .landscapeRight
+        case .portraitUpsideDown:
+            return .portraitUpsideDown
+        case .portrait:
+            return .portrait
+        default:
+            return currentVideoOrientation()
         }
     }
 }

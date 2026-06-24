@@ -146,7 +146,7 @@ struct GalleryView: View {
     }
 
     private func loadPhotos() async {
-        let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         guard status == .authorized || status == .limited else {
             assets = []
             return
