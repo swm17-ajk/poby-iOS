@@ -146,7 +146,7 @@ final class CameraService: NSObject {
                     return
                 }
                 let minZoom = Double(device.minAvailableVideoZoomFactor)
-                let maxZoom = min(Double(device.maxAvailableVideoZoomFactor), 3.0)
+                let maxZoom = Double(device.maxAvailableVideoZoomFactor)
                 let minimumBackZoom = Self.minimumBackZoomFactor() ?? 1.0
                 let targetZoom = activeBackLens == .ultraWide ? max(factor / minimumBackZoom, 1.0) : factor
                 let clamped = min(max(targetZoom, minZoom), maxZoom)

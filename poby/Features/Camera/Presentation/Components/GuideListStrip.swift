@@ -15,7 +15,7 @@ struct GuideListStrip: View {
             HStack {
                 Spacer(minLength: 0)
                 ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: AppSpacing.gapXS) {
+                    HStack(spacing: AppSpacing.gapM) {
                         ForEach(guides) { guide in
                             GuideThumb(
                                 guide: guide,
