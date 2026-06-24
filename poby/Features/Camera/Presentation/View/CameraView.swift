@@ -1,14 +1,15 @@
 import SwiftUI
 import PhotosUI
+import CoreMotion
 
 struct CameraView: View {
     @StateObject private var viewModel: CameraViewModel
+    @StateObject private var orientationObserver = CameraControlOrientationObserver()
     @State private var pickedItem: PhotosPickerItem? = nil
     @State private var isRatioPickerVisible = false
     @State private var isThemePickerVisible = false
     @State private var ratioFlash = false
     @State private var shutterFlash = false
-    @State private var deviceOrientation = UIDevice.current.orientation
     @State private var pinchStartZoom: Double?
     private let onGuideCaptureRequested: () -> Void
     private let onGuideImagePicked: (Data) -> Void
@@ -56,9 +57,9 @@ struct CameraView: View {
                             if isThemePickerVisible { isRatioPickerVisible = false }
                         },
                         onFlashTap: { viewModel.cycleFlashMode() },
-                        palette: palette
+                        palette: palette,
+                        contentRotation: controlRotation
                     )
-                    .rotationEffect(controlRotation)
                     .padding(.top, AppSpacing.gapS)
                     .background(palette.surface)
                     .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
@@ -87,7 +88,6 @@ struct CameraView: View {
                         onLongPressGuide: { viewModel.requestDelete($0) },
                         onTapPlus: { viewModel.presentAddGuideSheet() }
                     )
-                    .rotationEffect(controlRotation)
 
                     ShutterButton(
                         matched: viewModel.isMatched,
@@ -102,9 +102,9 @@ struct CameraView: View {
                     BottomControlsBar(
                         onGalleryTap: onGalleryTap,
                         onFlipTap: { viewModel.switchCamera() },
-                        palette: palette
+                        palette: palette,
+                        contentRotation: controlRotation
                     )
-                    .rotationEffect(controlRotation)
                 }
                 .ignoresSafeArea(edges: .bottom)
 
@@ -141,11 +141,12 @@ struct CameraView: View {
                         palette: palette
                     )
                 }
+
             }
             .task { await viewModel.onAppear() }
             .onDisappear {
                 viewModel.onDisappear()
-                UIDevice.current.endGeneratingDeviceOrientationNotifications()
+                orientationObserver.stop()
             }
             .onChange(of: viewModel.state.status) { _, status in
                 if status == .capturing, viewModel.state.isFlashOn {
@@ -161,15 +162,10 @@ struct CameraView: View {
                 }
             }
             .onAppear {
-                UIDevice.current.beginGeneratingDeviceOrientationNotifications()
+                orientationObserver.start()
                 if AppDIContainer.shared.makeSettingsStore().consumePendingOpenAddGuideDialog() {
                     viewModel.presentAddGuideSheet()
                 }
-            }
-            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-                let orientation = UIDevice.current.orientation
-                guard orientation.isPortrait || orientation.isLandscape else { return }
-                deviceOrientation = orientation
             }
             .confirmationDialog(
                 "가이드라인 추가",
@@ -229,16 +225,7 @@ struct CameraView: View {
     }
 
     private var controlRotation: Angle {
-        switch deviceOrientation {
-        case .landscapeLeft:
-            return .degrees(90)
-        case .landscapeRight:
-            return .degrees(-90)
-        case .portraitUpsideDown:
-            return .degrees(180)
-        default:
-            return .zero
-        }
+        orientationObserver.rotation
     }
 
     private func zoomControl(palette: AppPalette) -> some View {
@@ -246,9 +233,9 @@ struct CameraView: View {
             zooms: viewModel.availableZooms,
             selectedZoom: viewModel.selectedZoom,
             onSelect: { viewModel.selectZoom($0) },
-            palette: palette
+            palette: palette,
+            contentRotation: controlRotation
         )
-        .rotationEffect(controlRotation)
     }
 
     private var pinchZoomGesture: some Gesture {
@@ -557,6 +544,50 @@ private struct CapturedPreviewOverlay: View {
             return CGSize(width: container.width, height: container.width / imageAspect)
         }
         return CGSize(width: container.height * imageAspect, height: container.height)
+    }
+}
+
+private final class CameraControlOrientationObserver: ObservableObject {
+    @Published private(set) var rotation: Angle = .zero
+
+    private let motionManager = CMMotionManager()
+    private let queue = OperationQueue()
+    private var lastDegrees = 0
+
+    func start() {
+        guard motionManager.isDeviceMotionAvailable else {
+            return
+        }
+
+        queue.name = "CameraControlOrientationObserver"
+        motionManager.deviceMotionUpdateInterval = 0.12
+        motionManager.startDeviceMotionUpdates(to: queue) { [weak self] motion, _ in
+            guard let self, let gravity = motion?.gravity else { return }
+            let degrees = Self.rotationDegrees(gravityX: gravity.x, gravityY: gravity.y, fallback: self.lastDegrees)
+
+            DispatchQueue.main.async {
+                guard degrees != self.lastDegrees else { return }
+                self.lastDegrees = degrees
+                withAnimation(.easeInOut(duration: 0.18)) {
+                    self.rotation = .degrees(Double(degrees))
+                }
+            }
+        }
+    }
+
+    func stop() {
+        motionManager.stopDeviceMotionUpdates()
+    }
+
+    private static func rotationDegrees(gravityX x: Double, gravityY y: Double, fallback: Int) -> Int {
+        let threshold = 0.55
+        if abs(x) > abs(y), abs(x) > threshold {
+            return x > 0 ? -90 : 90
+        }
+        if abs(y) > threshold {
+            return y > 0 ? 180 : 0
+        }
+        return fallback
     }
 }
 
