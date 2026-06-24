@@ -25,6 +25,7 @@ final class CameraViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var seenGuideIds: Set<UUID> = []
     private var settings: AppSettings
+    private var hasActiveCameraSession = false
 
     init(
         state: CameraViewState = .initial,
@@ -93,10 +94,19 @@ final class CameraViewModel: ObservableObject {
     var palette: AppPalette { state.selectedTheme.palette }
 
     func onAppear() async {
-        guard state.status == .idle || state.status == .denied else { return }
-        state.status = .preparing
+        guard !hasActiveCameraSession else { return }
+        guard state.status == .idle || state.status == .denied || state.status == .ready else { return }
+        settings = settingsStore.load()
+        state.aspectRatio = settings.selectedAspectRatio
+        state.isFlashOn = settings.flashMode != .off
+        state.selectedTheme = settings.selectedTheme
+        let wasReady = state.status == .ready
+        if !wasReady {
+            state.status = .preparing
+        }
         do {
             try await cameraService.start()
+            hasActiveCameraSession = true
             try await cameraService.setCameraPosition(settings.cameraPosition)
             cameraService.setFlashMode(settings.flashMode)
             availableZooms = await cameraService.supportedZoomFactors()
@@ -116,6 +126,8 @@ final class CameraViewModel: ObservableObject {
     }
 
     func onDisappear() {
+        guard hasActiveCameraSession else { return }
+        hasActiveCameraSession = false
         cameraService.stop()
     }
 

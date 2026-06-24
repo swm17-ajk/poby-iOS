@@ -11,6 +11,7 @@ final class GuideCaptureViewModel: ObservableObject {
     private let settingsStore: UserDefaultsAppSettingsStore
     private let analytics: AnalyticsService
     private var settings: AppSettings
+    private var hasActiveCameraSession = false
 
     init(
         state: GuideCaptureViewState = .initial,
@@ -43,13 +44,19 @@ final class GuideCaptureViewModel: ObservableObject {
     var session: AVCaptureSession { cameraService.session }
 
     func onAppear() async {
-        guard state.status == .idle || state.status == .denied else { return }
-        analytics.log(AnalyticsEvent.guideCaptureViewed)
-        state.status = .preparing
+        guard !hasActiveCameraSession else { return }
+        guard state.status == .idle || state.status == .denied || state.status == .ready else { return }
+        let wasReady = state.status == .ready
+        if !wasReady {
+            analytics.log(AnalyticsEvent.guideCaptureViewed)
+            state.status = .preparing
+        }
         do {
             try await cameraService.start()
+            hasActiveCameraSession = true
             try await cameraService.setCameraPosition(settings.cameraPosition)
             cameraService.setFlashMode(settings.flashMode)
+            _ = await cameraService.setZoomFactor(settings.selectedZoom)
             cameraPosition = settings.cameraPosition
             isFlashOn = settings.flashMode != .off
             state.status = .ready
@@ -65,6 +72,8 @@ final class GuideCaptureViewModel: ObservableObject {
     }
 
     func onDisappear() {
+        guard hasActiveCameraSession else { return }
+        hasActiveCameraSession = false
         cameraService.stop()
     }
 

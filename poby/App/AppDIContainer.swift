@@ -30,7 +30,7 @@ final class AppDIContainer {
 
     func makeGuideCaptureViewModel() -> GuideCaptureViewModel {
         GuideCaptureViewModel(
-            cameraService: cameraService,
+            cameraService: CameraService(),
             settingsStore: settingsStore,
             analytics: analyticsService
         )

@@ -25,7 +25,8 @@ final class CameraService: NSObject {
 
     private let photoOutput = AVCapturePhotoOutput()
     private let videoOutput = AVCaptureVideoDataOutput()
-    private let sessionQueue = DispatchQueue(label: "yuna.poby.camera.session")
+    private static let sessionQueue = DispatchQueue(label: "yuna.poby.camera.session")
+    private let sessionQueue = CameraService.sessionQueue
     private let videoQueue = DispatchQueue(label: "yuna.poby.camera.video", qos: .userInitiated)
     private var isConfigured = false
     private var pendingCapture: CheckedContinuation<Data, Error>?
@@ -33,6 +34,7 @@ final class CameraService: NSObject {
     private var currentPosition: CameraPosition = .back
     private var flashMode: FlashMode = .off
     private var activeBackLens: BackLens = .wide
+    private var activeSessionOwners = 0
 
     var onVideoFrame: (@Sendable (CVPixelBuffer) -> Void)?
     var position: CameraPosition { currentPosition }
@@ -44,7 +46,8 @@ final class CameraService: NSObject {
         try await ensureCameraPermission()
         try await configureIfNeeded()
         await withCheckedContinuation { (cont: CheckedContinuation<Void, Never>) in
-            sessionQueue.async { [session] in
+            sessionQueue.async { [self] in
+                activeSessionOwners += 1
                 if !session.isRunning { session.startRunning() }
                 cont.resume()
             }
@@ -52,8 +55,11 @@ final class CameraService: NSObject {
     }
 
     func stop() {
-        sessionQueue.async { [session] in
-            if session.isRunning { session.stopRunning() }
+        sessionQueue.async { [self] in
+            activeSessionOwners = max(activeSessionOwners - 1, 0)
+            if activeSessionOwners == 0, session.isRunning {
+                session.stopRunning()
+            }
         }
     }
 
