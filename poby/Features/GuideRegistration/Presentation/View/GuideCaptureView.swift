@@ -70,7 +70,7 @@ struct GuideCaptureView: View {
         .onDisappear { viewModel.onDisappear() }
         .onAppear { settings = AppDIContainer.shared.makeSettingsStore().load() }
         .onChange(of: viewModel.state.status) { _, status in
-            if status == .capturing {
+            if status == .capturing, viewModel.isFlashOn {
                 shutterFlash = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
                     shutterFlash = false
@@ -103,19 +103,14 @@ struct GuideCaptureView: View {
 
             Spacer()
 
-            if viewModel.cameraPosition == .back {
-                Button(action: { viewModel.toggleFlash() }) {
-                    GlassChip(palette: palette) {
-                        Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash")
-                            .font(.system(size: AppMetrics.iconS, weight: .semibold))
-                            .foregroundStyle(palette.onSurface)
-                    }
+            Button(action: { viewModel.toggleFlash() }) {
+                GlassChip(palette: palette) {
+                    Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash")
+                        .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                        .foregroundStyle(palette.onSurface)
                 }
-                .buttonStyle(.plain)
-            } else {
-                Color.clear
-                    .frame(width: AppMetrics.iconButton, height: AppMetrics.iconButton)
             }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.edge)
     }

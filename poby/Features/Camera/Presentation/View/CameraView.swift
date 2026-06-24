@@ -45,7 +45,7 @@ struct CameraView: View {
                     TopChromeBar(
                         selectedRatio: viewModel.state.aspectRatio,
                         isFlashOn: viewModel.state.isFlashOn,
-                        showFlash: cameraShowsFlash,
+                        showFlash: true,
                         isMatched: viewModel.isMatched && viewModel.selectedGuide != nil,
                         onRatioTap: {
                             isRatioPickerVisible.toggle()
@@ -148,7 +148,7 @@ struct CameraView: View {
                 UIDevice.current.endGeneratingDeviceOrientationNotifications()
             }
             .onChange(of: viewModel.state.status) { _, status in
-                if status == .capturing {
+                if status == .capturing, viewModel.state.isFlashOn {
                     withAnimation(.linear(duration: 0.01)) { shutterFlash = true }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
                         shutterFlash = false
@@ -222,10 +222,6 @@ struct CameraView: View {
             .foregroundStyle(.white.opacity(0.85))
             .multilineTextAlignment(.center)
             .padding(.horizontal, AppSpacing.groupM)
-    }
-
-    private var cameraShowsFlash: Bool {
-        viewModel.cameraService.position == .back
     }
 
     private var shouldShowZoomControl: Bool {

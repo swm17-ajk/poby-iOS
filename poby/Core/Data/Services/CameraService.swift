@@ -188,10 +188,22 @@ final class CameraService: NSObject {
     }
 
     func saveToPhotoLibrary(_ imageData: Data) async throws {
-        let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
-        guard status == .authorized || status == .limited else {
-            throw CameraServiceError.photoLibraryPermissionDenied
+        let readWriteStatus = await requestPhotoLibraryAuthorization(for: .readWrite)
+        if readWriteStatus == .authorized || readWriteStatus == .limited {
+            try await saveToPobyAlbum(imageData)
+            return
         }
+
+        let addOnlyStatus = await requestPhotoLibraryAuthorization(for: .addOnly)
+        if addOnlyStatus == .authorized || addOnlyStatus == .limited {
+            try await saveToLibrary(imageData)
+            return
+        }
+
+        throw CameraServiceError.photoLibraryPermissionDenied
+    }
+
+    private func saveToPobyAlbum(_ imageData: Data) async throws {
         try await PHPhotoLibrary.shared().performChanges {
             let album = Self.albumChangeRequest(named: "poby")
             let request = PHAssetCreationRequest.forAsset()
@@ -200,6 +212,19 @@ final class CameraService: NSObject {
                 album?.addAssets([placeholder] as NSArray)
             }
         }
+    }
+
+    private func saveToLibrary(_ imageData: Data) async throws {
+        try await PHPhotoLibrary.shared().performChanges {
+            let request = PHAssetCreationRequest.forAsset()
+            request.addResource(with: .photo, data: imageData, options: nil)
+        }
+    }
+
+    private func requestPhotoLibraryAuthorization(for accessLevel: PHAccessLevel) async -> PHAuthorizationStatus {
+        let status = PHPhotoLibrary.authorizationStatus(for: accessLevel)
+        guard status == .notDetermined else { return status }
+        return await PHPhotoLibrary.requestAuthorization(for: accessLevel)
     }
 
     private static func albumChangeRequest(named title: String) -> PHAssetCollectionChangeRequest? {
