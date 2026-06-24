@@ -44,7 +44,7 @@ struct ZoomControlStrip: View {
 #Preview {
     ZStack {
         Color.black
-        ZoomControlStrip(zooms: [0.6, 1, 2, 3], selectedZoom: 1, onSelect: { _ in })
+        ZoomControlStrip(zooms: [0.5, 1, 2, 3], selectedZoom: 1, onSelect: { _ in })
     }
 }
 #endif

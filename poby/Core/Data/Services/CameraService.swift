@@ -140,16 +140,17 @@ final class CameraService: NSObject {
                 }
                 let minZoom = Double(device.minAvailableVideoZoomFactor)
                 let maxZoom = min(Double(device.maxAvailableVideoZoomFactor), 3.0)
-                let targetZoom = activeBackLens == .ultraWide ? max(factor / 0.6, 1.0) : factor
+                let minimumBackZoom = Self.minimumBackZoomFactor() ?? 1.0
+                let targetZoom = activeBackLens == .ultraWide ? max(factor / minimumBackZoom, 1.0) : factor
                 let clamped = min(max(targetZoom, minZoom), maxZoom)
                 do {
                     try device.lockForConfiguration()
                     device.videoZoomFactor = CGFloat(clamped)
                     device.unlockForConfiguration()
-                    cont.resume(returning: activeBackLens == .ultraWide ? 0.6 : clamped)
+                    cont.resume(returning: activeBackLens == .ultraWide ? minimumBackZoom : clamped)
                 } catch {
                     let current = Double(device.videoZoomFactor)
-                    cont.resume(returning: activeBackLens == .ultraWide ? 0.6 : current)
+                    cont.resume(returning: activeBackLens == .ultraWide ? minimumBackZoom : current)
                 }
             }
         }
@@ -168,9 +169,12 @@ final class CameraService: NSObject {
                 }
                 let minZoom = Double(device.minAvailableVideoZoomFactor)
                 let maxZoom = min(Double(device.maxAvailableVideoZoomFactor), 3.0)
-                let hasUltraWide = Self.ultraWideBackDevice() != nil
                 let zoomCandidates = [1.0, 2.0, 3.0].filter { $0 >= minZoom && $0 <= maxZoom }
-                let values = hasUltraWide ? [0.6] + zoomCandidates : zoomCandidates
+                let values = if let minimumBackZoom = Self.minimumBackZoomFactor() {
+                    [minimumBackZoom] + zoomCandidates
+                } else {
+                    zoomCandidates
+                }
                 cont.resume(returning: values.isEmpty ? [1.0] : values)
             }
         }
@@ -332,17 +336,29 @@ final class CameraService: NSObject {
             if backLens == .ultraWide {
                 return ultraWideBackDevice()
             }
-            return AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back)
-                ?? AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
-                ?? AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back)
-                ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            return wideBackDevice()
         }
         return AVCaptureDevice.default(.builtInTrueDepthCamera, for: .video, position: .front)
             ?? AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .front)
     }
 
+    private static func wideBackDevice() -> AVCaptureDevice? {
+        AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back)
+            ?? AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back)
+            ?? AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
+            ?? AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back)
+    }
+
     private static func ultraWideBackDevice() -> AVCaptureDevice? {
         AVCaptureDevice.default(.builtInUltraWideCamera, for: .video, position: .back)
+    }
+
+    private static func minimumBackZoomFactor() -> Double? {
+        guard ultraWideBackDevice() != nil else { return nil }
+        let virtualDevice = AVCaptureDevice.default(.builtInTripleCamera, for: .video, position: .back)
+            ?? AVCaptureDevice.default(.builtInDualWideCamera, for: .video, position: .back)
+        let virtualMinimum = Double(virtualDevice?.minAvailableVideoZoomFactor ?? 1.0)
+        return virtualMinimum < 1.0 ? virtualMinimum : 0.5
     }
 
     private static func currentVideoOrientation() -> AVCaptureVideoOrientation {
