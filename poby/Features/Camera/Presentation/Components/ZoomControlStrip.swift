@@ -5,6 +5,7 @@ struct ZoomControlStrip: View {
     let selectedZoom: Double
     let onSelect: (Double) -> Void
     var palette: AppPalette = AppTheme.dark.palette
+    var contentRotation: Angle = .zero
 
     var body: some View {
         HStack(spacing: AppSpacing.gapS) {
@@ -13,6 +14,7 @@ struct ZoomControlStrip: View {
                     Text(label(for: zoom))
                         .font(AppTypography.chip)
                         .foregroundStyle(isSelected(zoom) ? AppColors.mint : palette.onSurface.opacity(0.82))
+                        .rotationEffect(contentRotation)
                         .frame(width: AppMetrics.Camera.zoomChipWidth, height: AppMetrics.Camera.zoomChipHeight)
                         .background(palette.glassFill.opacity(0.9), in: Circle())
                         .overlay(
@@ -44,7 +46,7 @@ struct ZoomControlStrip: View {
 #Preview {
     ZStack {
         Color.black
-        ZoomControlStrip(zooms: [0.6, 1, 2, 3], selectedZoom: 1, onSelect: { _ in })
+        ZoomControlStrip(zooms: [0.5, 1, 2, 3], selectedZoom: 1, onSelect: { _ in })
     }
 }
 #endif

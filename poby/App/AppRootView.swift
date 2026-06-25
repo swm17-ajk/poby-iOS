@@ -146,7 +146,7 @@ struct GalleryView: View {
     }
 
     private func loadPhotos() async {
-        let status = await PHPhotoLibrary.requestAuthorization(for: .readWrite)
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
         guard status == .authorized || status == .limited else {
             assets = []
             return
@@ -240,38 +240,49 @@ private struct PhotoPagerView: View {
     }
 
     var body: some View {
-        ZStack {
-            TabView(selection: $selectedIndex) {
-                ForEach(Array(assets.enumerated()), id: \.element.localIdentifier) { index, asset in
-                    PhotoPage(asset: asset)
-                        .tag(index)
-                }
-            }
-            .tabViewStyle(.page(indexDisplayMode: .never))
-
-            VStack {
-                HStack {
-                    Button(action: onClose) {
-                        Image(systemName: "chevron.left")
-                            .font(.system(size: AppMetrics.iconM, weight: .semibold))
-                            .foregroundStyle(palette.onSurface)
-                            .frame(width: AppMetrics.iconButtonLarge, height: AppMetrics.iconButtonLarge)
-                    }
-                    .buttonStyle(.plain)
-                    Spacer()
-                    Button(action: { onDeleteRequest(assets[selectedIndex]) }) {
-                        Image(systemName: "trash")
-                            .font(.system(size: AppMetrics.iconM, weight: .semibold))
-                            .foregroundStyle(palette.onSurface)
-                            .frame(width: AppMetrics.iconButtonLarge, height: AppMetrics.iconButtonLarge)
-                    }
-                    .buttonStyle(.plain)
-                }
-                .padding(AppSpacing.gapXS)
-                Spacer()
+        TabView(selection: $selectedIndex) {
+            ForEach(Array(assets.enumerated()), id: \.element.localIdentifier) { index, asset in
+                PhotoPage(asset: asset)
+                    .tag(index)
             }
         }
+        .tabViewStyle(.page(indexDisplayMode: .never))
         .background(palette.surface.ignoresSafeArea())
+        .safeAreaInset(edge: .top, spacing: 0) {
+            topControls
+        }
+    }
+
+    private var topControls: some View {
+        HStack {
+            Button(action: onClose) {
+                GlassChip(palette: palette) {
+                    Image(systemName: "chevron.left")
+                        .font(.system(size: AppMetrics.iconM, weight: .semibold))
+                        .foregroundStyle(palette.onSurface)
+                }
+            }
+            .buttonStyle(.plain)
+
+            Spacer()
+
+            Button(action: requestDeleteSelectedAsset) {
+                GlassChip(palette: palette) {
+                    Image(systemName: "trash")
+                        .font(.system(size: AppMetrics.iconM, weight: .semibold))
+                        .foregroundStyle(palette.onSurface)
+                }
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, AppSpacing.edge)
+        .padding(.vertical, AppSpacing.gapS)
+        .background(palette.surface.opacity(0.001))
+    }
+
+    private func requestDeleteSelectedAsset() {
+        guard assets.indices.contains(selectedIndex) else { return }
+        onDeleteRequest(assets[selectedIndex])
     }
 }
 

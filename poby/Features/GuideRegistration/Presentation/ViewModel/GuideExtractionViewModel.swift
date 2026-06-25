@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 @MainActor
 final class GuideExtractionViewModel: ObservableObject {
@@ -16,7 +17,7 @@ final class GuideExtractionViewModel: ObservableObject {
         guideRepository: GuideRepositoryProtocol,
         analytics: AnalyticsService
     ) {
-        self.sourceImageData = imageData
+        self.sourceImageData = Self.normalizedImageData(imageData)
         self.visionService = visionService
         self.guideRepository = guideRepository
         self.analytics = analytics
@@ -25,7 +26,7 @@ final class GuideExtractionViewModel: ObservableObject {
 #if DEBUG
     init(previewState: GuideExtractionViewState, imageData: Data) {
         self.state = previewState
-        self.sourceImageData = imageData
+        self.sourceImageData = Self.normalizedImageData(imageData)
         self.visionService = VisionService()
         self.analytics = AmplitudeAnalyticsService()
         do {
@@ -61,7 +62,7 @@ final class GuideExtractionViewModel: ObservableObject {
 
     func save() async throws -> Guide {
         guard case let .success(silhouette) = state else {
-            throw VisionServiceError.noPersonFound
+            throw VisionServiceError.noOutlineFound
         }
         let guide = try await guideRepository.add(silhouette: silhouette, sourceImage: sourceImageData)
         analytics.log(AnalyticsEvent.guideSaved)
@@ -80,6 +81,20 @@ final class GuideExtractionViewModel: ObservableObject {
             AnalyticsEvent.guideExtractionViewed,
             properties: ["status": state.analyticsStatus]
         )
+    }
+
+    private static func normalizedImageData(_ data: Data) -> Data {
+        guard let image = UIImage(data: data), image.imageOrientation != .up else {
+            return data
+        }
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = image.scale
+        format.opaque = true
+        let renderer = UIGraphicsImageRenderer(size: image.size, format: format)
+        let normalized = renderer.image { _ in
+            image.draw(in: CGRect(origin: .zero, size: image.size))
+        }
+        return normalized.jpegData(compressionQuality: 0.95) ?? data
     }
 }
 

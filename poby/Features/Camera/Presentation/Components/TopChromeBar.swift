@@ -9,6 +9,7 @@ struct TopChromeBar: View {
     let onThemeTap: () -> Void
     let onFlashTap: () -> Void
     let palette: AppPalette
+    var contentRotation: Angle = .zero
 
     var body: some View {
         HStack {
@@ -17,6 +18,7 @@ struct TopChromeBar: View {
                     Image(systemName: "paintpalette.fill")
                         .font(.system(size: AppMetrics.iconS, weight: .semibold))
                         .foregroundStyle(palette.onSurface)
+                        .rotationEffect(contentRotation)
                 }
             }
             .buttonStyle(.plain)
@@ -37,6 +39,7 @@ struct TopChromeBar: View {
                         Image(systemName: isFlashOn ? "bolt.fill" : "bolt.slash")
                             .font(.system(size: AppMetrics.iconS, weight: .semibold))
                             .foregroundStyle(palette.onSurface)
+                            .rotationEffect(contentRotation)
                     }
                 }
                 .buttonStyle(.plain)
@@ -57,6 +60,7 @@ struct TopChromeBar: View {
                 .padding(.vertical, 6)
                 .background(Capsule().fill(palette.glassFill))
                 .overlay(Capsule().strokeBorder(palette.glassBorder, lineWidth: AppMetrics.borderHairline))
+                .rotationEffect(contentRotation)
         }
         .buttonStyle(.plain)
     }
@@ -78,5 +82,6 @@ struct TopChromeBar: View {
         .background(Capsule().fill(AppColors.mint))
         .appShadow(AppShadow.mintGlow)
         .transition(.scale.combined(with: .opacity))
+        .rotationEffect(contentRotation)
     }
 }

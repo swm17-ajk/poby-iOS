@@ -1,13 +1,16 @@
 import SwiftUI
 import PhotosUI
+import CoreMotion
 
 struct CameraView: View {
     @StateObject private var viewModel: CameraViewModel
+    @StateObject private var orientationObserver = CameraControlOrientationObserver()
     @State private var pickedItem: PhotosPickerItem? = nil
     @State private var isRatioPickerVisible = false
     @State private var isThemePickerVisible = false
     @State private var ratioFlash = false
     @State private var shutterFlash = false
+    @State private var pinchStartZoom: Double?
     private let onGuideCaptureRequested: () -> Void
     private let onGuideImagePicked: (Data) -> Void
     private let onGalleryTap: () -> Void
@@ -43,7 +46,7 @@ struct CameraView: View {
                     TopChromeBar(
                         selectedRatio: viewModel.state.aspectRatio,
                         isFlashOn: viewModel.state.isFlashOn,
-                        showFlash: cameraShowsFlash,
+                        showFlash: true,
                         isMatched: viewModel.isMatched && viewModel.selectedGuide != nil,
                         onRatioTap: {
                             isRatioPickerVisible.toggle()
@@ -54,7 +57,8 @@ struct CameraView: View {
                             if isThemePickerVisible { isRatioPickerVisible = false }
                         },
                         onFlashTap: { viewModel.cycleFlashMode() },
-                        palette: palette
+                        palette: palette,
+                        contentRotation: controlRotation
                     )
                     .padding(.top, AppSpacing.gapS)
                     .background(palette.surface)
@@ -67,18 +71,14 @@ struct CameraView: View {
                         .frame(maxHeight: .infinity)
                 }
 
-                if shouldShowExternalZoom {
-                    ZoomControlStrip(
-                        zooms: viewModel.availableZooms,
-                        selectedZoom: viewModel.selectedZoom,
-                        onSelect: { viewModel.selectZoom($0) },
-                        palette: palette
-                    )
-                    .positionedAboveControls()
-                }
-
                 VStack(spacing: 0) {
                     Spacer(minLength: 0)
+
+                    if shouldShowZoomControl {
+                        zoomControl(palette: palette)
+                            .padding(.bottom, AppSpacing.gapM)
+                    }
+
                     GuideListStrip(
                         guides: viewModel.guides,
                         selectedGuideId: viewModel.selectedGuide?.id,
@@ -95,13 +95,15 @@ struct CameraView: View {
                         palette: palette,
                         action: { Task { await viewModel.capture() } }
                     )
+                    .rotationEffect(controlRotation)
                     .padding(.bottom, AppMetrics.Camera.shutterBottomOffset)
                     .animation(.easeInOut(duration: 0.25), value: viewModel.isMatched)
 
                     BottomControlsBar(
                         onGalleryTap: onGalleryTap,
                         onFlipTap: { viewModel.switchCamera() },
-                        palette: palette
+                        palette: palette,
+                        contentRotation: controlRotation
                     )
                 }
                 .ignoresSafeArea(edges: .bottom)
@@ -139,11 +141,15 @@ struct CameraView: View {
                         palette: palette
                     )
                 }
+
             }
             .task { await viewModel.onAppear() }
-            .onDisappear { viewModel.onDisappear() }
+            .onDisappear {
+                viewModel.onDisappear()
+                orientationObserver.stop()
+            }
             .onChange(of: viewModel.state.status) { _, status in
-                if status == .capturing {
+                if status == .capturing, viewModel.state.isFlashOn {
                     withAnimation(.linear(duration: 0.01)) { shutterFlash = true }
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
                         shutterFlash = false
@@ -156,6 +162,7 @@ struct CameraView: View {
                 }
             }
             .onAppear {
+                orientationObserver.start()
                 if AppDIContainer.shared.makeSettingsStore().consumePendingOpenAddGuideDialog() {
                     viewModel.presentAddGuideSheet()
                 }
@@ -213,12 +220,38 @@ struct CameraView: View {
             .padding(.horizontal, AppSpacing.groupM)
     }
 
-    private var cameraShowsFlash: Bool {
-        viewModel.cameraService.position == .back
+    private var shouldShowZoomControl: Bool {
+        viewModel.availableZooms.count > 1
     }
 
-    private var shouldShowExternalZoom: Bool {
-        viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio == .nineSixteen
+    private var controlRotation: Angle {
+        orientationObserver.rotation
+    }
+
+    private func zoomControl(palette: AppPalette) -> some View {
+        ZoomControlStrip(
+            zooms: viewModel.availableZooms,
+            selectedZoom: viewModel.selectedZoom,
+            onSelect: { viewModel.selectZoom($0) },
+            palette: palette,
+            contentRotation: controlRotation
+        )
+    }
+
+    private var pinchZoomGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                if pinchStartZoom == nil {
+                    pinchStartZoom = baseZoom
+                }
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: false)
+            }
+            .onEnded { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: true)
+                pinchStartZoom = nil
+            }
     }
 
     private func cameraBox(palette: AppPalette) -> some View {
@@ -259,22 +292,13 @@ struct CameraView: View {
                         palette.surface.frame(height: maskHeight)
                     }
                 }
-
-                if viewModel.availableZooms.count > 1 && viewModel.state.aspectRatio != .nineSixteen {
-                    ZoomControlStrip(
-                        zooms: viewModel.availableZooms,
-                        selectedZoom: viewModel.selectedZoom,
-                        onSelect: { viewModel.selectZoom($0) },
-                        palette: palette
-                    )
-                    .position(x: width / 2, y: containerHeight - maskHeight - AppSpacing.gapM - 21)
-                }
             }
             .background(Color.black)
             .frame(width: width, height: containerHeight)
             .clipped()
         }
         .frame(height: cameraContainerHeight)
+        .simultaneousGesture(pinchZoomGesture)
     }
 
     private var cameraContainerHeight: CGFloat {
@@ -520,6 +544,50 @@ private struct CapturedPreviewOverlay: View {
             return CGSize(width: container.width, height: container.width / imageAspect)
         }
         return CGSize(width: container.height * imageAspect, height: container.height)
+    }
+}
+
+private final class CameraControlOrientationObserver: ObservableObject {
+    @Published private(set) var rotation: Angle = .zero
+
+    private let motionManager = CMMotionManager()
+    private let queue = OperationQueue()
+    private var lastDegrees = 0
+
+    func start() {
+        guard motionManager.isDeviceMotionAvailable else {
+            return
+        }
+
+        queue.name = "CameraControlOrientationObserver"
+        motionManager.deviceMotionUpdateInterval = 0.12
+        motionManager.startDeviceMotionUpdates(to: queue) { [weak self] motion, _ in
+            guard let self, let gravity = motion?.gravity else { return }
+            let degrees = Self.rotationDegrees(gravityX: gravity.x, gravityY: gravity.y, fallback: self.lastDegrees)
+
+            DispatchQueue.main.async {
+                guard degrees != self.lastDegrees else { return }
+                self.lastDegrees = degrees
+                withAnimation(.easeInOut(duration: 0.18)) {
+                    self.rotation = .degrees(Double(degrees))
+                }
+            }
+        }
+    }
+
+    func stop() {
+        motionManager.stopDeviceMotionUpdates()
+    }
+
+    private static func rotationDegrees(gravityX x: Double, gravityY y: Double, fallback: Int) -> Int {
+        let threshold = 0.55
+        if abs(x) > abs(y), abs(x) > threshold {
+            return x > 0 ? -90 : 90
+        }
+        if abs(y) > threshold {
+            return y > 0 ? 180 : 0
+        }
+        return fallback
     }
 }
 

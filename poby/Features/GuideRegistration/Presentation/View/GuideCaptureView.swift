@@ -4,6 +4,7 @@ struct GuideCaptureView: View {
     @StateObject private var viewModel: GuideCaptureViewModel
     @State private var settings = UserDefaultsAppSettingsStore().load()
     @State private var shutterFlash = false
+    @State private var pinchStartZoom: Double?
     private let onCancel: () -> Void
     private let onConfirmed: (Data) -> Void
 
@@ -36,10 +37,6 @@ struct GuideCaptureView: View {
 
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
-                Text("얼굴 · 상체가 모두 보이도록")
-                    .font(AppTypography.hintSmall)
-                    .foregroundStyle(.white.opacity(0.78))
-                    .padding(.bottom, AppSpacing.gapM)
 
                 ShutterButton(
                     isCapturing: viewModel.state.status == .capturing,
@@ -69,7 +66,7 @@ struct GuideCaptureView: View {
         .onDisappear { viewModel.onDisappear() }
         .onAppear { settings = AppDIContainer.shared.makeSettingsStore().load() }
         .onChange(of: viewModel.state.status) { _, status in
-            if status == .capturing {
+            if status == .capturing, viewModel.isFlashOn {
                 shutterFlash = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) {
                     shutterFlash = false
@@ -102,19 +99,14 @@ struct GuideCaptureView: View {
 
             Spacer()
 
-            if viewModel.cameraPosition == .back {
-                Button(action: { viewModel.toggleFlash() }) {
-                    GlassChip(palette: palette) {
-                        Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash")
-                            .font(.system(size: AppMetrics.iconS, weight: .semibold))
-                            .foregroundStyle(palette.onSurface)
-                    }
+            Button(action: { viewModel.toggleFlash() }) {
+                GlassChip(palette: palette) {
+                    Image(systemName: viewModel.isFlashOn ? "bolt.fill" : "bolt.slash")
+                        .font(.system(size: AppMetrics.iconS, weight: .semibold))
+                        .foregroundStyle(palette.onSurface)
                 }
-                .buttonStyle(.plain)
-            } else {
-                Color.clear
-                    .frame(width: AppMetrics.iconButton, height: AppMetrics.iconButton)
             }
+            .buttonStyle(.plain)
         }
         .padding(.horizontal, AppSpacing.edge)
     }
@@ -140,6 +132,23 @@ struct GuideCaptureView: View {
             .padding(.top, topOffset)
         }
         .frame(height: guideCameraContainerHeight)
+        .simultaneousGesture(pinchZoomGesture)
+    }
+
+    private var pinchZoomGesture: some Gesture {
+        MagnificationGesture()
+            .onChanged { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                if pinchStartZoom == nil {
+                    pinchStartZoom = baseZoom
+                }
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: false)
+            }
+            .onEnded { scale in
+                let baseZoom = pinchStartZoom ?? viewModel.selectedZoom
+                viewModel.pinchZoom(to: baseZoom * Double(scale), isFinal: true)
+                pinchStartZoom = nil
+            }
     }
 
     private var guideCameraContainerHeight: CGFloat {

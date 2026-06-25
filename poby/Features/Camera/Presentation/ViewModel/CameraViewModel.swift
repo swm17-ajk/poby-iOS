@@ -25,6 +25,9 @@ final class CameraViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
     private var seenGuideIds: Set<UUID> = []
     private var settings: AppSettings
+    private var hasActiveCameraSession = false
+    private var zoomUpdateTask: Task<Void, Never>?
+    private var pendingZoomUpdate: (zoom: Double, persistsSelection: Bool)?
 
     init(
         state: CameraViewState = .initial,
@@ -93,10 +96,19 @@ final class CameraViewModel: ObservableObject {
     var palette: AppPalette { state.selectedTheme.palette }
 
     func onAppear() async {
-        guard state.status == .idle || state.status == .denied else { return }
-        state.status = .preparing
+        guard !hasActiveCameraSession else { return }
+        guard state.status == .idle || state.status == .denied || state.status == .ready else { return }
+        settings = settingsStore.load()
+        state.aspectRatio = settings.selectedAspectRatio
+        state.isFlashOn = settings.flashMode != .off
+        state.selectedTheme = settings.selectedTheme
+        let wasReady = state.status == .ready
+        if !wasReady {
+            state.status = .preparing
+        }
         do {
             try await cameraService.start()
+            hasActiveCameraSession = true
             try await cameraService.setCameraPosition(settings.cameraPosition)
             cameraService.setFlashMode(settings.flashMode)
             availableZooms = await cameraService.supportedZoomFactors()
@@ -116,6 +128,8 @@ final class CameraViewModel: ObservableObject {
     }
 
     func onDisappear() {
+        guard hasActiveCameraSession else { return }
+        hasActiveCameraSession = false
         cameraService.stop()
     }
 
@@ -153,12 +167,12 @@ final class CameraViewModel: ObservableObject {
             AnalyticsEvent.capturePreviewAction,
             properties: ["action": "save"]
         )
-        state.pendingCapture = nil
         do {
             try await cameraService.saveToPhotoLibrary(pending.imageData)
+            state.pendingCapture = nil
             state.lastSavedAt = Date()
         } catch {
-            state.status = .failed(message: error.localizedDescription)
+            state.status = .ready
         }
     }
 
@@ -266,12 +280,34 @@ final class CameraViewModel: ObservableObject {
     }
 
     func selectZoom(_ zoom: Double) {
-        Task {
-            let previous = selectedZoom
-            let applied = await cameraService.setZoomFactor(zoom)
+        updateZoom(zoom, persistsSelection: true)
+    }
+
+    func pinchZoom(to zoom: Double, isFinal: Bool) {
+        updateZoom(zoom, persistsSelection: isFinal)
+    }
+
+    private func updateZoom(_ zoom: Double, persistsSelection: Bool) {
+        if zoomUpdateTask != nil {
+            pendingZoomUpdate = (
+                zoom: zoom,
+                persistsSelection: pendingZoomUpdate?.persistsSelection == true || persistsSelection
+            )
+            return
+        }
+        zoomUpdateTask = Task { [weak self] in
+            await self?.runZoomUpdates(zoom: zoom, persistsSelection: persistsSelection)
+        }
+    }
+
+    private func runZoomUpdates(zoom: Double, persistsSelection: Bool) async {
+        var nextZoom = zoom
+        var shouldPersist = persistsSelection
+        while true {
+            let applied = await cameraService.setZoomFactor(nextZoom)
             selectedZoom = applied
-            persist { $0.selectedZoom = applied }
-            if applied != previous {
+            if shouldPersist {
+                persist { $0.selectedZoom = applied }
                 analytics.log(
                     AnalyticsEvent.zoomChanged,
                     properties: [
@@ -280,6 +316,14 @@ final class CameraViewModel: ObservableObject {
                     ]
                 )
             }
+            if let pendingZoomUpdate {
+                self.pendingZoomUpdate = nil
+                nextZoom = pendingZoomUpdate.zoom
+                shouldPersist = pendingZoomUpdate.persistsSelection
+                continue
+            }
+            zoomUpdateTask = nil
+            return
         }
     }
 

@@ -31,7 +31,6 @@ struct GuideThumb: View {
                             lineWidth: isActive ? AppMetrics.borderEmphasis : AppMetrics.borderHairline
                         )
                 )
-                .shadow(color: isActive ? AppColors.mint.opacity(0.45) : .clear, radius: 8)
 
                 if isActive {
                     ZStack {
