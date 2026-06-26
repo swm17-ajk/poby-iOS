@@ -25,6 +25,13 @@ build/
 *.dSYM.zip
 *.dSYM
 
+# fastlane
+fastlane/build/
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
 # Swift Package Manager
 .swiftpm/
 .build/
@@ -42,6 +49,8 @@ Carthage/Build/
 Config/Secrets.xcconfig
 secrets.plist
 GoogleService-Info.plist
+AuthKey_*.p8
+*.p8
 
 # 스크린샷/임시 파일
 Screenshot*.png
