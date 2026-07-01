@@ -93,8 +93,7 @@ platform :ios do
       },
       output_directory: "fastlane/build",
       output_name: "poby.ipa",
-      xcargs: xcodebuild_auth_args,
-      export_xcargs: xcodebuild_auth_args
+      xcargs: xcodebuild_auth_args
     )
 
     upload_to_testflight(
