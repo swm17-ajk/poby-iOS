@@ -1,0 +1,66 @@
+"common_cancel" = "Cancel";
+"common_delete" = "Delete";
+"common_done" = "Done";
+"common_retake" = "Retake";
+"common_save" = "Save";
+"common_saved" = "Saved";
+
+"tutorial_landing_tagline" = "pose by pose";
+"tutorial_why_label" = "WHY POBY";
+"tutorial_why_question_first_line" = "Struggling with composition";
+"tutorial_why_question_second_line" = "when taking photos?";
+"tutorial_why_now_prefix" = "Start with ";
+"tutorial_why_now_suffix" = ".";
+"tutorial_why_subtitle" = "Just follow the guideline\nand never worry about composition again.";
+"tutorial_match_pill" = "Pose matched";
+"tutorial_start_button" = "Get started";
+
+"camera_pose_matched" = "Pose matched";
+"camera_add_guide_title" = "Add guideline";
+"camera_add_guide_take_photo" = "Take a guide photo";
+"camera_add_guide_from_gallery" = "Pick from gallery";
+"camera_delete_guide_title" = "Delete this guide?";
+"camera_delete_guide_message" = "Deleted guidelines cannot be restored.";
+"camera_permission_title" = "Camera permission needed";
+"camera_permission_message" = "Please allow camera access in Settings.";
+"camera_permission_open_settings" = "Open Settings";
+"camera_empty_guides_hint" = "Add your first guideline";
+
+"gallery_title" = "Gallery";
+"gallery_empty" = "No saved photos yet";
+"gallery_delete_title" = "Delete this photo?";
+"gallery_delete_message" = "Deleted photos cannot be restored.";
+
+"guide_extraction_title" = "New guideline";
+"guide_extraction_loading" = "Detecting the person";
+"guide_extraction_success" = "Guideline extracted";
+"guide_extraction_retry" = "Try again";
+"guide_extraction_error_no_image" = "There is no image to process.";
+"guide_extraction_error_save" = "Failed to save.";
+"guide_extraction_error_generic" = "An unexpected error occurred.";
+
+"guide_capture_title" = "Take a photo to use as a guide";
+
+"vision_error_invalid_image" = "This image cannot be processed.";
+"vision_error_no_person" = "No person detected. Try a different photo.";
+"vision_error_processing_format" = "Analysis failed: %@";
+
+"camera_error_permission" = "Camera permission needed. Please allow camera access in Settings.";
+"camera_error_photo_library_permission" = "Photo library permission needed.";
+"camera_error_unavailable_mac" = "Camera is unavailable on Mac. Use the + button to add a photo from the gallery.";
+"camera_error_setup_format" = "Camera setup failed: %@";
+"camera_error_capture_format" = "Capture failed: %@";
+"camera_error_generic" = "A camera error occurred.";
+"camera_setup_error_add_photo_output" = "Could not add photo output.";
+"camera_setup_error_camera_not_found_format" = "Could not find the %@ camera.";
+"camera_setup_error_add_input" = "Could not add camera input.";
+"camera_capture_error_data_conversion" = "Image data conversion failed.";
+"camera_position_back" = "back";
+"camera_position_front" = "front";
+
+"guide_repository_error_thumbnail" = "Thumbnail generation failed.";
+"guide_repository_error_directory" = "Could not access the Documents directory.";
+
+"theme_dark" = "Dark";
+"theme_warm" = "Warm";
+"theme_cold" = "Cold";

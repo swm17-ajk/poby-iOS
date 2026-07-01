@@ -72,7 +72,7 @@ struct TopChromeBar: View {
             Image(systemName: "checkmark")
                 .font(.system(size: AppMetrics.iconS - 3, weight: .bold))
                 .foregroundStyle(AppColors.mintDeep)
-            Text("포즈 매칭")
+            Text("camera_pose_matched")
                 .font(AppTypography.pill)
                 .foregroundStyle(AppColors.mintDeep)
         }

@@ -168,16 +168,16 @@ struct CameraView: View {
                 }
             }
             .confirmationDialog(
-                "가이드라인 추가",
+                "camera_add_guide_title",
                 isPresented: $viewModel.state.isAddGuideSheetPresented,
                 titleVisibility: .visible
             ) {
-                Button("가이드 사진 찍기") {
+                Button("camera_add_guide_take_photo") {
                     viewModel.logAddGuideMethodSelected(source: "capture")
                     onGuideCaptureRequested()
                 }
-                Button("갤러리에서 등록") { viewModel.presentPhotoPicker() }
-                Button("취소", role: .cancel) {}
+                Button("camera_add_guide_from_gallery") { viewModel.presentPhotoPicker() }
+                Button("common_cancel", role: .cancel) {}
             }
             .photosPicker(
                 isPresented: $viewModel.state.isPhotoPickerPresented,
@@ -194,26 +194,26 @@ struct CameraView: View {
                 }
             }
             .alert(
-                "가이드라인을 삭제할까요?",
+                "camera_delete_guide_title",
                 isPresented: Binding(
                     get: { viewModel.guideToDelete != nil },
                     set: { if !$0 { viewModel.cancelDelete() } }
                 )
             ) {
-                Button("취소", role: .cancel) { viewModel.cancelDelete() }
-                Button("삭제", role: .destructive) {
+                Button("common_cancel", role: .cancel) { viewModel.cancelDelete() }
+                Button("common_delete", role: .destructive) {
                     if let guide = viewModel.guideToDelete {
                         Task { await viewModel.confirmDelete(guide) }
                     }
                 }
             } message: {
-                Text("삭제한 가이드라인은 복구할 수 없어요.")
+                Text("camera_delete_guide_message")
             }
         }
     }
 
     private var emptyStateHint: some View {
-        Text("첫 가이드라인을 추가해보세요")
+        Text("camera_empty_guides_hint")
             .font(AppTypography.body)
             .foregroundStyle(.white.opacity(0.85))
             .multilineTextAlignment(.center)
@@ -385,13 +385,13 @@ struct CameraView: View {
 
     private var deniedOverlay: some View {
         VStack(spacing: AppSpacing.gapM) {
-            Text("카메라 권한이 필요해요")
+            Text("camera_permission_title")
                 .font(AppTypography.title)
                 .foregroundStyle(.white)
-            Text("설정 앱에서 권한을 허용해주세요.")
+            Text("camera_permission_message")
                 .font(AppTypography.body)
                 .foregroundStyle(.white.opacity(0.7))
-            Button("설정 열기") {
+            Button("camera_permission_open_settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
@@ -423,7 +423,7 @@ struct CameraView: View {
     private var savedToast: some View {
         VStack {
             Spacer()
-            Text("저장됨")
+            Text("common_saved")
                 .font(AppTypography.buttonSecondary)
                 .foregroundStyle(.white)
                 .padding(.horizontal, AppSpacing.groupS)
@@ -510,9 +510,9 @@ private struct CapturedPreviewOverlay: View {
 
                     Spacer()
 
-                    HStack(spacing: AppSpacing.gapS) {
-                        Button(action: onRetake) {
-                            Text("재촬영")
+                HStack(spacing: AppSpacing.gapS) {
+                    Button(action: onRetake) {
+                            Text("common_retake")
                                 .font(AppTypography.bodyEmphasis)
                                 .foregroundStyle(palette.onSurface)
                                 .frame(maxWidth: .infinity)
@@ -520,7 +520,7 @@ private struct CapturedPreviewOverlay: View {
                                 .background(palette.glassFill, in: RoundedRectangle(cornerRadius: AppRadius.thumb))
                         }
                         Button(action: onSave) {
-                            Text("저장")
+                            Text("common_save")
                                 .font(AppTypography.buttonPrimary)
                                 .foregroundStyle(AppColors.mintDeep)
                                 .frame(maxWidth: .infinity)

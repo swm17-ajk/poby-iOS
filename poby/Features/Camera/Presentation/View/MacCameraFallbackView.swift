@@ -47,13 +47,13 @@ struct MacCameraFallbackView: View {
             }
         }
         .confirmationDialog(
-            "가이드라인 추가",
+            "camera_add_guide_title",
             isPresented: $viewModel.state.isAddGuideSheetPresented,
             titleVisibility: .visible
         ) {
-            Button("가이드 사진 찍기") { onGuideCaptureRequested() }
-            Button("갤러리에서 등록") { viewModel.presentPhotoPicker() }
-            Button("취소", role: .cancel) {}
+            Button("camera_add_guide_take_photo") { onGuideCaptureRequested() }
+            Button("camera_add_guide_from_gallery") { viewModel.presentPhotoPicker() }
+            Button("common_cancel", role: .cancel) {}
         }
         .photosPicker(
             isPresented: $viewModel.state.isPhotoPickerPresented,
@@ -70,20 +70,20 @@ struct MacCameraFallbackView: View {
             }
         }
         .alert(
-            "가이드라인을 삭제할까요?",
+            "camera_delete_guide_title",
             isPresented: Binding(
                 get: { viewModel.guideToDelete != nil },
                 set: { if !$0 { viewModel.cancelDelete() } }
             )
         ) {
-            Button("취소", role: .cancel) { viewModel.cancelDelete() }
-            Button("삭제", role: .destructive) {
+            Button("common_cancel", role: .cancel) { viewModel.cancelDelete() }
+            Button("common_delete", role: .destructive) {
                 if let guide = viewModel.guideToDelete {
                     Task { await viewModel.confirmDelete(guide) }
                 }
             }
         } message: {
-            Text("삭제한 가이드라인은 복구할 수 없어요.")
+            Text("camera_delete_guide_message")
         }
     }
 }

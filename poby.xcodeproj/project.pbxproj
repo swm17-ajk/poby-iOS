@@ -13,6 +13,8 @@
 		AE9187852FB0D6B500A79154 /* pobyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187842FB0D6B500A79154 /* pobyTests.swift */; };
 		AE91878F2FB0D6B500A79154 /* pobyUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE91878E2FB0D6B500A79154 /* pobyUITests.swift */; };
 		AE9187912FB0D6B500A79154 /* pobyUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE9187902FB0D6B500A79154 /* pobyUITestsLaunchTests.swift */; };
+		B0B1000000000000000001F01 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0A1000000000000000001F01 /* InfoPlist.strings */; };
+		B0B1000000000000000002F01 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B0A1000000000000000002F01 /* Localizable.strings */; };
 		AED472262FB235CB00848A68 /* Pretendard-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED4721F2FB235CA00848A68 /* Pretendard-Bold.otf */; };
 		AED472272FB235CB00848A68 /* Pretendard-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED472202FB235CA00848A68 /* Pretendard-ExtraBold.otf */; };
 		AED472282FB235CB00848A68 /* Pretendard-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = AED472212FB235CA00848A68 /* Pretendard-Medium.otf */; };
@@ -147,6 +149,10 @@
 		B0F1000000000000000000E08 /* ZoomControlStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZoomControlStrip.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000F01 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B0F1000000000000000000G01 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		B0F1000000000000000001F01 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B0F1000000000000000001F02 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B0F1000000000000000002F01 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		B0F1000000000000000002F02 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -205,6 +211,8 @@
 				B0C1000000000000000000B01 /* Core */,
 				B0C1000000000000000000A2 /* Features */,
 				AE9187752FB0D6B300A79154 /* Info.plist */,
+				B0A1000000000000000001F01 /* InfoPlist.strings */,
+				B0A1000000000000000002F01 /* Localizable.strings */,
 				AE9187772FB0D6B500A79154 /* Assets.xcassets */,
 				AE9187792FB0D6B500A79154 /* Preview Content */,
 			);
@@ -627,6 +635,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ko,
 				Base,
 			);
 			mainGroup = AE9187672FB0D6B300A79154;
@@ -650,6 +659,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE91877B2FB0D6B500A79154 /* Preview Assets.xcassets in Resources */,
+				B0B1000000000000000001F01 /* InfoPlist.strings in Resources */,
+				B0B1000000000000000002F01 /* Localizable.strings in Resources */,
 				AED472292FB235CB00848A68 /* Pretendard-Regular.otf in Resources */,
 				AED4722A2FB235CB00848A68 /* Pretendard-SemiBold.otf in Resources */,
 				AED472282FB235CB00848A68 /* Pretendard-Medium.otf in Resources */,
@@ -754,6 +765,27 @@
 			targetProxy = AE91878B2FB0D6B500A79154 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B0A1000000000000000001F01 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0F1000000000000000001F01 /* en */,
+				B0F1000000000000000001F02 /* ko */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		B0A1000000000000000002F01 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0F1000000000000000002F01 /* en */,
+				B0F1000000000000000002F02 /* ko */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		AE9187922FB0D6B500A79154 /* Debug */ = {
@@ -888,9 +920,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = poby/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "사진 촬영과 가이드 오버레이 기능을 제공하기 위해 카메라 접근이 필요해요.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Poby needs camera access to provide photo capture and guide overlay features.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Poby needs photo library access to save captured photos.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Poby needs photo library access to register existing photos as guides.";
 				INFOPLIST_KEY_UIAppFonts = "Pretendard-Regular.otf Pretendard-Medium.otf Pretendard-SemiBold.otf Pretendard-Bold.otf Pretendard-ExtraBold.otf";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -927,9 +959,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = poby/Info.plist;
-				INFOPLIST_KEY_NSCameraUsageDescription = "사진 촬영과 가이드 오버레이 기능을 제공하기 위해 카메라 접근이 필요해요.";
-				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
-				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Poby needs camera access to provide photo capture and guide overlay features.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Poby needs photo library access to save captured photos.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Poby needs photo library access to register existing photos as guides.";
 				INFOPLIST_KEY_UIAppFonts = "Pretendard-Regular.otf Pretendard-Medium.otf Pretendard-SemiBold.otf Pretendard-Bold.otf Pretendard-ExtraBold.otf";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

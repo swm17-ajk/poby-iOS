@@ -1,0 +1,3 @@
+"NSCameraUsageDescription" = "Poby needs camera access to provide photo capture and guide overlay features.";
+"NSPhotoLibraryAddUsageDescription" = "Poby needs photo library access to save captured photos.";
+"NSPhotoLibraryUsageDescription" = "Poby needs photo library access to register existing photos as guides.";

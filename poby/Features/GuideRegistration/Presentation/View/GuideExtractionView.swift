@@ -44,19 +44,19 @@ struct GuideExtractionView: View {
 
     private func topBar(palette: AppPalette) -> some View {
         HStack {
-            Button("취소") {
+            Button("common_cancel") {
                 viewModel.cancel()
                 onCancel()
             }
                 .font(AppTypography.body)
                 .foregroundStyle(palette.onSurface)
             Spacer()
-            Text("새 가이드라인")
+            Text("guide_extraction_title")
                 .font(AppTypography.hintLarge)
                 .foregroundStyle(palette.onSurface)
             Spacer()
             Button(action: { Task { await complete() } }) {
-                Text("완료")
+                Text("common_done")
                     .font(AppTypography.hintLarge)
                     .foregroundStyle(AppColors.mint.opacity(viewModel.isDoneEnabled ? 1.0 : 0.3))
             }
@@ -128,13 +128,13 @@ struct GuideExtractionView: View {
                 AnimatedProgressBar(targetProgress: 0.9, color: AppColors.mint)
                     .frame(height: AppMetrics.GuideExtraction.progressHeight)
                     .clipShape(Capsule())
-                Text("인물을 감지하고 있어요")
+                Text("guide_extraction_loading")
                     .font(AppTypography.body)
                     .foregroundStyle(palette.onSurfaceMuted)
                 }
                 .padding(.horizontal, AppSpacing.edge)
             case .success:
-                Text("가이드라인이 추출되었어요")
+                Text("guide_extraction_success")
                     .font(AppTypography.body)
                     .foregroundStyle(palette.onSurfaceMuted)
                     .multilineTextAlignment(.center)
@@ -147,7 +147,7 @@ struct GuideExtractionView: View {
                         .foregroundStyle(AppColors.danger)
                         .multilineTextAlignment(.center)
                     Button(action: { Task { await viewModel.extract() } }) {
-                        Text("다시 시도")
+                        Text("guide_extraction_retry")
                             .font(AppTypography.buttonPrimary)
                             .foregroundStyle(AppColors.mint)
                     }

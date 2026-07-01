@@ -17,9 +17,9 @@ enum AppTheme: String, CaseIterable, Codable, Equatable {
 
     var label: String {
         switch self {
-        case .dark: return "Dark"
-        case .warm: return "Warm"
-        case .cold: return "Cold"
+        case .dark: return String(localized: "theme_dark")
+        case .warm: return String(localized: "theme_warm")
+        case .cold: return String(localized: "theme_cold")
         }
     }
 

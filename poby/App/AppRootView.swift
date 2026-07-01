@@ -87,7 +87,7 @@ struct GalleryView: View {
                         }
                         .buttonStyle(.plain)
 
-                        Text("갤러리")
+                        Text("gallery_title")
                             .font(AppTypography.hintLarge)
                             .foregroundStyle(palette.onSurface)
                         Spacer()
@@ -97,7 +97,7 @@ struct GalleryView: View {
 
                     if assets.isEmpty {
                         Spacer()
-                        Text("저장된 사진이 없어요")
+                        Text("gallery_empty")
                             .font(AppTypography.body)
                             .foregroundStyle(palette.onSurfaceMuted)
                         Spacer()
@@ -128,20 +128,20 @@ struct GalleryView: View {
         .task { await loadPhotos() }
         .onAppear { settings = AppDIContainer.shared.makeSettingsStore().load() }
         .alert(
-            "사진을 삭제할까요?",
+            "gallery_delete_title",
             isPresented: Binding(
                 get: { assetToDelete != nil },
                 set: { if !$0 { assetToDelete = nil } }
             )
         ) {
-            Button("취소", role: .cancel) { assetToDelete = nil }
-            Button("삭제", role: .destructive) {
+            Button("common_cancel", role: .cancel) { assetToDelete = nil }
+            Button("common_delete", role: .destructive) {
                 if let assetToDelete {
                     Task { await delete(assetToDelete) }
                 }
             }
         } message: {
-            Text("삭제한 사진은 복구할 수 없어요.")
+            Text("gallery_delete_message")
         }
     }
 

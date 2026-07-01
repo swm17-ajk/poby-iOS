@@ -24,7 +24,7 @@ struct OnboardingView: View {
                 VStack {
                     Spacer()
                     Button(action: onComplete) {
-                        Text("시작하기")
+                        Text("tutorial_start_button")
                             .font(Font.pretendard(.bold, size: 18))
                             .foregroundStyle(AppColors.mintDeep)
                             .frame(maxWidth: .infinity)
@@ -67,7 +67,7 @@ struct OnboardingView: View {
             ViewfinderMark()
             VStack(spacing: AppSpacing.gapM) {
                 PobyWordmark()
-                Text("pose by pose")
+                Text("tutorial_landing_tagline")
                     .font(Font.pretendard(.medium, size: 14))
                     .foregroundStyle(AppColors.inkTertiary)
             }
@@ -78,15 +78,15 @@ struct OnboardingView: View {
         VStack(spacing: 0) {
             Spacer(minLength: AppMetrics.Onboarding.topSpacerMin)
 
-            Text("WHY POBY")
+            Text("tutorial_why_label")
                 .font(Font.pretendard(.bold, size: 11))
                 .foregroundStyle(AppColors.inkTertiary)
                 .tracking(2)
                 .padding(.bottom, AppMetrics.Onboarding.eyebrowBottomPadding)
 
             VStack(spacing: 4) {
-                Text("사진 찍을 때")
-                Text("구도 잡기 힘들지 않으셨나요?")
+                Text("tutorial_why_question_first_line")
+                Text("tutorial_why_question_second_line")
             }
             .font(Font.pretendard(.bold, size: 24))
             .foregroundStyle(AppColors.inkSecondary)
@@ -102,19 +102,19 @@ struct OnboardingView: View {
 
             VStack(spacing: 12) {
                 HStack(spacing: 0) {
-                    Text("이제 ")
-                    Text("poby")
+                    Text("tutorial_why_now_prefix")
+                    Text(verbatim: "poby")
                         .padding(.horizontal, 4)
                         .background(alignment: .bottom) {
                             AppColors.mint
                                 .frame(height: AppMetrics.Onboarding.highlightHeight)
                         }
-                    Text("와 함께")
+                    Text("tutorial_why_now_suffix")
                 }
                 .font(Font.pretendard(.extraBold, size: 22))
                 .foregroundStyle(AppColors.inkPrimary)
 
-                Text("가이드라인 위에 따라 찍기만 하면\n구도 걱정 없이 사진을 남길 수 있어요.")
+                Text("tutorial_why_subtitle")
                     .font(Font.pretendard(.regular, size: 13))
                     .foregroundStyle(AppColors.inkTertiary)
                     .multilineTextAlignment(.center)
@@ -147,7 +147,7 @@ struct OnboardingView: View {
                         Spacer()
                         HStack(spacing: 5) {
                             Image(systemName: "checkmark")
-                            Text("구도 매칭")
+                            Text("tutorial_match_pill")
                         }
                         .font(AppTypography.pill)
                         .foregroundStyle(AppColors.mintDeep)
@@ -219,7 +219,7 @@ private struct CornerMark: View {
 
 private struct PobyWordmark: View {
     var body: some View {
-        Text("poby")
+        Text(verbatim: "poby")
             .font(Font.pretendard(.extraBold, size: 44))
             .foregroundStyle(AppColors.inkPrimary)
     }

@@ -90,7 +90,7 @@ struct GuideCaptureView: View {
 
             Spacer()
 
-            Text("가이드로 쓸 사진을 찍어주세요")
+            Text("guide_capture_title")
                 .font(AppTypography.hintSmall)
                 .foregroundStyle(palette.onSurface)
                 .padding(.horizontal, AppSpacing.gapM)
@@ -187,7 +187,7 @@ struct GuideCaptureView: View {
 
                 HStack(spacing: AppSpacing.gapS) {
                     Button(action: { viewModel.discardCaptured() }) {
-                        Text("재촬영")
+                        Text("common_retake")
                             .font(AppTypography.bodyEmphasis)
                             .foregroundStyle(palette.onSurface)
                             .frame(maxWidth: .infinity)
@@ -198,7 +198,7 @@ struct GuideCaptureView: View {
                         viewModel.confirmCaptured()
                         onConfirmed(imageData)
                     }) {
-                        Text("완료")
+                        Text("common_done")
                             .font(AppTypography.buttonPrimary)
                             .foregroundStyle(AppColors.mintDeep)
                             .frame(maxWidth: .infinity)
@@ -216,13 +216,13 @@ struct GuideCaptureView: View {
 
     private var deniedOverlay: some View {
         VStack(spacing: AppSpacing.gapM) {
-            Text("카메라 권한이 필요해요")
+            Text("camera_permission_title")
                 .font(AppTypography.title)
                 .foregroundStyle(.white)
-            Text("설정 앱에서 권한을 허용해주세요.")
+            Text("camera_permission_message")
                 .font(AppTypography.body)
                 .foregroundStyle(.white.opacity(0.7))
-            Button("설정 열기") {
+            Button("camera_permission_open_settings") {
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }

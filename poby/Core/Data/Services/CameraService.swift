@@ -11,11 +11,16 @@ enum CameraServiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .cameraPermissionDenied:        return "카메라 권한이 필요해요. 설정에서 허용해주세요."
-        case .photoLibraryPermissionDenied:  return "사진 라이브러리 권한이 필요해요."
-        case .cameraUnavailableOnMac:        return "Mac에서는 카메라를 쓸 수 없어요. '+' 버튼으로 갤러리에서 사진을 등록해주세요."
-        case .setupFailed(let m):            return "카메라 설정 실패: \(m)"
-        case .captureFailed(let m):          return "촬영 실패: \(m)"
+        case .cameraPermissionDenied:
+            return String(localized: "camera_error_permission")
+        case .photoLibraryPermissionDenied:
+            return String(localized: "camera_error_photo_library_permission")
+        case .cameraUnavailableOnMac:
+            return String(localized: "camera_error_unavailable_mac")
+        case .setupFailed(let message):
+            return String(format: String(localized: "camera_error_setup_format"), message)
+        case .captureFailed(let message):
+            return String(format: String(localized: "camera_error_capture_format"), message)
         }
     }
 }
@@ -272,7 +277,7 @@ final class CameraService: NSObject {
                     configureVideoConnections()
 
                     guard session.canAddOutput(photoOutput) else {
-                        throw CameraServiceError.setupFailed("사진 출력을 추가할 수 없어요.")
+                        throw CameraServiceError.setupFailed(String(localized: "camera_setup_error_add_photo_output"))
                     }
                     session.addOutput(photoOutput)
                     configurePhotoOutputForCurrentPlatform()
@@ -302,8 +307,10 @@ final class CameraService: NSObject {
     private func replaceInput(position: CameraPosition, backLens: BackLens = .wide) throws {
         let avPosition: AVCaptureDevice.Position = position == .back ? .back : .front
         guard let device = Self.preferredDevice(for: avPosition, backLens: backLens) else {
-            let label = position == .back ? "후면" : "전면"
-            throw CameraServiceError.setupFailed("\(label) 카메라를 찾을 수 없어요.")
+            let label = position == .back ? String(localized: "camera_position_back") : String(localized: "camera_position_front")
+            throw CameraServiceError.setupFailed(
+                String(format: String(localized: "camera_setup_error_camera_not_found_format"), label)
+            )
         }
         if currentInput?.device.uniqueID == device.uniqueID {
             currentPosition = position
@@ -323,7 +330,7 @@ final class CameraService: NSObject {
                 session.addInput(previousInput)
                 self.currentInput = previousInput
             }
-            throw CameraServiceError.setupFailed("카메라 입력을 추가할 수 없어요.")
+            throw CameraServiceError.setupFailed(String(localized: "camera_setup_error_add_input"))
         }
 
         session.addInput(input)
@@ -462,7 +469,7 @@ extension CameraService: AVCapturePhotoCaptureDelegate {
             return
         }
         guard let data = photo.fileDataRepresentation() else {
-            pendingCapture?.resume(throwing: CameraServiceError.captureFailed("이미지 데이터 변환 실패"))
+            pendingCapture?.resume(throwing: CameraServiceError.captureFailed(String(localized: "camera_capture_error_data_conversion")))
             pendingCapture = nil
             return
         }

@@ -10,9 +10,12 @@ enum VisionServiceError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .invalidImage:            return "이미지를 처리할 수 없어요."
-        case .noOutlineFound:          return "아웃라인을 찾지 못했어요"
-        case .processingFailed(let m): return "분석 실패: \(m)"
+        case .invalidImage:
+            return String(localized: "vision_error_invalid_image")
+        case .noOutlineFound:
+            return String(localized: "vision_error_no_person")
+        case .processingFailed(let message):
+            return String(format: String(localized: "vision_error_processing_format"), message)
         }
     }
 }

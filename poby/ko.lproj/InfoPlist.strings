@@ -1,0 +1,3 @@
+"NSCameraUsageDescription" = "사진 촬영과 가이드 오버레이 기능을 제공하기 위해 카메라 접근이 필요해요.";
+"NSPhotoLibraryAddUsageDescription" = "찍은 사진을 저장하기 위해 사진 라이브러리 권한이 필요해요.";
+"NSPhotoLibraryUsageDescription" = "기존 사진을 가이드로 등록하기 위해 사진 라이브러리 권한이 필요해요.";

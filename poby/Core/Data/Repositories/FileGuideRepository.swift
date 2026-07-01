@@ -8,8 +8,10 @@ enum FileGuideRepositoryError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .thumbnailGenerationFailed: return "썸네일 생성 실패"
-        case .directoryUnavailable:      return "Documents 디렉터리 접근 실패"
+        case .thumbnailGenerationFailed:
+            return String(localized: "guide_repository_error_thumbnail")
+        case .directoryUnavailable:
+            return String(localized: "guide_repository_error_directory")
         }
     }
 }

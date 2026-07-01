@@ -1,0 +1,66 @@
+"common_cancel" = "취소";
+"common_delete" = "삭제";
+"common_done" = "완료";
+"common_retake" = "재촬영";
+"common_save" = "저장";
+"common_saved" = "저장됨";
+
+"tutorial_landing_tagline" = "pose by pose";
+"tutorial_why_label" = "WHY POBY";
+"tutorial_why_question_first_line" = "사진 찍을 때";
+"tutorial_why_question_second_line" = "구도 잡기 힘들지 않으셨나요?";
+"tutorial_why_now_prefix" = "이제 ";
+"tutorial_why_now_suffix" = "와 함께";
+"tutorial_why_subtitle" = "가이드라인 위에 따라 찍기만 하면\n구도 걱정 없이 사진을 남길 수 있어요.";
+"tutorial_match_pill" = "구도 매칭";
+"tutorial_start_button" = "시작하기";
+
+"camera_pose_matched" = "포즈 매칭";
+"camera_add_guide_title" = "가이드라인 추가";
+"camera_add_guide_take_photo" = "가이드 사진 찍기";
+"camera_add_guide_from_gallery" = "갤러리에서 등록";
+"camera_delete_guide_title" = "가이드라인을 삭제할까요?";
+"camera_delete_guide_message" = "삭제한 가이드라인은 복구할 수 없어요.";
+"camera_permission_title" = "카메라 권한이 필요해요";
+"camera_permission_message" = "설정 앱에서 권한을 허용해주세요.";
+"camera_permission_open_settings" = "설정 열기";
+"camera_empty_guides_hint" = "첫 가이드라인을 추가해보세요";
+
+"gallery_title" = "갤러리";
+"gallery_empty" = "저장된 사진이 없어요";
+"gallery_delete_title" = "사진을 삭제할까요?";
+"gallery_delete_message" = "삭제한 사진은 복구할 수 없어요.";
+
+"guide_extraction_title" = "새 가이드라인";
+"guide_extraction_loading" = "인물을 감지하고 있어요";
+"guide_extraction_success" = "가이드라인이 추출되었어요";
+"guide_extraction_retry" = "다시 시도";
+"guide_extraction_error_no_image" = "이미지가 없어요.";
+"guide_extraction_error_save" = "저장에 실패했어요.";
+"guide_extraction_error_generic" = "예기치 못한 오류가 발생했어요.";
+
+"guide_capture_title" = "가이드로 쓸 사진을 찍어주세요";
+
+"vision_error_invalid_image" = "이미지를 처리할 수 없어요.";
+"vision_error_no_person" = "인물을 찾지 못했어요. 다른 사진을 시도해보세요.";
+"vision_error_processing_format" = "분석 실패: %@";
+
+"camera_error_permission" = "카메라 권한이 필요해요. 설정에서 허용해주세요.";
+"camera_error_photo_library_permission" = "사진 라이브러리 권한이 필요해요.";
+"camera_error_unavailable_mac" = "Mac에서는 카메라를 쓸 수 없어요. '+' 버튼으로 갤러리에서 사진을 등록해주세요.";
+"camera_error_setup_format" = "카메라 설정 실패: %@";
+"camera_error_capture_format" = "촬영 실패: %@";
+"camera_error_generic" = "카메라 오류가 발생했어요.";
+"camera_setup_error_add_photo_output" = "사진 출력을 추가할 수 없어요.";
+"camera_setup_error_camera_not_found_format" = "%@ 카메라를 찾을 수 없어요.";
+"camera_setup_error_add_input" = "카메라 입력을 추가할 수 없어요.";
+"camera_capture_error_data_conversion" = "이미지 데이터 변환 실패";
+"camera_position_back" = "후면";
+"camera_position_front" = "전면";
+
+"guide_repository_error_thumbnail" = "썸네일 생성 실패";
+"guide_repository_error_directory" = "Documents 디렉터리 접근 실패";
+
+"theme_dark" = "Dark";
+"theme_warm" = "Warm";
+"theme_cold" = "Cold";
